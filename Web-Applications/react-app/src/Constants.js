@@ -6,7 +6,7 @@ const Constants = {
   POST: 'post',
   FILE: 'file',
   SIGNATURE: 'signature',
-  MAX_FILE_SIZE: 10000000 //Max file size of 10 MB, to avoid crashing the app
+  MAX_FILE_SIZE: 20000000 //Max file size of 20 MB, to avoid crashing the app
 };
 
 const RequestStatus = {
@@ -41,6 +41,6 @@ const getStatusString = (status) => {
     default :
       return ""
   }
-};
+}
 
 module.exports = {Constants, RequestStatus_String, RequestStatus, getStatusString};

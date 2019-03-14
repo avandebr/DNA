@@ -138,6 +138,12 @@ class FileManager extends Component {
     })
   }
 
+  /* Updates the file, re encrypt it unsing the key, update the IPFS location of the patent, and notify other users
+   * that have already bought the patent than the file has been updated */
+  updateFile() {
+
+  }
+
   /*--------------------------------- USER INTERFACE COMPONENTS ---------------------------------*/
 
 
@@ -173,6 +179,7 @@ class FileManager extends Component {
           request{this.state.pendingRequests.length === 1 ? '' : 's'}</Panel.Body>
         <ListGroup>
           <ListGroupItem className="download-label" onClick={this.downloadCopy}>Download a copy</ListGroupItem>
+          <ListGroupItem className="download-label" onClick={this.updateFile}>Update file</ListGroupItem>
           {this.renderRequests()}
         </ListGroup>
       </Panel>

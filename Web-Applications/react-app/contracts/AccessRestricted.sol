@@ -1,8 +1,8 @@
-pragma solidity ^0.4.0;
+pragma solidity ^0.5.0;
 
 contract AccessRestricted {
 
-    address public owner = msg.sender;
+    address payable public owner = msg.sender;
 
 
     modifier onlyOwner() {
@@ -11,8 +11,7 @@ contract AccessRestricted {
     }
 
 
-
-    function changeOwner(address _newOwner) public onlyOwner {
+    function changeOwner(address payable _newOwner) public onlyOwner {
         owner = _newOwner;
     }
 

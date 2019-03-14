@@ -81,7 +81,7 @@ class Store_class extends Component {
           new_entry['ethPrice'] = ethPrice;
           let patents = this.state.patents;
           patents.push(new_entry);
-          this.setState({patents: patents});
+          this.setState({ patents });
         })
       }
     }

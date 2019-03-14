@@ -9,7 +9,7 @@ const saveByteArray = (name, bytes, window, document) => {
   let blob = new Blob([bytes]);
   let link = document.createElement('a');
   link.href = window.URL.createObjectURL(blob);
-  link.download = name + ".pdf";
+  link.download = name;
   link.style.display = 'none';
   document.body.appendChild(link);
   link.click();
@@ -91,7 +91,7 @@ const validateEmail = (email, repeat) => {
 };
 
 /*Utility function that returns true if the file is in PDF and less than 10Mb*/
-const validatePDF = (file) => {
+const validateFile = (file) => {
   if (file === "") {
     window.dialog.showAlert('Please select a file');
   } else if (file.size > Constants.MAX_FILE_SIZE) {
@@ -108,7 +108,7 @@ module.exports = {
   successfullTx,
   toEther,
   fromEther,
-  validatePDF,
+  validateFile,
   validateEmail
 };
 

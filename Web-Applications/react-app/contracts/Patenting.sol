@@ -1,4 +1,4 @@
-pragma solidity ^0.4.2;
+pragma solidity ^0.5.0;
 
 import './AccessRestricted.sol';
 import './TimeStamping.sol';
@@ -11,7 +11,7 @@ contract Patenting is AccessRestricted {
 
     enum RequestStatus {Not_requested, Pending, Rejected, Cancelled, Accepted}
 
-    /*Struct for request */
+    /* Struct for request */
     struct Request {
         RequestStatus status;
         uint deposit;
@@ -20,7 +20,7 @@ contract Patenting is AccessRestricted {
         string encryptedIpfsKey;
     }
 
-    /*Struct for patent*/
+    /* Struct for patent*/
     struct Patent {
         address owner;
         uint timestamp;
@@ -34,7 +34,7 @@ contract Patenting is AccessRestricted {
     }
 
     string[] public patentNames;
-    mapping(string => Patent) private patents; //PatentName to struct
+    mapping(string => Patent) private patents; // PatentName to struct
 
     event NewRequest(
         string _ownerMail,
@@ -48,29 +48,38 @@ contract Patenting is AccessRestricted {
         bool _accepted
     );
 
-    FiatContract fiat;
+    // FiatContract fiat;
 
     /* Constructor of the contract
     * {param} uint : The price for depositing a pattern in Wei
     */
-    function Patenting(uint _patentPrice, address _fiatContract) public {
-        fiat = FiatContract(_fiatContract);
+    constructor(uint _patentPrice, address _fiatContract) public {
+        // fiat = FiatContract(_fiatContract);
         patentPrice = _patentPrice;
     }
 
     function getEthPrice(uint _dollars) public view returns (uint) {
-        return fiat.USD(0) * 100 * _dollars;
+        // return fiat.USD(0) * 100 * _dollars;
+        return _dollars / 130;
     }
 
     /* Function to deposit a pattern
     * {params} the patent parameters
     * {costs} the price of a patent
     */
-    function depositPatent(string _patentName, string _patentHash, uint _price, string _ipfs, string _email) public payable {
+    function depositPatent(string memory _patentName, string memory _patentHash, uint _price, string memory _ipfs, string memory _email) public payable {
         require(patents[_patentName].timestamp == 0 && msg.value >= getEthPrice(patentPrice));
         patents[_patentName] = Patent(msg.sender, now, _patentHash, _price, _ipfs, _email, 0);
         patentNames.push(_patentName);
         patentCount++;
+    }
+
+    /* Function called when a file is updated to set its IPFS location
+    * {params} the new IPFS location
+    */
+    function setIpfs(string memory _patentName, string memory _newIpfs) public payable {
+        require(patents[_patentName].timestamp != 0 && isOwner(_patentName, msg.sender));
+        patents[_patentName].ipfs = _newIpfs;
     }
 
     /* Function to request access to a patent
@@ -78,7 +87,7 @@ contract Patenting is AccessRestricted {
     *          _encryptionKey : key to encrypt AES key with (key exchange protocol)
     * {costs} price of the patent : will be frozen until request is accepted, rejected, or cancelled
     */
-    function requestAccess(string _patentName, string _encryptionKey, string _email) public payable {
+    function requestAccess(string memory _patentName, string memory _encryptionKey, string memory _email) public payable {
         uint ethPrice = getEthPrice(patents[_patentName].price);
         require(patents[_patentName].timestamp != 0 && canRequest(_patentName, msg.sender) && msg.value >= ethPrice);
         Patent storage p = patents[_patentName];
@@ -86,10 +95,10 @@ contract Patenting is AccessRestricted {
             p.buyers[p.numRequests++] = msg.sender;
         }
         p.requests[msg.sender] = Request(RequestStatus.Pending, ethPrice, _email, _encryptionKey, "");
-        NewRequest(patents[_patentName].email, _patentName, msg.sender);
+        emit NewRequest(patents[_patentName].email, _patentName, msg.sender);
     }
 
-    function resendRequest(string _patentName) public payable {
+    function resendRequest(string memory _patentName) public payable {
         uint ethPrice = getEthPrice(patents[_patentName].price);
         require(patents[_patentName].timestamp != 0 && canRequest(_patentName, msg.sender) && msg.value >= ethPrice && !isNotRequested(_patentName, msg.sender));
         Request storage r = patents[_patentName].requests[msg.sender];
@@ -103,7 +112,7 @@ contract Patenting is AccessRestricted {
     *          _encryptedIpfsKey : encrypted AES key to decrypt file on ipfs
     *   Transfers the amount to the patent owner
     */
-    function grantAccess(string _patentName, address _user, string _encryptedIpfsKey) public {
+    function grantAccess(string memory _patentName, address _user, string memory _encryptedIpfsKey) public {
         require(patents[_patentName].timestamp != 0 && isOwner(_patentName, msg.sender) && isPending(_patentName, _user));
         Request storage r = patents[_patentName].requests[_user];
         require(r.deposit >= 0);
@@ -112,14 +121,14 @@ contract Patenting is AccessRestricted {
         r.status = RequestStatus.Accepted;
         // Accept Request
         r.encryptedIpfsKey = _encryptedIpfsKey;
-        RequestResponse(r.email, _patentName, true);
+        emit RequestResponse(r.email, _patentName, true);
     }
 
     /* Function to reject access to a patent
     * {params} : Same as above
     * Refunds the amount to the user
     */
-    function rejectAccess(string _patentName, address _user) public {
+    function rejectAccess(string memory _patentName, address payable _user) public {
         require(patents[_patentName].timestamp != 0 && isOwner(_patentName, msg.sender) && isPending(_patentName, _user));
         Request storage r = patents[_patentName].requests[_user];
         require(r.deposit >= 0);
@@ -128,13 +137,13 @@ contract Patenting is AccessRestricted {
         r.deposit = 0;
         r.status = RequestStatus.Rejected;
         // Reject Request
-        RequestResponse(r.email, _patentName, false);
+        emit RequestResponse(r.email, _patentName, false);
     }
 
     /* Function that cancels a request (can only be called by user)
     * {params} : _patentName : name of patent
     */
-    function cancelRequest(string _patentName) public {
+    function cancelRequest(string memory _patentName) public {
         require(patents[_patentName].timestamp != 0 && !isOwner(_patentName, msg.sender) && isPending(_patentName, msg.sender));
         Request storage r = patents[_patentName].requests[msg.sender];
         require(r.deposit >= 0);
@@ -152,83 +161,83 @@ contract Patenting is AccessRestricted {
     /*-----------------------------------View functions that do not require transactions-----------------------------------*/
 
     /*Returns true if the given account can request the given patent : is either Not_requested, cancelled or rejected*/
-    function canRequest(string _patentName, address _account) public view returns (bool){
+    function canRequest(string memory _patentName, address _account) public view returns (bool){
         return !(isPending(_patentName, _account) || isAccepted(_patentName, _account) || isOwner(_patentName, _account));
     }
 
     /*Returns the RequestStatus of the given patent for the given account*/
-    function getRequestStatus(string _patentName, address _account) public view returns (RequestStatus){
+    function getRequestStatus(string memory _patentName, address _account) public view returns (RequestStatus){
         return patents[_patentName].requests[_account].status;
     }
 
     /*Returns true of the given account hasn't requested the given patent*/
-    function isNotRequested(string _patentName, address _account) public view returns (bool){
+    function isNotRequested(string memory _patentName, address _account) public view returns (bool){
         return patents[_patentName].requests[_account].status == RequestStatus.Not_requested;
     }
 
     /*Returns true of the given account has a pending request on the given patent*/
-    function isPending(string _patentName, address _account) public view returns (bool){
+    function isPending(string memory _patentName, address _account) public view returns (bool){
         return patents[_patentName].requests[_account].status == RequestStatus.Pending;
     }
 
     /*Verifies that the given address has been accepted for the given patent*/
-    function isAccepted(string _patentName, address _account) public view returns (bool){
+    function isAccepted(string memory _patentName, address _account) public view returns (bool){
         return patents[_patentName].requests[_account].status == RequestStatus.Accepted;
     }
 
     /*Returns true if account is owner of given patent*/
-    function isOwner(string _patentName, address _account) public view returns (bool){
+    function isOwner(string memory _patentName, address _account) public view returns (bool){
         return getPatentOwner(_patentName) == _account;
     }
 
     /*Returns time-stamp of the Patent*/
-    function getTimeStamp(string _patentName) public view returns (uint){
+    function getTimeStamp(string memory _patentName) public view returns (uint){
         return patents[_patentName].timestamp;
     }
 
     /*Returns the sha256 hash of the patent*/
-    function getPatentHash(string _patentName) public view returns (string){
+    function getPatentHash(string memory _patentName) public view returns (string memory){
         return patents[_patentName].patentHash;
     }
 
     /*Returns patent's owner*/
-    function getPatentOwner(string _patentName) public view returns (address) {
+    function getPatentOwner(string memory _patentName) public view returns (address) {
         return patents[_patentName].owner;
     }
 
     /*Returns the price of a patent*/
-    function getPrice(string _patentName) public view returns (uint){
+    function getPrice(string memory _patentName) public view returns (uint){
         return patents[_patentName].price;
     }
 
     /*Returns the number of requests for the given patent*/
-    function getNumRequests(string _patentName) public view returns (uint){
+    function getNumRequests(string memory _patentName) public view returns (uint){
         return patents[_patentName].numRequests;
     }
 
     /*Returns the address of the buyer at _index  (Used for iterating)*/
-    function getBuyers(string _patentName, uint _index) public view returns (address){
+    function getBuyers(string memory _patentName, uint _index) public view returns (address){
         return patents[_patentName].buyers[_index];
     }
 
     /*Returns the requester's public key*/
-    function getEncryptionKey(string _patentName, address _user) public view returns (string){
+    function getEncryptionKey(string memory _patentName, address _user) public view returns (string memory){
         require(msg.sender == patents[_patentName].owner);
         return patents[_patentName].requests[_user].encryptionKey;
     }
 
     /*Returns the encrypted IPFS encryption key*/
-    function getEncryptedIpfsKey(string _patentName) public view returns (string){
+    function getEncryptedIpfsKey(string memory _patentName) public view returns (string memory){
         require(isAccepted(_patentName, msg.sender));
         return patents[_patentName].requests[msg.sender].encryptedIpfsKey;
     }
 
-    function getOwnerEmail(string _patentName) public view returns (string) {
+    function getOwnerEmail(string memory _patentName) public view returns (string memory) {
         return patents[_patentName].email;
     }
 
     /*Returns the IPFS location of the patent*/
-    function getPatentLocation(string _patentName) public view returns (string) {
+    function getPatentLocation(string memory _patentName) public view returns (string memory) {
         return patents[_patentName].ipfs;
     }
 }

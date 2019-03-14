@@ -17,7 +17,7 @@ class Bundle {
   encryptFile(file, key) {
     return getEncryptedFileBuffer(file, window, key).then(res => {
       this.encryptedFile = res;
-      return this.getHash()//new Promise((resolve, reject) => resolve("file encrypted"))
+      return this.getHash() //new Promise((resolve, reject) => resolve("file encrypted"))
     })
   }
 
@@ -26,7 +26,7 @@ class Bundle {
 
   addFile(onlyHash = false) {
     if (this.encryptedFile !== null) {
-      return this.node.files.add(this.encryptedFile, {onlyHash: onlyHash})
+      return this.node.files.add(this.encryptedFile, { onlyHash })
     }
   }
 

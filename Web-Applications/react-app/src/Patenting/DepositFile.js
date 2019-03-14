@@ -3,7 +3,7 @@ import '../css/Pages.css'
 import React, {Component} from 'react';
 import {Button, Grid, Row, Col} from 'react-bootstrap';
 import {FieldGroup, SubmitButton, ContractNotFound} from '../utils/FunctionalComponents';
-import {validateEmail, validatePDF} from '../utils/UtilityFunctions';
+import {validateEmail, validateFile} from '../utils/UtilityFunctions';
 import {getFileHash} from '../utils/CryptoUtils'
 import wrapWithMetamask from '../MetaMaskWrapper'
 import Patenting from '../../build/contracts/Patenting';
@@ -52,20 +52,21 @@ class DepositFile_class extends Component {
     this.encryptFile = this.encryptFile.bind(this);
   }
 
-  /*Called before the component is mounted
-  * Instantiates the contract and stores the price of a patent*/
+  /* Called before the component is mounted
+  * Instantiates the contract and stores the price of a patent */
   componentDidMount() {
     this.state.web3.eth.getGasPrice((err, res) => this.setState({gasPrice : res.toNumber()}));
     const contract = require('truffle-contract');
     const patenting = contract(Patenting);
     patenting.setProvider(this.state.web3.currentProvider);
-    patenting.deployed().then(instance => {
+    // patenting.at('0x90Aa08D8542925bc95b1D7347bF21068A0659c70').then(instance => { // ROPSTEN
+    patenting.at('0xddfc2E31EEcA6Ed9E39ed4B7BA30F7217B3032A3').then(instance => {
       this.setState({contractInstance: instance});
       return instance.patentPrice.call()
     }).then(price => {
       this.setState({patentPrice: price.toNumber()});
       return this.state.contractInstance.getEthPrice.call(price.toNumber())
-    }).then(ethPrice => this.setState({etherPrice : ethPrice}))
+    }).then(ethPrice => this.setState({etherPrice: ethPrice}))
       .catch(error => this.setState({contractInstance: null}));
   }
 
@@ -81,6 +82,7 @@ class DepositFile_class extends Component {
       patentName: "",
       price: "",
       file: "",
+      fileExt: '',
       fileState: FileState.NOT_ENCRYPTED,
       email_address: "",
       repeat_email: "",
@@ -137,6 +139,7 @@ class DepositFile_class extends Component {
           window.dialog.showAlert(KEY_GENERATION_ERROR);
         } else {
           window.dialog.showAlert(IPFS_ERROR);
+          console.log(err);
         }
         this.resetForm();
       })
@@ -147,8 +150,8 @@ class DepositFile_class extends Component {
   }
 
 
-  /*Handles the change in a form component
-  * Checks : size(File) < 10Mb and File is PDF
+  /* Handles the change in a form component
+  * Checks : size(File) < 20Mb
   * Computes : sha256 of the plain text document
   * */
   handleChange(e) {
@@ -156,13 +159,20 @@ class DepositFile_class extends Component {
     let state = this.state;
     if (e.target.name === Constants.FILE) {
       let file = e.target.files[0];
-      if (validatePDF(file)) {
+      const fileName = file.name.split('.');
+      // default patent name is the file name
+      if (!this.state.patentName) {
+        this.setState({ patentName: fileName[0] });
+      }
+      this.setState({ fileExt: fileName[1] });
+      if (validateFile(file)) {
         this.setState({waitingTransaction: true, fileState: FileState.NOT_ENCRYPTED});
         getFileHash(file, window).then(res => {
           this.setState({hash: res, file: file, waitingTransaction: false})
         }).catch(err => window.dialog.showAlert(err));
       }
-    } else {
+    }
+    else {
       state[e.target.name] = e.target.value;
       this.setState(state);
     }
@@ -174,7 +184,9 @@ class DepositFile_class extends Component {
     e.preventDefault();
     if (this.validateForm()) {
       this.setState({waitingTransaction: true});
-      this.state.contractInstance.depositPatent(this.state.patentName, this.state.hash, this.state.price, this.state.ipfsLocation, this.state.email_address, {
+      const { patentName, fileExt, hash, price, ipfsLocation, email_address } = this.state;
+      const completeName = patentName + '.' + fileExt;
+      this.state.contractInstance.depositPatent(completeName, hash, price, ipfsLocation, email_address, {
         from: this.state.web3.eth.coinbase,
         value: this.state.etherPrice,
         gas: process.env.REACT_APP_GAS_LIMIT,
@@ -198,7 +210,7 @@ class DepositFile_class extends Component {
         });
       }).catch(error => {
         this.setState({waitingTransaction: false});
-        contractError(error); //Handles the error
+        contractError(error); // Handles the error
       });
     } else {
       if (this.state.file !== "" && this.state.fileState === FileState.NOT_ENCRYPTED) {
@@ -245,7 +257,7 @@ class DepositFile_class extends Component {
         break;
       case FileState.ENCRYPTING:
         buttonState = "default";
-        buttonText = "Encrypting File..";
+        buttonText = "Encrypting File...";
         break;
       case FileState.ENCRYPTED:
         buttonState = "success";
@@ -263,8 +275,11 @@ class DepositFile_class extends Component {
   renderForm() {
     return (
       <form onSubmit={this.submitFile}>
-        <FieldGroup name="patentName" id="formsControlsName" label="File Name" type="text"
-                    value={this.state.patentName} placeholder="Enter the File name" help="Max 100 chars"
+        <FieldGroup name={Constants.FILE} id="formsControlsFile" label="File" type="file" placeholder=""
+                    onChange={this.handleChange}/>
+
+        <FieldGroup name="patentName" id="formsControlsName" label="Patent Name (default will be file name)" type="text"
+                    value={this.state.patentName} placeholder="Enter the File name" help="Max 100 chars, without extension"
                     onChange={this.handleChange} validation={this.validateName()}/>
         <FieldGroup name="price" id="formsControlsName" label="Price in USD" type="text"
                     value={this.state.price} help="Max $1000"
@@ -276,9 +291,6 @@ class DepositFile_class extends Component {
                     value={this.state.repeat_email} placeholder="john@doe.com" help=""
                     onChange={this.handleChange}
                     validation={validateEmail(this.state.email_address, this.state.repeat_email)}/>
-
-        <FieldGroup name={Constants.FILE} id="formsControlsFile" label="File" type="file" placeholder=""
-                    help="File" onChange={this.handleChange}/>
 
         <div className="encrypt-button">{this.encryptFileButton()}</div>
         <SubmitButton running={this.state.waitingTransaction}/>

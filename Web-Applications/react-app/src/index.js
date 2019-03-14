@@ -1,5 +1,5 @@
 import React from 'react'
-import ReactDOM from 'react-dom'
+import { render } from 'react-dom';
 import {BrowserRouter, Route, Switch} from 'react-router-dom'
 import 'bootstrap/dist/css/bootstrap.css'
 
@@ -14,6 +14,7 @@ import DepositFile from './Patenting/DepositFile';
 import Store from './Patenting/Store';
 import MyFiles from './Patenting/MyFiles';
 import MyRequests from './Patenting/MyRequests'
+
 import dotenv from 'dotenv';
 
 import Dialog from 'react-bootstrap-dialog';
@@ -23,7 +24,7 @@ import About from './About';
 //import AdditionalInfo from './AdditionalInfo';
 
 dotenv.config();
-ReactDOM.render(
+render(
   <BrowserRouter>
     {/*<BrowserRouter history={browserHistory}>*/}
     <div>

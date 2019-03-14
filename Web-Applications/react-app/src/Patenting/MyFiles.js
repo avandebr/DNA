@@ -135,7 +135,6 @@ class MyFiles_class extends Component {
   /*Renders the details of a selected patent*/
   renderDetails() {
     return (
-
         <div className="requests-container">
           {this.buttonToolbar()}
           <FileManager web3={this.state.web3} contractInstance={this.state.contractInstance}

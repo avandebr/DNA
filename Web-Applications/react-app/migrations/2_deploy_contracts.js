@@ -1,6 +1,6 @@
-var AccessRestricted = artifacts.require("./AccessRestricted.sol");
-var Patenting = artifacts.require("./Patenting.sol");
-var TimeStamping = artifacts.require("./TimeStamping.sol");
+const AccessRestricted = artifacts.require("./AccessRestricted.sol");
+const Patenting = artifacts.require("./Patenting.sol");
+const TimeStamping = artifacts.require("./TimeStamping.sol");
 
 module.exports = function(deployer) {
   deployer.deploy(AccessRestricted);
