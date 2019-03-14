@@ -2,36 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="c87813fc-2f0d-4c90-89ff-4548fcd08115" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/codeStyles/codeStyleConfig.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Web-Applications/react-app/src/hot.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Web-Applications/react-app/test/testUpdateFile.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Web-Applications/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/Web-Applications/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Web-Applications/Node-Server/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/Web-Applications/Node-Server/Dockerfile" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Web-Applications/react-app/build/contracts/AccessRestricted.json" beforeDir="false" afterPath="$PROJECT_DIR$/Web-Applications/react-app/build/contracts/AccessRestricted.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Web-Applications/react-app/build/contracts/FiatContract.json" beforeDir="false" afterPath="$PROJECT_DIR$/Web-Applications/react-app/build/contracts/FiatContract.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Web-Applications/react-app/build/contracts/Migrations.json" beforeDir="false" afterPath="$PROJECT_DIR$/Web-Applications/react-app/build/contracts/Migrations.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Web-Applications/react-app/build/contracts/Patenting.json" beforeDir="false" afterPath="$PROJECT_DIR$/Web-Applications/react-app/build/contracts/Patenting.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Web-Applications/react-app/build/contracts/TimeStamping.json" beforeDir="false" afterPath="$PROJECT_DIR$/Web-Applications/react-app/build/contracts/TimeStamping.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Web-Applications/react-app/build_webpack/static/js/main.f74aef41.js" beforeDir="false" afterPath="$PROJECT_DIR$/Web-Applications/react-app/build_webpack/static/js/main.f74aef41.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Web-Applications/react-app/contracts/AccessRestricted.sol" beforeDir="false" afterPath="$PROJECT_DIR$/Web-Applications/react-app/contracts/AccessRestricted.sol" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Web-Applications/react-app/contracts/FiatContract.sol" beforeDir="false" afterPath="$PROJECT_DIR$/Web-Applications/react-app/contracts/FiatContract.sol" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Web-Applications/react-app/contracts/Migrations.sol" beforeDir="false" afterPath="$PROJECT_DIR$/Web-Applications/react-app/contracts/Migrations.sol" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Web-Applications/react-app/contracts/Patenting.sol" beforeDir="false" afterPath="$PROJECT_DIR$/Web-Applications/react-app/contracts/Patenting.sol" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Web-Applications/react-app/contracts/TimeStamping.sol" beforeDir="false" afterPath="$PROJECT_DIR$/Web-Applications/react-app/contracts/TimeStamping.sol" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Web-Applications/react-app/migrations/1_initial_migration.js" beforeDir="false" afterPath="$PROJECT_DIR$/Web-Applications/react-app/migrations/1_initial_migration.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Web-Applications/react-app/migrations/2_deploy_contracts.js" beforeDir="false" afterPath="$PROJECT_DIR$/Web-Applications/react-app/migrations/2_deploy_contracts.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Web-Applications/react-app/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/Web-Applications/react-app/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Web-Applications/react-app/src/Constants.js" beforeDir="false" afterPath="$PROJECT_DIR$/Web-Applications/react-app/src/Constants.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Web-Applications/react-app/src/NavigationBar.js" beforeDir="false" afterPath="$PROJECT_DIR$/Web-Applications/react-app/src/NavigationBar.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Web-Applications/react-app/src/Patenting/DepositFile.js" beforeDir="false" afterPath="$PROJECT_DIR$/Web-Applications/react-app/src/Patenting/DepositFile.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Web-Applications/react-app/src/Patenting/FileManager.js" beforeDir="false" afterPath="$PROJECT_DIR$/Web-Applications/react-app/src/Patenting/FileManager.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Web-Applications/react-app/src/Patenting/MyFiles.js" beforeDir="false" afterPath="$PROJECT_DIR$/Web-Applications/react-app/src/Patenting/MyFiles.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Web-Applications/react-app/src/Patenting/Store.js" beforeDir="false" afterPath="$PROJECT_DIR$/Web-Applications/react-app/src/Patenting/Store.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Web-Applications/react-app/src/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/Web-Applications/react-app/src/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Web-Applications/react-app/src/utils/UtilityFunctions.js" beforeDir="false" afterPath="$PROJECT_DIR$/Web-Applications/react-app/src/utils/UtilityFunctions.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Web-Applications/react-app/src/utils/ipfsBundle.js" beforeDir="false" afterPath="$PROJECT_DIR$/Web-Applications/react-app/src/utils/ipfsBundle.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Web-Applications/react-app/truffle-config.js" beforeDir="false" afterPath="$PROJECT_DIR$/Web-Applications/react-app/truffle-config.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/.tmp/" />
     <ignored path="$PROJECT_DIR$/temp/" />
@@ -102,7 +74,7 @@
         <counts>
           <entry key="Dockerfile" value="1" />
           <entry key="env" value="1" />
-          <entry key="gitignore" value="1" />
+          <entry key="gitignore" value="4" />
           <entry key="js" value="74" />
           <entry key="json" value="8" />
           <entry key="sol" value="25" />
@@ -113,7 +85,7 @@
         <counts>
           <entry key=".env file" value="1" />
           <entry key="Dockerfile" value="1" />
-          <entry key="Git file" value="1" />
+          <entry key="Git file" value="4" />
           <entry key="JSON" value="8" />
           <entry key="JavaScript" value="74" />
           <entry key="Solidity file" value="25" />
@@ -122,12 +94,14 @@
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
+          <entry key="gitignore" value="10" />
           <entry key="js" value="2247" />
           <entry key="sol" value="585" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
+          <entry key="Git file" value="10" />
           <entry key="JavaScript" value="2247" />
           <entry key="Solidity file" value="585" />
         </counts>
@@ -162,11 +136,29 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Web-Applications/react-app/src/Constants.js">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="570">
               <caret line="43" column="1" selection-start-line="43" selection-start-column="1" selection-end-line="43" selection-end-column="1" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/.gitignore">
+          <provider selected="true" editor-type-id="text-editor">
+            <state>
+              <caret column="9" lean-forward="true" selection-start-column="9" selection-end-column="9" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/Web-Applications/.gitignore">
+          <provider selected="true" editor-type-id="text-editor">
+            <state>
+              <caret column="5" selection-start-column="5" selection-end-column="5" />
             </state>
           </provider>
         </entry>
@@ -216,18 +208,6 @@
               <caret line="20" column="23" selection-start-line="20" selection-start-column="23" selection-end-line="20" selection-end-column="23" />
               <folding>
                 <element signature="e#0#26#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Web-Applications/react-app/src/MetaMaskWrapper.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1155">
-              <caret line="77" selection-start-line="77" selection-end-line="77" />
-              <folding>
-                <element signature="e#0#24#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -300,6 +280,7 @@
         <option value="$PROJECT_DIR$/Web-Applications/react-app/src/Patenting/FileManager.js" />
         <option value="$PROJECT_DIR$/Web-Applications/react-app/src/NavigationBar.js" />
         <option value="$PROJECT_DIR$/Web-Applications/react-app/src/Constants.js" />
+        <option value="$PROJECT_DIR$/.gitignore" />
       </list>
     </option>
   </component>
@@ -460,17 +441,18 @@
       <workItem from="1551273896602" duration="9846000" />
       <workItem from="1551701116877" duration="3317000" />
       <workItem from="1551714116713" duration="23221000" />
-      <workItem from="1552390660308" duration="16786000" />
+      <workItem from="1552390660308" duration="17034000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="61107000" />
+    <option name="totallyTimeSpent" value="61355000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="0" width="1680" height="1050" extended-state="0" />
+    <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.24954791" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.24954791" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
@@ -482,7 +464,7 @@
       <window_info anchor="bottom" id="TODO" order="6" />
       <window_info anchor="bottom" id="Docker" order="7" show_stripe_button="false" />
       <window_info anchor="bottom" id="Version Control" order="8" />
-      <window_info active="true" anchor="bottom" id="Terminal" order="9" visible="true" weight="0.29183674" />
+      <window_info anchor="bottom" id="Terminal" order="9" visible="true" weight="0.29183674" />
       <window_info anchor="bottom" id="Event Log" order="10" side_tool="true" />
       <window_info anchor="bottom" id="TypeScript" order="11" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
@@ -515,13 +497,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="60">
           <caret line="4" column="10" lean-forward="true" selection-start-line="4" selection-start-column="10" selection-end-line="4" selection-end-column="10" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Web-Applications/.gitignore">
-      <provider selected="true" editor-type-id="text-editor">
-        <state>
-          <caret column="5" selection-start-column="5" selection-end-column="5" />
         </state>
       </provider>
     </entry>
@@ -560,13 +535,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="60">
           <caret line="4" column="49" selection-start-line="4" selection-start-column="49" selection-end-line="4" selection-end-column="49" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/.gitignore">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="15">
-          <caret line="1" lean-forward="true" selection-start-line="1" selection-end-line="1" />
         </state>
       </provider>
     </entry>
@@ -839,6 +807,20 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="570">
           <caret line="43" column="1" selection-start-line="43" selection-start-column="1" selection-end-line="43" selection-end-column="1" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Web-Applications/.gitignore">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <caret column="5" selection-start-column="5" selection-end-column="5" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/.gitignore">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <caret column="9" lean-forward="true" selection-start-column="9" selection-end-column="9" />
         </state>
       </provider>
     </entry>
