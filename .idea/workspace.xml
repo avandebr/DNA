@@ -122,13 +122,13 @@
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
-          <entry key="js" value="2244" />
+          <entry key="js" value="2247" />
           <entry key="sol" value="585" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
-          <entry key="JavaScript" value="2244" />
+          <entry key="JavaScript" value="2247" />
           <entry key="Solidity file" value="585" />
         </counts>
       </usages-collector>
@@ -165,8 +165,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/Web-Applications/react-app/src/Constants.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="15">
-              <caret line="6" column="2" selection-start-line="6" selection-start-column="2" selection-end-line="6" selection-end-column="2" />
+            <state relative-caret-position="570">
+              <caret line="43" column="1" selection-start-line="43" selection-start-column="1" selection-end-line="43" selection-end-column="1" />
             </state>
           </provider>
         </entry>
@@ -279,7 +279,6 @@
         <option value="$PROJECT_DIR$/Web-Applications/react-app/src/utils/ipfsBundle.js" />
         <option value="$PROJECT_DIR$/Web-Applications/.gitignore" />
         <option value="$PROJECT_DIR$/Web-Applications/react-app/src/Patenting/Store.js" />
-        <option value="$PROJECT_DIR$/Web-Applications/react-app/src/Constants.js" />
         <option value="$PROJECT_DIR$/Web-Applications/react-app/src/utils/UtilityFunctions.js" />
         <option value="$PROJECT_DIR$/Web-Applications/react-app/src/Patenting/MyFiles.js" />
         <option value="$PROJECT_DIR$/Web-Applications/react-app/Menu.js" />
@@ -300,6 +299,7 @@
         <option value="$PROJECT_DIR$/Web-Applications/react-app/src/Patenting/DepositFile.js" />
         <option value="$PROJECT_DIR$/Web-Applications/react-app/src/Patenting/FileManager.js" />
         <option value="$PROJECT_DIR$/Web-Applications/react-app/src/NavigationBar.js" />
+        <option value="$PROJECT_DIR$/Web-Applications/react-app/src/Constants.js" />
       </list>
     </option>
   </component>
@@ -460,12 +460,12 @@
       <workItem from="1551273896602" duration="9846000" />
       <workItem from="1551701116877" duration="3317000" />
       <workItem from="1551714116713" duration="23221000" />
-      <workItem from="1552390660308" duration="16527000" />
+      <workItem from="1552390660308" duration="16786000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="60848000" />
+    <option name="totallyTimeSpent" value="61107000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="0" width="1680" height="1050" extended-state="0" />
@@ -837,8 +837,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/Web-Applications/react-app/src/Constants.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="15">
-          <caret line="6" column="2" selection-start-line="6" selection-start-column="2" selection-end-line="6" selection-end-column="2" />
+        <state relative-caret-position="570">
+          <caret line="43" column="1" selection-start-line="43" selection-start-column="1" selection-end-line="43" selection-end-column="1" />
         </state>
       </provider>
     </entry>
