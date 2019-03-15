@@ -1,14 +1,14 @@
 import './css/Pages.css'
-import React, {Component} from 'react'
-import {Grid, Row, Well} from 'react-bootstrap'
+import React, { Component } from 'react'
+import { Grid, Row } from 'react-bootstrap'
 
 class Home extends Component {
 
   render() {
     return (
-      <Well bsSize={"large"}>
         <Grid>
-          <Row bsClass="page-title">Decentralized Notary Application</Row>
+          <br/>
+          <Row bsClass="title">Decentralized Notary Application</Row>
           <hr/>
           <Row bsClass="paragraph">
             Blockchains and other similar decentralized ledgers have recently emerged in force in the financial and
@@ -41,7 +41,7 @@ class Home extends Component {
             <br/>Cheers.
             <br/>
           </Row>
-        </Grid></Well>
+        </Grid>
     )
   }
 }

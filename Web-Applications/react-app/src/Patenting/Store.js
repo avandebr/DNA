@@ -149,7 +149,9 @@ class Store_class extends Component {
   static header() {
     return (
       <Grid>
+        <br/>
         <Row bsClass='title'>Files Store</Row>
+        <hr/>
         <Row bsClass='paragraph'>
           <p>This page allows users that have an Ethereum account and are using it on the Metamask
             extension for browsers, to request access to files deposited by other users. <br/>To request a certain file,

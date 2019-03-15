@@ -228,7 +228,9 @@ class DepositFile_class extends Component {
   static header() {
     return (
       <Grid>
+        <br/>
         <Row bsClass='title'>Document Registration</Row>
+        <hr/>
         <Row bsClass='paragraph'>
           <p>This page allows users that have an Ethereum account and are using it on the Metamask
             extension for browsers, to register files and allow other users to access tthem for a set

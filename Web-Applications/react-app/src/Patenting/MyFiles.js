@@ -147,7 +147,9 @@ class MyFiles_class extends Component {
   static header() {
     return (
       <Grid>
+        <br/>
         <Row bsClass='title'>My Files</Row>
+        <hr/>
         <Row bsClass='paragraph'>
           <p>This page allows users to view the Documents they have deposited, and manage the requests. <br/>
             To see the details, just click on the row.<br/>

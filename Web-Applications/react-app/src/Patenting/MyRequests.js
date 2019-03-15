@@ -118,7 +118,9 @@ class MyRequests_class extends Component {
   static header() {
     return (
       <Grid>
+        <br/>
         <Row bsClass='title'>My requests</Row>
+        <hr/>
         <Row bsClass='paragraph'>
           <p>This page allows users to view the requests they have submitted and view documents they have access
             to. <br/>

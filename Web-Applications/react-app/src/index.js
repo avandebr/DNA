@@ -24,7 +24,8 @@ import About from './About';
 //import AdditionalInfo from './AdditionalInfo';
 
 dotenv.config();
-render(
+
+const App = () => (
   <BrowserRouter>
     {/*<BrowserRouter history={browserHistory}>*/}
     <div>
@@ -42,8 +43,8 @@ render(
         <Route exact path='/About' component={About}/>
       </Switch>
     </div>
-  </BrowserRouter>,
-
-  document.getElementById('root')
+  </BrowserRouter>
 );
+
+render(<App/>, document.getElementById('root'));
 
