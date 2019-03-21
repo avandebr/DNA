@@ -6,7 +6,7 @@ import {Grid, Row, Col} from 'react-bootstrap'
 import {getFileHash} from '../utils/CryptoUtils';
 import {FieldGroup, SubmitButton, ContractNotFound, StampContainer} from '../utils/FunctionalComponents';
 import TimeStamping from '../../build/contracts/TimeStamping'
-import {Constants} from '../Constants'
+import {Constants} from '../utils/Constants'
 import {contractError, INVALID_FORM, LARGE_FILE} from '../utils/ErrorHandler'
 import wrapWithMetamask from "../MetaMaskWrapper";
 

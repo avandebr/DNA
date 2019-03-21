@@ -77,9 +77,11 @@ contract Patenting is AccessRestricted {
     /* Function called when a file is updated to set its IPFS location
     * {params} the new IPFS location
     */
-    function setIpfs(string memory _patentName, string memory _newIpfs) public payable {
+    function setIpfsLocation(string memory _patentName, string memory _newIpfs) public {
         require(patents[_patentName].timestamp != 0 && isOwner(_patentName, msg.sender));
-        patents[_patentName].ipfs = _newIpfs;
+        Patent storage p = patents[_patentName];
+        p.ipfs = _newIpfs;
+        // emit un event pour notifier que ca a change et envoyer un mail aux buyers du patent
     }
 
     /* Function to request access to a patent

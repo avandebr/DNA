@@ -6,6 +6,7 @@ import Utf8 from 'crypto-js/enc-utf8'
 import {ENCRYPTION_ERROR} from '../utils/ErrorHandler';
 
 import {encrypt, decrypt} from 'eccrypto'
+
 /* Utility function to get the sha256 hash of a file
 * Returns a Promise containing the hash of the file hashed as a byte array using SHA256
 * */

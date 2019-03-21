@@ -2,7 +2,7 @@
 
 import Dialog from 'react-bootstrap-dialog';
 import {LARGE_FILE} from "./ErrorHandler";
-import {Constants} from "../Constants";
+import {Constants} from "./Constants";
 
 /*Function that triggers the download of the given bytes*/
 const saveByteArray = (name, bytes, window, document) => {

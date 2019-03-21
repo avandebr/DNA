@@ -5,7 +5,7 @@ import TimeStamping from '../../build/contracts/TimeStamping'
 import {FieldGroup, StampContainer, SubmitButton} from '../utils/FunctionalComponents';
 import {extractJson} from "../utils/UtilityFunctions";
 import {getFileHash} from '../utils/CryptoUtils';
-import {Constants} from '../Constants';
+import {Constants} from '../utils/Constants';
 import {Grid, Row, Col} from 'react-bootstrap'
 
 import {serverError, INVALID_FORM, LARGE_FILE} from '../utils/ErrorHandler'

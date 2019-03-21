@@ -7,7 +7,7 @@ import TimeStamping from '../../build/contracts/TimeStamping'
 import {successfullTx} from '../utils/UtilityFunctions';
 import {getFileHash} from '../utils/CryptoUtils'
 import {FieldGroup, SubmitButton, ContractNotFound} from '../utils/FunctionalComponents';
-import {Constants} from '../Constants'
+import {Constants} from '../utils/Constants'
 import {INVALID_FORM, LARGE_FILE, contractError} from '../utils/ErrorHandler'
 import wrapWithMetamask from "../MetaMaskWrapper";
 

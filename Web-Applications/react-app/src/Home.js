@@ -32,7 +32,6 @@ class Home extends Component {
             to share research papers, confidential documents, media or any other digital document, to everyone for a set
             price.
             <br/>
-
             <br/>
             <br/>To understand more about the mechanism of our system, check the <a href="/About"
                                                                                     className="link">About</a> page !

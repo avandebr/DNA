@@ -1,7 +1,7 @@
 import '../css/Pages.css'
 import React, {Component} from 'react';
 import {Button, ButtonGroup, Panel, Label} from 'react-bootstrap';
-import {RequestStatus_String} from '../Constants';
+import {RequestStatus_String} from '../utils/Constants';
 import {saveByteArray, successfullTx} from '../utils/UtilityFunctions';
 import {privateKeyDecrypt} from '../utils/CryptoUtils'
 import {contractError, KEY_GENERATION_ERROR, IPFS_ERROR, KEY_ERROR, ENCRYPTION_ERROR} from "../utils/ErrorHandler";
@@ -87,8 +87,6 @@ class RequestPanel extends Component {
         button = <Button onClick={this.downloadCopy}> Download Copy</Button>;
         break;
       case RequestStatus_String.CANCELLED:
-        button = <Button onClick={this.resendRequest}> Re-send Request ({this.state.request.price} USD)</Button>;
-        break;
       case RequestStatus_String.REJECTED:
         button = <Button onClick={this.resendRequest}> Re-send Request ({this.state.request.price} USD)</Button>;
         break;

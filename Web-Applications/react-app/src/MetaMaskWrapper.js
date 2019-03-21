@@ -1,10 +1,10 @@
 import './css/Pages.css'
 
 import React, {Component} from 'react';
-import {ButtonGroup, Button, Grid, Row, Col} from 'react-bootstrap';
+import {Grid, Row} from 'react-bootstrap';
 
 import getWeb3 from './utils/getWeb3'
-import {METAMASK_NOTFOUND, INVALID_NETWORK, UNLOCK_METAMASK} from './utils/ErrorHandler'
+import {METAMASK_NOTFOUND, UNLOCK_METAMASK} from './utils/ErrorHandler'
 
 /*Constants for rendering and network selection*/
 
@@ -15,11 +15,11 @@ const Networks = {
   LOCALRPC: 5777
 };
 
-const NetworkStrings = {
-  MAINNET: "Ethereum Main Net",
-  ROPSTEN: "Ropsten Test Net",
-  KOVAN: "Kovan Test Net",
-  LOCALRPC: "Local RPC"
+const NetworkToString = {
+  [Networks.MAINNET]: "Ethereum Main Net",
+  [Networks.ROPSTEN]: "Ropsten Test Net",
+  [Networks.KOVAN]: "Kovan Test Net",
+  [Networks.LOCALRPC]: "Local RPC"
 };
 
 
@@ -37,24 +37,30 @@ function wrapWithMetamask(Wrapped, header) {
       super(props);
       this.state = {
         web3: null,
+        contractInstance: null,
         selectedNetwork: null,
         loadChild: false,
       };
       this.resetState = this.resetState.bind(this);
     }
 
+    componentDidMount() {
+      this.getWeb3Object();
+    }
+
     /* Resets the state of the Component*/
     resetState() {
       this.setState({
         web3: null,
+        contractInstance: null,
         selectedNetwork: null,
         loadChild: false
       });
     }
 
-    /* Tries to get the injected web3 object of the chosen network by Network ID
+    /* Tries to get the injected web3 object of the selected network
     * */
-    getWeb3Object(networkId) {
+    getWeb3Object() {
       getWeb3.then(result => {
         this.setState({web3: result.web3});
         result.web3.eth.getAccounts((err, accounts) => {
@@ -62,71 +68,27 @@ function wrapWithMetamask(Wrapped, header) {
             window.dialog.showAlert(UNLOCK_METAMASK);
             this.resetState();
           } else {
-            this.setNetwork(networkId);
+            this.setNetwork();
           }
         })
+
       }).catch(e => {
         window.dialog.showAlert(METAMASK_NOTFOUND);
       });
     }
 
+    getNetwork() {
+      return NetworkToString[this.state.selectedNetwork];
+    }
+
     /*Verifies the if the chosen network corresponds to the one in metamask
     * */
-    setNetwork(networkId) {
+    setNetwork() {
       this.state.web3.version.getNetwork((err, id) => {
         id = parseInt(id, 10);
-        if (id !== networkId) {
-          window.dialog.showAlert(INVALID_NETWORK);
-          this.resetState();
-        } else {
-          switch (id) {
-            case Networks.MAINNET:
-              this.setState({selectedNetwork: Networks.MAINNET, loadChild: true});
-              break;
-            case Networks.ROPSTEN:
-              this.setState({selectedNetwork: Networks.ROPSTEN, loadChild: true});
-              break;
-            case Networks.KOVAN:
-              this.setState({selectedNetwork: Networks.KOVAN, loadChild: true});
-              break;
-            case Networks.LOCALRPC:
-              this.setState({selectedNetwork: Networks.LOCALRPC, loadChild: true});
-              break;
-            default :
-              this.resetState();
-              break;
-          }
-        }
+        this.setState({selectedNetwork: id, loadChild: true});
       })
     }
-
-
-    /*
-    * Returns a set of buttons that help choose the Network to timestamp on (Contract must have been deployed before)
-    * */
-    buttons() {
-      return (
-        <ButtonGroup justified>
-          <ButtonGroup bsSize="large">
-            <Button onClick={this.getWeb3Object.bind(this, Networks.MAINNET)}
-                    disabled={this.state.selectedNetwork === Networks.MAINNET}>{NetworkStrings.MAINNET}</Button>
-          </ButtonGroup>
-          <ButtonGroup bsSize="large">
-            <Button onClick={this.getWeb3Object.bind(this, Networks.ROPSTEN)}
-                    disabled={this.state.selectedNetwork === Networks.ROPSTEN}>{NetworkStrings.ROPSTEN}</Button>
-          </ButtonGroup>
-          <ButtonGroup bsSize="large">
-            <Button onClick={this.getWeb3Object.bind(this, Networks.KOVAN)}
-                    disabled={this.state.selectedNetwork === Networks.KOVAN}>{NetworkStrings.KOVAN}</Button>
-          </ButtonGroup>
-          <ButtonGroup bsSize="large">
-            <Button onClick={this.getWeb3Object.bind(this, Networks.LOCALRPC)}
-                    disabled={this.state.selectedNetwork === Networks.LOCALRPC}>{NetworkStrings.LOCALRPC}</Button>
-          </ButtonGroup>
-        </ButtonGroup>
-      );
-    }
-
 
     /*
     * Rendering for the page
@@ -135,7 +97,7 @@ function wrapWithMetamask(Wrapped, header) {
       return (
         <Grid>
           <Row>{header}</Row>
-          <Row bsClass="buttons-container"><Col md={10} mdOffset={1}>{this.buttons()}</Col></Row>
+          <Row bsClass="contract-address">Connected to {this.getNetwork()}</Row>
           <Row>{this.state.loadChild ? <Wrapped web3={this.state.web3}/> : ""}</Row>
         </Grid>
       );

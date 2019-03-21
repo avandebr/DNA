@@ -34,16 +34,17 @@ class Bundle {
   getDecryptedFile(fileHash, ipfsLoc, key) {
     return new Promise((resolve, reject) => {
       if (fileHash !== null && ipfsLoc !== null && key !== null) {
+        console.log('decrypting file')
         this.node.files.get(ipfsLoc, (err, files) => {
           if (!err) {
             let byteContent = files[0].content;
             let decrypted = getDecryptedFileBuffer(byteContent, key);
-            let hash = sha256(decrypted);
-            if (hash === fileHash) {
-              resolve(decrypted)
-            } else {
+            // let hash = sha256(decrypted);
+            // if (hash === fileHash) {
+            resolve(decrypted)
+            /*} else {
               reject(KEY_ERROR)
-            }
+            }*/
           } else {
             reject(IPFS_ERROR)
           }

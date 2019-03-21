@@ -3,7 +3,7 @@ import React, {Component} from 'react';
 import {Table, Grid, Row} from 'react-bootstrap';
 import {ContractNotFound} from '../utils/FunctionalComponents';
 import {stampToDate, successfullTx} from '../utils/UtilityFunctions';
-import {getStatusString} from '../Constants';
+import {getStatusString} from '../utils/Constants';
 import Patenting from '../../build/contracts/Patenting';
 import wrapWithMetamask from '../MetaMaskWrapper'
 

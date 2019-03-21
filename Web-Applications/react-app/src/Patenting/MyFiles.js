@@ -119,14 +119,14 @@ class MyFiles_class extends Component {
     return (
       <ButtonGroup justified>
         <ButtonGroup>
+          <Button onClick={this.prevPatent}> <Glyphicon glyph="menu-left"/> Prev File</Button>
+        </ButtonGroup>
+        <ButtonGroup>
           <Button onClick={() => this.setState({displayDetails: false, selectedPatent: null})}> <Glyphicon
-            glyph="triangle-top"/>Hide Details</Button>
+            glyph="triangle-top"/> Hide Details</Button>
         </ButtonGroup>
         <ButtonGroup>
-          <Button onClick={this.prevPatent}> <Glyphicon glyph="menu-left"/>Prev File</Button>
-        </ButtonGroup>
-        <ButtonGroup>
-          <Button onClick={this.nextPatent}><Glyphicon glyph="menu-right"/>Next File</Button>
+          <Button onClick={this.nextPatent}><Glyphicon glyph="menu-right"/> Next File</Button>
         </ButtonGroup>
       </ButtonGroup>);
   }
@@ -203,10 +203,14 @@ class MyFiles_class extends Component {
       return (
         <Grid>
           <Row bsClass='contract-address'>
-            Contract at {this.state.contractInstance.address} <br/>
-            <br/> Current account {this.state.web3.eth.accounts[0]} (From Metamask)
+            Contract at {this.state.contractInstance.address}
+            <br/><br/>
+            Current account {this.state.web3.eth.accounts[0]} (From Metamask)
           </Row>
-          <Row>{this.state.displayDetails ? this.renderDetails() : this.renderTable()}</Row>
+          <Row>
+            {/* pas besoin de displayDetails ! selected patent suffit */
+              this.state.displayDetails ? this.renderDetails() : this.renderTable()}
+          </Row>
         </Grid>)
     }
   }

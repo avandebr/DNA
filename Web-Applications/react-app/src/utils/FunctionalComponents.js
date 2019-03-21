@@ -4,9 +4,52 @@ import React from 'react'
 import {FormControl, FormGroup, ControlLabel, HelpBlock, Alert} from 'react-bootstrap'
 import Button from 'react-bootstrap-button-loader'
 import '../css/Pages.css'
-
-
 import {stampToDate} from './UtilityFunctions'
+import {FileStates} from "./Constants";
+
+
+/* encryption button component for file uploading form */
+const EncryptFileButton = (props) => {
+  let buttonState, buttonText;
+  switch (props.fileState) {
+    case FileStates.NOT_ENCRYPTED:
+      buttonState = "default";
+      buttonText = "Encrypt File";
+      break;
+    case FileStates.ENCRYPTING:
+      buttonState = "default";
+      buttonText = "Encrypting File...";
+      break;
+    case FileStates.ENCRYPTED:
+      buttonState = "success";
+      buttonText = "File encrypted";
+      break;
+    default:
+      break;
+  }
+  return (
+    <Button bsStyle={buttonState}
+            loading={props.fileState === FileStates.ENCRYPTING}
+            spinColor="#000"
+            disabled={props.disabled}
+            onClick={props.onClick}
+            block>
+      {buttonText}
+    </Button>
+  );
+}
+
+
+/*Submit button Component with loading state */
+const SubmitButton = (props) => {
+  return (
+    <Button type='submit' spinColor="#000" loading={props.running} disabled={props.disabled} block>
+      {props.running ? 'Sending' : 'Submit'}
+    </Button>
+  );
+};
+
+
 /*
 * React Component for a FieldGroup (Form field with additional useful features)
 * */
@@ -20,11 +63,6 @@ const FieldGroup = (props) => {
       {props.help && <HelpBlock>{props.help}</HelpBlock>}
     </FormGroup>
   );
-};
-
-/*Submit button Component with loading state */
-const SubmitButton = (props) => {
-  return (<Button type='submit' loading={props.running} spinColor="#000">Submit</Button>);
 };
 
 
@@ -41,7 +79,7 @@ const StampContainer = (props) => {
   let container = "";
   if (props.timestamp !== 0) {
     let date = stampToDate(props.timestamp);
-    container = <Alert bsStyle="success">Document timestamped on {date}<br/> By {props.user}</Alert>
+    container = <Alert bsStyle="success">Document timestamped on {date}<br/>by {props.user}</Alert>
   } else {
     container = <Alert bsStyle="danger">Document not found in Database</Alert>
   }
@@ -49,4 +87,4 @@ const StampContainer = (props) => {
 };
 
 
-module.exports = {FieldGroup, SubmitButton, ContractNotFound, StampContainer};
+module.exports = { EncryptFileButton, SubmitButton, FieldGroup, ContractNotFound, StampContainer };

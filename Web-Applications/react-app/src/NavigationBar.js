@@ -9,7 +9,7 @@ import { withStyles } from '@material-ui/core/styles';
 import SearchIcon from '@material-ui/icons/Search';
 import Link from "@material-ui/core/Link";
 import SvgIcon from '@material-ui/core/SvgIcon';
-import IconButton from "../node_modules/@material-ui/core/IconButton/IconButton";
+import IconButton from "@material-ui/core/IconButton";
 
 const styles = theme => ({
   root: {
@@ -107,11 +107,11 @@ function SearchAppBar(props) {
             <Link href="/DepositFile" className={classes.linkText}>
               NEW DEPOSIT
             </Link>
-            <Link href="/Store" className={classes.linkText}>
-              STORE
-            </Link>
             <Link href="/MyFiles" className={classes.linkText}>
               MY FILES
+            </Link>
+            <Link href="/Store" className={classes.linkText}>
+              STORE
             </Link>
             <Link href="/MyRequests" className={classes.linkText}>
               REQUESTS

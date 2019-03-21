@@ -9,6 +9,12 @@ const Constants = {
   MAX_FILE_SIZE: 20000000 //Max file size of 20 MB, to avoid crashing the app
 };
 
+const FileStates = {
+  NOT_ENCRYPTED: 0,
+  ENCRYPTING: 1,
+  ENCRYPTED: 2
+};
+
 const RequestStatus = {
   NOT_REQUESTED: 0,
   PENDING: 1,
@@ -18,7 +24,7 @@ const RequestStatus = {
 };
 
 const RequestStatus_String = {
-  NOT_REQUESTED: "-",
+  NOT_REQUESTED: "Not requested",
   PENDING: "Pending",
   REJECTED: "Rejected",
   CANCELLED: "Cancelled",
@@ -43,4 +49,4 @@ const getStatusString = (status) => {
   }
 }
 
-module.exports = {Constants, RequestStatus_String, RequestStatus, getStatusString};
+module.exports = {Constants, FileStates, RequestStatus_String, RequestStatus, getStatusString};

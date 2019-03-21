@@ -2,7 +2,7 @@ import '../css/Pages.css'
 import React, {Component} from 'react';
 import {Grid, Row, PanelGroup} from 'react-bootstrap';
 import {ContractNotFound} from '../utils/FunctionalComponents';
-import {getStatusString} from '../Constants';
+import {getStatusString} from '../utils/Constants';
 import Patenting from '../../build/contracts/Patenting';
 import wrapWithMetamask from '../MetaMaskWrapper'
 import {NOT_REQUESTED, contractError} from "../utils/ErrorHandler";
