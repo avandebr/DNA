@@ -57,8 +57,8 @@ const FieldGroup = (props) => {
   return (
     <FormGroup controlId={props.id} validationState={props.validation}>
       <ControlLabel>{props.label}</ControlLabel>
-      <FormControl name={props.name} type={props.type} value={props.value}
-                   placeholder={props.placeholder} onChange={props.onChange}/>
+      <FormControl name={props.name} type={props.type} value={props.value} placeholder={props.placeholder}
+                   multiple={props.multiple} disabled={props.disabled} onChange={props.onChange} />
       <FormControl.Feedback/>
       {props.help && <HelpBlock>{props.help}</HelpBlock>}
     </FormGroup>

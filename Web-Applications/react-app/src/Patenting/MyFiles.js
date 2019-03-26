@@ -175,7 +175,7 @@ class MyFiles_class extends Component {
 
   /*Returns a full table with patents*/
   renderTable() {
-    if (this.state.numPatents !== 0) {
+    if (this.state.numPatents > 0) {
       let table = this.state.patents.map(patent => this.getRow(patent));
       let header = (
         <tr>

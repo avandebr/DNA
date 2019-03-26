@@ -2,6 +2,37 @@
     box-sizing: border-box;
 }
 
+.navbar {
+    min-height: 65px;
+}
+.navbar-brand {
+    padding: 0 15px;
+    height: 65px;
+    line-height: 65px;
+}
+.navbar-toggle {
+    /* (80px - button height 34px) / 2 = 23px */
+    margin-top: 15.5px;
+    padding: 9px 10px !important;
+}
+@media (min-width: 768px) {
+    .navbar-nav > li > a {
+        /* (65px - line-height of 25px) / 2 = 20px */
+        padding-top: 20px;
+        padding-bottom: 20px;
+        line-height: 25px;
+    }
+}
+
+.searchbar {
+    height: 40px;
+    width: 420px;
+}
+.searchbar-container {
+    margin-left: 50%;
+    margin-top: 12.5px;
+}
+
 .form {
     padding-left: 80px;
     padding-bottom: 100px;

@@ -11,6 +11,9 @@ contract Patenting is AccessRestricted {
 
     enum RequestStatus {Not_requested, Pending, Rejected, Cancelled, Accepted}
 
+    // revoir la structure ? pk des mappings et pas des lists ?
+    // request contient son requester et requests est juste un tableau et buyers aussi
+
     /* Struct for request */
     struct Request {
         RequestStatus status;
@@ -48,6 +51,10 @@ contract Patenting is AccessRestricted {
         bool _accepted
     );
 
+    event modifiedPatent(
+        bool modified
+    );
+
     // FiatContract fiat;
 
     /* Constructor of the contract
@@ -79,8 +86,11 @@ contract Patenting is AccessRestricted {
     */
     function setIpfsLocation(string memory _patentName, string memory _newIpfs) public {
         require(patents[_patentName].timestamp != 0 && isOwner(_patentName, msg.sender));
+        // if(patents[_patentName].ipfs != _newIpfs)
         Patent storage p = patents[_patentName];
         p.ipfs = _newIpfs;
+
+        // emit modifiedPatent(true);
         // emit un event pour notifier que ca a change et envoyer un mail aux buyers du patent
     }
 

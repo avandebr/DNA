@@ -50,7 +50,7 @@ class DepositFile_class extends Component {
   /* Called before the component is mounted
   * Instantiates the contract and stores the price of a patent */
   componentDidMount() {
-    this.state.web3.eth.getGasPrice((err, res) => this.setState({gasPrice : res.toNumber()}));
+    this.state.web3.eth.getGasPrice((err, res) => this.setState({ gasPrice : res.toNumber() }));
     const contract = require('truffle-contract');
     const patenting = contract(Patenting);
     patenting.setProvider(this.state.web3.currentProvider);
@@ -62,8 +62,8 @@ class DepositFile_class extends Component {
     }).then(price => {
       this.setState({patentPrice: price.toNumber()});
       return this.state.contractInstance.getEthPrice.call(price.toNumber())
-    }).then(ethPrice => this.setState({etherPrice: ethPrice}))
-      .catch(error => this.setState({contractInstance: null}));
+    }).then(ethPrice => this.setState({ etherPrice: ethPrice }))
+      .catch(error => this.setState({ contractInstance: null }));
   }
 
 
@@ -156,18 +156,23 @@ class DepositFile_class extends Component {
   handleChange(e) {
     e.preventDefault();
     if (e.target.name === Constants.FILE) {
+      console.log(e.target.files);
       let file = e.target.files[0];
       const fileName = file.name.split('.');
-      // default patent name is the file name
-      if (!this.state.patentName) {
-        this.setState({ patentName: fileName[0] });
-      }
-      this.setState({ fileExt: fileName[1] });
-      if (validateFile(file)) {
-        this.setState({waitingTransaction: true, fileState: FileStates.NOT_ENCRYPTED});
-        getFileHash(file, window).then(res => {
-          this.setState({hash: res, file: file, waitingTransaction: false})
-        }).catch(err => window.dialog.showAlert(err));
+      if (fileName.length > 2) {
+        window.dialog.showAlert("Invalid file name");
+      } else {
+        // default patent name is the file name
+        if (!this.state.patentName) {
+          this.setState({ patentName: fileName[0] });
+        }
+        this.setState({ fileExt: fileName[1] || 'mp3' });
+        if (validateFile(file)) {
+          this.setState({ waitingTransaction: true });
+          getFileHash(file, window).then(res => {
+            this.setState({ waitingTransaction: false, file: file, hash: res, fileState: FileStates.NOT_ENCRYPTED })
+          }).catch(err => window.dialog.showAlert(err));
+        }
       }
     }
     else {
@@ -226,7 +231,7 @@ class DepositFile_class extends Component {
     return (
       <Grid>
         <br/>
-        <Row bsClass='title'>Document Registration</Row>
+        <Row bsClass='title'>Music Registration</Row>
         <hr/>
         <Row bsClass='paragraph'>
           <p>This page allows users that have an Ethereum account and are using it on the Metamask
@@ -250,14 +255,18 @@ class DepositFile_class extends Component {
     return (
       <Paper style={{ padding: 20 }}>
         <form onSubmit={e => this.submitFile(e)}>
-          <FieldGroup name={Constants.FILE} id="formsControlsFile" label="File" type="file" placeholder=""
+          <FieldGroup name={Constants.FILE} id="formsControlsFile" label="File(s)" type="file" placeholder=""
                       onChange={this.handleChange}/>
+          <FieldGroup name="patentName" id="formsControlsName" label="Patent Name (default will be files name)"
+                      type="text" value={this.state.patentName} placeholder="Enter the File name"
+                      help="Max 100 chars, without extension" validation={this.validateName()}
+                      onChange={this.handleChange} />
+          <EncryptFileButton fileState={this.state.fileState} onClick={e => this.encryptFile(e)}
+                             disabled={this.state.file === '' || this.state.fileState !== FileStates.NOT_ENCRYPTED} />
+          <br/><Divider/><br/>
 
-          <FieldGroup name="patentName" id="formsControlsName" label="Patent Name (default will be file name)" type="text"
-                      value={this.state.patentName} placeholder="Enter the File name" help="Max 100 chars, without extension"
-                      onChange={this.handleChange} validation={this.validateName()}/>
           <FieldGroup name="price" id="formsControlsName" label="Price in USD" type="text"
-                      value={this.state.price} help="Max $1000"
+                      value={this.state.price} help=""
                       onChange={this.handleChange} validation={this.validatePrice()}/>
           <FieldGroup name="email_address" id="formsControlsEmail" label="Email address" type="email"
                       value={this.state.email_address} placeholder="john@doe.com" help=""
@@ -268,10 +277,6 @@ class DepositFile_class extends Component {
                       validation={validateEmail(this.state.email_address, this.state.repeat_email)}/>
 
           <Divider/><br/>
-
-          <EncryptFileButton fileState={this.state.fileState} onClick={e => this.encryptFile(e)}
-                             disabled={this.state.fileState !== FileStates.NOT_ENCRYPTED} />
-          <br/>
           <SubmitButton running={this.state.waitingTransaction} disabled={!this.validateForm()}/>
         </form>
       </Paper>

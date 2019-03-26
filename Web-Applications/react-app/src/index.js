@@ -11,6 +11,7 @@ import TimestampMetaMask from "./Timestamp/TimestampMetaMask";
 import TimestampFree from './Timestamp/TimestampFree';
 import VerifyTimestamp from './VerifyTimestamp/VerifyTimestamp';
 import DepositFile from './Patenting/DepositFile';
+import DepositFolder from './Patenting/DepositFolder';
 import Store from './Patenting/Store';
 import MyFiles from './Patenting/MyFiles';
 import MyRequests from './Patenting/MyRequests'
@@ -36,7 +37,8 @@ const App = () => (
         <Route exact path='/Timestamp' component={TimestampFree}/>
         <Route exact path='/PersonalTimestamp' component={TimestampMetaMask}/>
         <Route exact path='/VerifyTimestamp' component={VerifyTimestamp}/>
-        <Route exact path='/DepositFile' component={DepositFile}/>
+        <Route exact path='/RegisterSong' component={DepositFile}/>
+        <Route exact path='/RegisterAlbum' component={DepositFolder}/>
         <Route exact path='/Store' component={Store}/>
         <Route exact path='/MyFiles' component={MyFiles}/>
         <Route exact path='/MyRequests' component={MyRequests}/>

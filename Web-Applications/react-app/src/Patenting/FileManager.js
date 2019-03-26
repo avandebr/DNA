@@ -160,6 +160,8 @@ class FileManager extends Component {
     this.state.pendingRequests.forEach(req => this.rejectRequest(req))
   }
 
+  /*--------------------------------- DOWNLOAD HANDLER ---------------------------------*/
+
   /*Decrypts and downloads the file from IPFS the document*/
   downloadCopy() {
     console.log('download at', this.state.patent);
@@ -234,6 +236,7 @@ class FileManager extends Component {
     e.preventDefault();
     if (this.validateForm()) {
       this.setState({ newFile: { ...this.state.newFile, waitingTransaction: true } });
+      console.log('Adding to:', this.state.newFile.ipfsLocation);
       this.state.contractInstance.setIpfsLocation.call(this.state.patent.name, this.state.newFile.ipfsLocation, {
         from: this.state.web3.eth.coinbase,
         gas: process.env.REACT_APP_GAS_LIMIT,
@@ -241,7 +244,8 @@ class FileManager extends Component {
       }).then(tx => {
         return this.bundle.addFile() // Add the new encrypted file to IPFS
       }).then(filesAdded => {
-        this.setState({ patent: { ...this.state.patent, ipfsLocation: filesAdded[0].path } })
+        // this.setState({ patent: { ...this.state.patent, ipfsLocation: filesAdded[0].path } })
+        console.log('new IPFS loc: ', filesAdded[0].path);
         this.closeForm(); // reset and close the form
         /*window.dialog.show({
           title: "Encrypted file has been successfully added to IPFS",
@@ -269,6 +273,15 @@ class FileManager extends Component {
 
     }
   }
+
+  /*--------------------------------- DELETE HANDLERS ---------------------------------*/
+
+  /* Allows to delete a patent by hiding it in the store
+   * but by letting the ability for people having already bought it to download it */
+  deletePatent() {
+
+  }
+
 
   /*--------------------------------- USER INTERFACE COMPONENTS ---------------------------------*/
 
@@ -319,6 +332,9 @@ class FileManager extends Component {
           </ButtonGroup>
           <ButtonGroup>
             <Button style={{ borderRadius: 0 }} onClick={() => this.updateFile()}>Update file</Button>
+          </ButtonGroup>
+          <ButtonGroup>
+            <Button style={{ borderRadius: 0 }} onClick={() => this.deletePatent()}>Delete patent</Button>
           </ButtonGroup>
         </ButtonGroup>
         <Panel.Body>

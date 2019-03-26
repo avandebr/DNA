@@ -20,7 +20,7 @@ import Divider from "@material-ui/core/Divider";
 
 
 /*Component for Patent Deposit*/
-class DepositAlbum_class extends Component {
+class DepositFolder_class extends Component {
 
   /*Component Constructor*/
   constructor(props) {
@@ -301,6 +301,6 @@ class DepositAlbum_class extends Component {
   }
 }
 
-const DepositAlbum = wrapWithMetamask(DepositAlbum_class, DepositAlbum_class.header());
-export default DepositAlbum;
+const DepositFolder = wrapWithMetamask(DepositFolder_class, DepositFolder_class.header());
+export default DepositFolder;
 
