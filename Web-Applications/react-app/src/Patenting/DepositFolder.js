@@ -2,21 +2,20 @@ import '../css/Pages.css'
 
 import React, {Component} from 'react';
 import {Grid, Row, Col} from 'react-bootstrap';
+import merkle from 'merkle';
+
 import {EncryptFileButton, FieldGroup, SubmitButton, ContractNotFound} from '../utils/FunctionalComponents';
-import {validateEmail, validateFile} from '../utils/UtilityFunctions';
+import {validateEmail, validateEmails, validateFiles} from '../utils/UtilityFunctions';
 import {getFileHash} from '../utils/CryptoUtils'
 import wrapWithMetamask from '../MetaMaskWrapper'
 import Patenting from '../../build/contracts/Patenting';
 import Bundle from '../utils/ipfsBundle';
-
 import {Constants, FileStates} from '../utils/Constants';
 import {generatePrivateKey} from '../utils/KeyGenerator'
 import {INVALID_FORM, KEY_GENERATION_ERROR, IPFS_ERROR, contractError} from '../utils/ErrorHandler'
 import Dialog from 'react-bootstrap-dialog';
 import Paper from "@material-ui/core/Paper";
 import Divider from "@material-ui/core/Divider";
-
-/*---------------------------------------------------------------------------------- DONE ----------------------------------------------------------------------------------*/
 
 
 /*Component for Patent Deposit*/
@@ -27,14 +26,14 @@ class DepositFolder_class extends Component {
     super(props);
     this.bundle = new Bundle();
     this.state = {
-      hash: "",
-      ipfsLocation: "",
-      patentName: "",
-      price: "",
-      email_address: "",
-      repeat_email: "",
-      file: "",
-      fileState: FileStates.NOT_ENCRYPTED,
+      files: [], // list of objects each containing the file name, data, hash, and ipfs location
+      albumName: '',
+      songPrice: '',
+      albumPrice: '',
+      ipfsLocation: '',
+      filesState: FileStates.NOT_ENCRYPTED,
+      email_address: '',
+      repeat_email: '',
       web3: props.web3,
       contractInstance: null,
       waitingTransaction: false,
@@ -43,8 +42,8 @@ class DepositFolder_class extends Component {
       gasPrice : 0
     };
     this.handleChange = this.handleChange.bind(this);
-    this.submitFile = this.submitFile.bind(this);
-    this.encryptFile = this.encryptFile.bind(this);
+    this.submitAlbum = this.submitAlbum.bind(this);
+    this.encryptAlbum = this.encryptAlbum.bind(this);
   }
 
   /* Called before the component is mounted
@@ -73,22 +72,18 @@ class DepositFolder_class extends Component {
   resetForm() {
     this.bundle.reset();
     this.setState({
-      hash: "",
-      ipfsLocation: "",
-      patentName: "",
-      price: "",
-      file: "",
-      fileExt: '',
-      fileState: FileStates.NOT_ENCRYPTED,
-      email_address: "",
-      repeat_email: "",
+      files: [],
+      albumName: '',
+      albumPrice: '',
+      email_address: '',
+      repeat_email: '',
       waitingTransaction: false
     })
   }
 
   /*Checks if Patent Name length is less than 100 */
   validateName() {
-    let length = this.state.patentName.length;
+    let length = this.state.albumName.length;
     if (length === 0) {
       return null;
     } else if (length <= 100) {
@@ -98,96 +93,133 @@ class DepositFolder_class extends Component {
     }
   }
 
-  /*Checks that 0 <= price <= 1 ETHER*/
-  validatePrice() {
-    if (this.state.price === "") {
+  /*Checks that price > 0*/
+  validateSongPrice() {
+    if (!this.state.songPrice || !this.state.albumPrice) {
       return null
-    } else if (!isNaN(this.state.price)) {
-      let price = parseInt(this.state.price, 10);
-      return (price <= 1000 && price >= 0 ? 'success' : 'warning');
     } else {
-      return 'error'
+      const songPrice = parseFloat(this.state.songPrice);
+      const albumPrice = parseFloat(this.state.albumPrice);
+      const nSongs = this.state.files.length;
+      if (songPrice < albumPrice / nSongs || (albumPrice > 0 && songPrice >= albumPrice)) {
+        return 'warning';
+      }
+      return (songPrice >= 0 ? 'success' : 'error');
     }
-
   }
 
+  /*Checks that price > 0*/
+  validateAlbumPrice() {
+    if (!this.state.albumPrice) {
+      return null
+    } else {
+      const songPrice = parseFloat(this.state.songPrice);
+      const albumPrice = parseFloat(this.state.albumPrice);
+      const nSongs = this.state.files.length;
+      if (albumPrice > songPrice * nSongs || (songPrice > 0 && albumPrice <= songPrice)) {
+        return 'warning';
+      }
+      return (albumPrice >= 0 ? 'success' : 'error');
+    }
+  }
 
   /*Returns True if all form validation pass*/
   validateForm() {
-    return (this.validatePrice() === 'success'
+    return (this.validateAlbumPrice() === 'success'
+      && this.validateSongPrice() === 'success'
       && this.validateName() === 'success'
-      && this.state.hash !== ""
+      && this.state.files.length > 0
       && this.state.ipfsLocation !== ""
-      && this.state.fileState === FileStates.ENCRYPTED)
+      && this.state.filesState === FileStates.ENCRYPTED);
   }
 
+  /* builds a merkle tree from file hashes */
+  constructMerkleTree(){
+    const hashes = this.state.files.map(file => file.hash);
+    return merkle('sha256', false).sync(hashes);
+  }
 
   /*--------------------------------- EVENT HANDLERS ---------------------------------*/
 
+  /* Handles the files upload
+  * */
+  handleFilesUpload(uploadedFiles) {
+    if (validateFiles(uploadedFiles)) {
+      uploadedFiles.forEach(file => {
+        const fileName = file.name.split('.');
+        this.setState({ waitingTransaction: true });
+        getFileHash(file, window).then(res => {
+          const newFile = {
+            data: file,
+            hash: res,
+            name: fileName[0],
+            ext: fileName[1],
+            ipfsLocation: '',
+          };
+          const files = this.state.files;
+          files.push(newFile);
+          this.setState({ waitingTransaction: false, files: files, fileState: FileStates.NOT_ENCRYPTED })
+        }).catch(err => window.dialog.alert(err));
+      });
+    }
+  }
+
+  /* Handles the change of the form
+  * */
+  handleChange(e) {
+    e.preventDefault();
+    if (e.target.name === Constants.FILE) {
+      // When a file is uploaded
+      const uploadedFiles = [...Array(e.target.files.length).keys()].map(i => e.target.files[i]);
+      this.handleFilesUpload(uploadedFiles);
+    }
+    else {
+      // Other text fields
+      this.setState({ [e.target.name]: e.target.value });
+    }
+  }
 
   /*Encrypts the file using AES and the key produced by the owner*/
-  encryptFile(e) {
+  encryptAlbum(e) {
     e.preventDefault();
-    if (this.state.file !== "" && this.state.hash !== "" && this.state.fileState === FileStates.NOT_ENCRYPTED) {
-      this.setState({fileState: FileStates.ENCRYPTING});
-      generatePrivateKey(this.state.web3, this.state.hash).then(key => { // Ask user to generate key
-        return this.bundle.encryptFile(this.state.file, key); // Encrypt file using the key and return the IPFS hash of the result
-      }).then(files => {
-        this.setState({ipfsLocation: files[0].path, fileState: FileStates.ENCRYPTED})
+    const { files, albumName } = this.state;
+    if (files.length > 0 && this.state.filesState === FileStates.NOT_ENCRYPTED) {
+      this.setState({ filesState: FileStates.ENCRYPTING });
+      // create master key for whole album from all files hash and then derive from it one for each file
+      generatePrivateKey(this.state.web3, this.constructMerkleTree().root()).then(masterKey => { // Ask user to generate key
+        return this.bundle.encryptAlbum(albumName, files, masterKey); // Encrypt files and returns the IPFS locations of the result
+      }).then(encryptedFiles => {
+        this.setState({ filesState: FileStates.ENCRYPTED });
+        // set album ipfs location
+        const albumLocation = encryptedFiles.find(encryptedFile => encryptedFile.path === albumName).hash;
+        this.setState({ ipfsLocation: albumLocation });
+        // set files ipfs location
+        const newFiles = files.map(file => {
+          const filePath = albumName + '/' + file.name + '.' + file.ext;
+          const fileLocation = encryptedFiles.find(encryptedFile => encryptedFile.path === filePath).hash;
+          return { ...file, ipfsLocation: fileLocation };
+        });
+        this.setState({ files: newFiles });
       }).catch(err => {
         if (err === KEY_GENERATION_ERROR) {
           window.dialog.showAlert(KEY_GENERATION_ERROR);
         } else {
           window.dialog.showAlert(IPFS_ERROR);
-          console.log(err);
         }
         this.resetForm();
       })
     } else {
       window.dialog.showAlert("Please select a file.");
     }
-
   }
-
-
-  /* Handles the change in a form component
-  * Computes : sha256 of the plain text document
-  * */
-  handleChange(e) {
-    e.preventDefault();
-    if (e.target.name === Constants.FILE) {
-      console.log(e.target.files);
-      let file = e.target.files[0];
-      const fileName = file.name.split('.');
-      if (fileName.length > 2) {
-        window.dialog.showAlert("Invalid file name");
-      } else {
-        // default patent name is the file name
-        if (!this.state.patentName) {
-          this.setState({ patentName: fileName[0] });
-        }
-        this.setState({ fileExt: fileName[1] || 'mp3' });
-        if (validateFile(file)) {
-          this.setState({ waitingTransaction: true });
-          getFileHash(file, window).then(res => {
-            this.setState({ waitingTransaction: false, file: file, hash: res, fileState: FileStates.NOT_ENCRYPTED })
-          }).catch(err => window.dialog.showAlert(err));
-        }
-      }
-    }
-    else {
-      this.setState({ [e.target.name]: e.target.value });
-    }
-  }
-
 
   /*Function that triggers the contract call to Deposit a patent*/
-  submitFile(e) {
+  submitAlbum(e) {
     e.preventDefault();
     if (this.validateForm()) {
-      this.setState({waitingTransaction: true});
-      const { patentName, fileExt, hash, price, ipfsLocation, email_address } = this.state;
-      const completeName = patentName + '.' + fileExt;
+      this.setState({ waitingTransaction: true });
+      const { albumName, fileExt, hash, price, ipfsLocation, email_address } = this.state;
+      const completeName = albumName + '.' + fileExt;
       this.state.contractInstance.depositPatent(completeName, hash, price, ipfsLocation, email_address, {
         from: this.state.web3.eth.coinbase,
         value: this.state.etherPrice,
@@ -199,19 +231,19 @@ class DepositFolder_class extends Component {
         this.resetForm();
         window.dialog.show({
           title: "Encrypted file has been successfully added to IPFS",
-          body: "IPFS location : ipfs.io/ipfs/" + filesAdded[0].path,
+          body: "IPFS location : ipfs.io/ipfs/" + filesAdded[0].hash,
           actions: [
             Dialog.OKAction(),
             Dialog.Action(
               'View encrypted File',
               () => {
-                let win = window.open("https://ipfs.io/ipfs/" + filesAdded[0].path);
+                let win = window.open("https://ipfs.io/ipfs/" + filesAdded[0].hash);
                 win.focus();
               })],
           bsSize: "large"
         });
       }).catch(error => {
-        this.setState({waitingTransaction: false});
+        this.setState({ waitingTransaction: false });
         contractError(error); // Handles the error
       });
     } else {
@@ -220,7 +252,6 @@ class DepositFolder_class extends Component {
       } else {
         window.dialog.showAlert(INVALID_FORM);
       }
-
     }
   }
 
@@ -231,7 +262,7 @@ class DepositFolder_class extends Component {
     return (
       <Grid>
         <br/>
-        <Row bsClass='title'>Music Registration</Row>
+        <Row bsClass='title'>Album Registration</Row>
         <hr/>
         <Row bsClass='paragraph'>
           <p>This page allows users that have an Ethereum account and are using it on the Metamask
@@ -254,29 +285,35 @@ class DepositFolder_class extends Component {
   renderForm() {
     return (
       <Paper style={{ padding: 20 }}>
-        <form onSubmit={e => this.submitFile(e)}>
-          <FieldGroup name={Constants.FILE} id="formsControlsFile" label="File(s)" type="file" placeholder=""
-                      onChange={this.handleChange}/>
-          <FieldGroup name="patentName" id="formsControlsName" label="Patent Name (default will be files name)"
-                      type="text" value={this.state.patentName} placeholder="Enter the File name"
-                      help="Max 100 chars, without extension" validation={this.validateName()}
+        <form onSubmit={e => this.submitAlbum(e)}>
+          <FieldGroup name={Constants.FILE} id="formsControlsFile" label="Files" type="file" placeholder=""
+                      multiple onChange={this.handleChange}/>
+          <FieldGroup name="albumName" id="formsControlsName" label="Album Name"
+                      type="text" value={this.state.albumName} placeholder="Enter the album name"
+                      help="Max 100 chars" validation={this.validateName()}
                       onChange={this.handleChange} />
-          <EncryptFileButton fileState={this.state.fileState} onClick={e => this.encryptFile(e)}
-                             disabled={this.state.file === '' || this.state.fileState !== FileStates.NOT_ENCRYPTED} />
+          <EncryptFileButton fileState={this.state.filesState} onClick={e => this.encryptAlbum(e)} multiple
+                             disabled={this.state.files.length < 2 || this.state.albumName === ''
+                             || this.state.filesState !== FileStates.NOT_ENCRYPTED} />
           <br/><Divider/><br/>
 
-          <FieldGroup name="price" id="formsControlsName" label="Price in USD" type="text"
-                      value={this.state.price} help=""
-                      onChange={this.handleChange} validation={this.validatePrice()}/>
+          <FieldGroup name="albumPrice" id="formsControlsName" label="Album price (in USD)" type="text"
+                      value={this.state.albumPrice} help=""
+                      onChange={this.handleChange} validation={this.validateAlbumPrice()}/>
+          <FieldGroup name="songPrice" id="formsControlsName" label="Individual songs price (in USD)" type="text"
+                      value={this.state.songPrice} help=""
+                      onChange={this.handleChange} validation={this.validateSongPrice()}/>
+          <Divider/><br/>
+
           <FieldGroup name="email_address" id="formsControlsEmail" label="Email address" type="email"
                       value={this.state.email_address} placeholder="john@doe.com" help=""
-                      onChange={this.handleChange}/>
+                      validation={validateEmail(this.state.email_address)} onChange={this.handleChange} />
           <FieldGroup name="repeat_email" id="formsControlsEmail" label="Repeat Email address" type="email"
                       value={this.state.repeat_email} placeholder="john@doe.com" help=""
-                      onChange={this.handleChange}
-                      validation={validateEmail(this.state.email_address, this.state.repeat_email)}/>
-
+                      validation={validateEmails(this.state.email_address, this.state.repeat_email)}
+                      onChange={this.handleChange}/>
           <Divider/><br/>
+
           <SubmitButton running={this.state.waitingTransaction} disabled={!this.validateForm()}/>
         </form>
       </Paper>

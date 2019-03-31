@@ -98,17 +98,14 @@ class DepositFile_class extends Component {
     }
   }
 
-  /*Checks that 0 <= price <= 1 ETHER*/
+  /*Checks that price >= 0*/
   validatePrice() {
-    if (this.state.price === "") {
+    if (!this.state.price) {
       return null
-    } else if (!isNaN(this.state.price)) {
-      let price = parseInt(this.state.price, 10);
-      return (price <= 1000 && price >= 0 ? 'success' : 'warning');
     } else {
-      return 'error'
+      const price = parseInt(this.state.price, 10);
+      return (price >= 0 ? 'success' : 'error');
     }
-
   }
 
 
@@ -133,20 +130,32 @@ class DepositFile_class extends Component {
       generatePrivateKey(this.state.web3, this.state.hash).then(key => { // Ask user to generate key
         return this.bundle.encryptFile(this.state.file, key); // Encrypt file using the key and return the IPFS hash of the result
       }).then(files => {
-        this.setState({ipfsLocation: files[0].path, fileState: FileStates.ENCRYPTED})
+        this.setState({ipfsLocation: files[0].hash, fileState: FileStates.ENCRYPTED})
       }).catch(err => {
         if (err === KEY_GENERATION_ERROR) {
           window.dialog.showAlert(KEY_GENERATION_ERROR);
         } else {
           window.dialog.showAlert(IPFS_ERROR);
-          console.log(err);
         }
         this.resetForm();
       })
     } else {
       window.dialog.showAlert("Please select a file.");
     }
+  }
 
+  handleFileUpload(file) {
+    if (validateFile(file)) {
+      const nameSplit = file.name.split('.');
+      // default patent name is the file name
+      if (!this.state.patentName) {
+        this.setState({ patentName: nameSplit[0] });
+      }
+      this.setState({ fileExt: nameSplit[1], waitingTransaction: true });
+      getFileHash(file, window).then(res => {
+        this.setState({ waitingTransaction: false, file: file, hash: res, fileState: FileStates.NOT_ENCRYPTED })
+      }).catch(err => window.dialog.showAlert(err));
+    }
   }
 
 
@@ -156,26 +165,11 @@ class DepositFile_class extends Component {
   handleChange(e) {
     e.preventDefault();
     if (e.target.name === Constants.FILE) {
-      console.log(e.target.files);
-      let file = e.target.files[0];
-      const fileName = file.name.split('.');
-      if (fileName.length > 2) {
-        window.dialog.showAlert("Invalid file name");
-      } else {
-        // default patent name is the file name
-        if (!this.state.patentName) {
-          this.setState({ patentName: fileName[0] });
-        }
-        this.setState({ fileExt: fileName[1] || 'mp3' });
-        if (validateFile(file)) {
-          this.setState({ waitingTransaction: true });
-          getFileHash(file, window).then(res => {
-            this.setState({ waitingTransaction: false, file: file, hash: res, fileState: FileStates.NOT_ENCRYPTED })
-          }).catch(err => window.dialog.showAlert(err));
-        }
-      }
+      // When a file is uploaded
+      this.handleFileUpload(e.target.files[0]);
     }
     else {
+      // Other text fields
       this.setState({ [e.target.name]: e.target.value });
     }
   }
@@ -199,13 +193,13 @@ class DepositFile_class extends Component {
         this.resetForm();
         window.dialog.show({
           title: "Encrypted file has been successfully added to IPFS",
-          body: "IPFS location : ipfs.io/ipfs/" + filesAdded[0].path,
+          body: "IPFS location : ipfs.io/ipfs/" + filesAdded[0].hash,
           actions: [
             Dialog.OKAction(),
             Dialog.Action(
               'View encrypted File',
               () => {
-                let win = window.open("https://ipfs.io/ipfs/" + filesAdded[0].path);
+                let win = window.open("https://ipfs.io/ipfs/" + filesAdded[0].hash);
                 win.focus();
               })],
           bsSize: "large"
@@ -255,17 +249,17 @@ class DepositFile_class extends Component {
     return (
       <Paper style={{ padding: 20 }}>
         <form onSubmit={e => this.submitFile(e)}>
-          <FieldGroup name={Constants.FILE} id="formsControlsFile" label="File(s)" type="file" placeholder=""
+          <FieldGroup name={Constants.FILE} id="formsControlsFile" label="File to register" type="file" placeholder=""
                       onChange={this.handleChange}/>
-          <FieldGroup name="patentName" id="formsControlsName" label="Patent Name (default will be files name)"
-                      type="text" value={this.state.patentName} placeholder="Enter the File name"
-                      help="Max 100 chars, without extension" validation={this.validateName()}
+          <FieldGroup name="patentName" id="formsControlsName" label="Patent Name"
+                      type="text" value={this.state.patentName} placeholder=""
+                      validation={this.validateName()} disabled
                       onChange={this.handleChange} />
           <EncryptFileButton fileState={this.state.fileState} onClick={e => this.encryptFile(e)}
                              disabled={this.state.file === '' || this.state.fileState !== FileStates.NOT_ENCRYPTED} />
           <br/><Divider/><br/>
 
-          <FieldGroup name="price" id="formsControlsName" label="Price in USD" type="text"
+          <FieldGroup name="price" id="formsControlsName" label="Price (in USD)" type="text"
                       value={this.state.price} help=""
                       onChange={this.handleChange} validation={this.validatePrice()}/>
           <FieldGroup name="email_address" id="formsControlsEmail" label="Email address" type="email"

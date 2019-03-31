@@ -78,28 +78,64 @@ const fromEther = (priceInEth, web3) => {
 };
 
 /*Utility function to validate emails*/
-const validateEmail = (email, repeat) => {
-  if (email === "") {
+const validateEmail = (email) => {
+  const email_regex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+  return email.match(email_regex) !== null ? 'success' : 'error';
+};
+
+/*Utility function to validate emails*/
+const validateEmails = (email, repeat) => {
+  if (email === '' || repeat === '') {
     return null;
   } else if (email === repeat) {
     return 'success'
-  } else if (email.includes(repeat)) {
-    return 'warning';
   } else {
     return 'error'
   }
 };
 
-/*Utility function that returns true if the file is in PDF and less than 10Mb*/
-const validateFile = (file) => {
-  if (file === "") {
-    window.dialog.showAlert('Please select a file');
-  } else if (file.size > Constants.MAX_FILE_SIZE) {
-    window.dialog.showAlert(LARGE_FILE)
+/*Utility function that returns true if the file is valid*/
+const validateFile = (file, showAlert=true) => {
+  const nameSplit = file.name.split('.');
+  let toAlert = '';
+  if (showAlert) {
+    if (!file) {
+      toAlert += '- Please select a file';
+    } else if (file.size > Constants.MAX_FILE_SIZE) {
+      toAlert += '- ' + LARGE_FILE;
+    }
+    if (nameSplit.length !== 2 /* || nameSplit[1] !== 'mp3' */) {
+      toAlert += "- Invalid file name: please ensure that the name does not contain '.' \n " +
+        "and that the extension is one of the following: [mp3]";
+    }
+    if (toAlert) {
+      window.dialog.showAlert(toAlert);
+    }
   }
-  return file !== "" && file.size < Constants.MAX_FILE_SIZE;
+  return (file !== "" && file.size < Constants.MAX_FILE_SIZE)
+    && (nameSplit.length === 2 /* && nameSplit[1] === 'mp3' */);
 };
 
+/*Utility function that returns true there are multiple files and all of them are valid*/
+const validateFiles = (files, showAlert=true) => {
+  if(files.length === 0) {
+    window.dialog.showAlert('Please select files');
+    return false;
+  } else if (files.length === 1) {
+    window.dialog.showAlert('Please select more than one file. \n ' +
+      'For a single file deposit, \n please register it HERE (TBD href to song reg)');
+    return false;
+  }
+  else if (files.length > 100) {
+    window.dialog.showAlert('Maximum number of files (100) reached.');
+    return false;
+  }
+  const validFiles = files.every(file => validateFile(file, false));
+  if(!validFiles && showAlert) {
+    window.dialog.showAlert('At least one the file is not valid. Click for more info... (TBD)');
+  }
+  return validFiles;
+}
 
 module.exports = {
   extractJson,
@@ -109,7 +145,9 @@ module.exports = {
   toEther,
   fromEther,
   validateFile,
-  validateEmail
+  validateFiles,
+  validateEmail,
+  validateEmails,
 };
 
 

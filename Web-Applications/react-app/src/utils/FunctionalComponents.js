@@ -11,18 +11,19 @@ import {FileStates} from "./Constants";
 /* encryption button component for file uploading form */
 const EncryptFileButton = (props) => {
   let buttonState, buttonText;
+  const files = 'File' + (props.multiple ? 's' : '');
   switch (props.fileState) {
     case FileStates.NOT_ENCRYPTED:
       buttonState = "default";
-      buttonText = "Encrypt File";
+      buttonText = "Encrypt " + files;
       break;
     case FileStates.ENCRYPTING:
       buttonState = "default";
-      buttonText = "Encrypting File...";
+      buttonText = "Encrypting " + files + "...";
       break;
     case FileStates.ENCRYPTED:
       buttonState = "success";
-      buttonText = "File encrypted";
+      buttonText = files + " encrypted";
       break;
     default:
       break;

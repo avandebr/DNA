@@ -238,7 +238,7 @@ class FileManager extends Component {
       this.setState({ newFile: { ...this.state.newFile, waitingTransaction: true } });
       console.log('Adding to:', this.state.newFile.ipfsLocation);
       this.state.contractInstance.setIpfsLocation.call(this.state.patent.name, this.state.newFile.ipfsLocation, {
-        from: this.state.web3.eth.coinbase,
+        from: this.state.web3.eth.coinbase, //coinbase?
         gas: process.env.REACT_APP_GAS_LIMIT,
         gasPrice : this.state.gasPrice
       }).then(tx => {

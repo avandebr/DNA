@@ -24,7 +24,7 @@ export default class NavigationBar extends Component {
       <Navbar inverse collapseOnSelect fixedTop fluid className="navbar">
         <Navbar.Header>
           <Navbar.Brand>
-            <LinkContainer to="/"><a>DNAM</a></LinkContainer>
+            <LinkContainer to="/"><a> DNAM </a></LinkContainer>
           </Navbar.Brand>
           <Navbar.Toggle/>
         </Navbar.Header>
@@ -39,22 +39,21 @@ export default class NavigationBar extends Component {
             <LinkContainer to="/MyRequests"><MenuItem>My Requests</MenuItem></LinkContainer>
           </Nav>
 
-          <Nav>
+          <Nav pullRight>
+            <LinkContainer to="/About">
+              <NavItem>About DNA</NavItem>
+            </LinkContainer>
+            <Navbar.Brand>
+              <NavItem href="https://github.com/avandebr/DNAM"><GitHubIcn/></NavItem>
+            </Navbar.Brand>
+          </Nav>
+
+          <Nav pullRight>
             <Form className="searchbar-container">
               <FormControl type="text" placeholder="Search" className="searchbar"/>
             </Form>
           </Nav>
 
-          <Nav pullRight>
-
-            <LinkContainer to="/About">
-              <NavItem>About DNA</NavItem>
-            </LinkContainer>
-
-            <Navbar.Brand>
-              <NavItem href="https://github.com/avandebr/DNAM"><GitHubIcn/></NavItem>
-            </Navbar.Brand>
-          </Nav>
         </Navbar.Collapse>
       </Navbar>
     );

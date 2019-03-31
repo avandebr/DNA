@@ -12,8 +12,7 @@ import {encrypt, decrypt} from 'eccrypto'
 * */
 const getFileHash = (file, window) => {
   return new Promise(function (resolve, reject) {
-    let f = file;
-
+    const f = file;
     if (typeof window.FileReader !== 'function') {
       reject('Browser does not support FileReader');
     }
@@ -39,7 +38,7 @@ const getFileHash = (file, window) => {
 * */
 const getEncryptedFileBuffer = (file, window, key) => {
   return new Promise(function (resolve, reject) {
-    let f = file;
+    const f = file;
     if (typeof window.FileReader !== 'function') {
       reject('Browser does not support FileReader');
     }
