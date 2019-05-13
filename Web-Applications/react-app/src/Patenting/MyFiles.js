@@ -24,7 +24,6 @@ class MyFiles_class extends Component {
       contractInstance: null,
       numPatents: 0,
       patents: [],
-      displayDetails: false,
       selectedPatent: null,
       gasPrice : 0
     };
@@ -42,7 +41,7 @@ class MyFiles_class extends Component {
     patenting.setProvider(this.state.web3.currentProvider);
     patenting.deployed().then(instance => {
       this.setState({contractInstance: instance});
-      return instance.patentCount.call()
+      return instance.patentCount.call();
     }).then(count => {
       this.getMyPatents(count.toNumber());
     }).catch(error => this.setState({contractInstance: null}));
@@ -56,27 +55,25 @@ class MyFiles_class extends Component {
     if (this.state.contractInstance !== null) {
       let instance = this.state.contractInstance;
       for (let i = 0; i < numPatents; i++) {
-        let patentName;
         let new_entry = {};
         instance.patentNames.call(i).then(name => {
-          patentName = name;
-          return instance.isOwner.call(patentName, this.state.web3.eth.coinbase)
+          new_entry['name'] = name;
+          return instance.isOwner.call(new_entry['name'], this.state.web3.eth.accounts[0]);
         }).then(isOwner => {
           if (isOwner) {
-            return instance.getTimeStamp.call(patentName)
+            return instance.getTimeStamp.call(new_entry['name'])
           } else {
             throw Error(NOT_OWNER)
           }
         }).then(timestamp => {
-          new_entry['name'] = patentName;
           new_entry['timestamp'] = timestamp.toNumber();
-          return instance.getNumRequests.call(patentName);
+          return instance.getNumRequests.call(new_entry['name']);
         }).then(num => {
           new_entry['numRequests'] = num.toNumber();
-          return instance.getPatentHash.call(patentName);
+          return instance.getPatentHash.call(new_entry['name']);
         }).then(hash => {
           new_entry['hash'] = hash;
-          return instance.getPatentLocation.call(patentName);
+          return instance.getPatentLocation.call(new_entry['name']);
         }).then(loc => {
           new_entry['ipfsLocation'] = loc;
           new_entry['index'] = this.state.numPatents;
@@ -96,20 +93,32 @@ class MyFiles_class extends Component {
 
   /*Displays the details of a given patent*/
   openDetails(patent) {
-    this.setState({displayDetails: true, selectedPatent: patent});
+    this.setState({selectedPatent: patent});
+  }
+
+  hideDetails() {
+    this.setState({selectedPatent: null});
   }
 
   /*Buttons to scroll through documents*/
+  prevPatent() {
+    if (this.state.selectedPatent && this.state.selectedPatent.index > 0) {
+      this.setState({selectedPatent: this.state.patents[this.state.selectedPatent.index - 1]})
+    }
+  }
+
   nextPatent() {
-    if (this.state.displayDetails && this.state.selectedPatent !== null && this.state.selectedPatent.index < this.state.numPatents - 1) {
+    if (this.state.selectedPatent && this.state.selectedPatent.index < this.state.numPatents - 1) {
       this.setState({selectedPatent: this.state.patents[this.state.selectedPatent.index + 1]})
     }
   }
 
-  prevPatent() {
-    if (this.state.displayDetails && this.state.selectedPatent !== null && this.state.selectedPatent.index > 0) {
-      this.setState({selectedPatent: this.state.patents[this.state.selectedPatent.index - 1]})
-    }
+  deletePatent() {
+    this.hideDetails();
+    this.setState({numPatents: this.state.numPatents-1})
+    this.state.contractInstance.patentCount.call().then(count => {
+      this.getMyPatents(count.toNumber());
+    });
   }
 
   /*--------------------------------- USER INTERFACE COMPONENTS ---------------------------------*/
@@ -119,14 +128,19 @@ class MyFiles_class extends Component {
     return (
       <ButtonGroup justified>
         <ButtonGroup>
-          <Button onClick={this.prevPatent}> <Glyphicon glyph="menu-left"/> Prev File</Button>
+          <Button onClick={this.prevPatent} disabled={this.state.selectedPatent.index === 0}>
+            <Glyphicon glyph="menu-left"/> Prev File
+          </Button>
         </ButtonGroup>
         <ButtonGroup>
-          <Button onClick={() => this.setState({displayDetails: false, selectedPatent: null})}> <Glyphicon
-            glyph="triangle-top"/> Hide Details</Button>
+          <Button onClick={() => this.hideDetails()}>
+            <Glyphicon glyph="triangle-top"/> Hide Details <Glyphicon glyph="triangle-top"/>
+          </Button>
         </ButtonGroup>
         <ButtonGroup>
-          <Button onClick={this.nextPatent}><Glyphicon glyph="menu-right"/> Next File</Button>
+          <Button onClick={this.nextPatent} disabled={this.state.selectedPatent.index === this.state.numPatents - 1}>
+            Next File <Glyphicon glyph="menu-right"/>
+          </Button>
         </ButtonGroup>
       </ButtonGroup>);
   }
@@ -138,7 +152,8 @@ class MyFiles_class extends Component {
         <div className="requests-container">
           {this.buttonToolbar()}
           <FileManager web3={this.state.web3} contractInstance={this.state.contractInstance}
-                       patent={this.state.selectedPatent} gasPrice={this.state.gasPrice}/>
+                       patent={this.state.selectedPatent} gasPrice={this.state.gasPrice}
+                       hideDetails={() => this.hideDetails()} />
         </div>
     )
   }
@@ -161,30 +176,23 @@ class MyFiles_class extends Component {
     );
   }
 
-  /*Returns a table row for the given patent*/
-  getRow(patent) {
-    return (
-      <tr key={patent.name} onClick={this.openDetails.bind(this, patent)}>
-        <td>{patent.name}</td>
-        <td>{stampToDate(patent.timestamp)}</td>
-        <td>{patent.hash}</td>
-        <td>{patent.numRequests}</td>
-      </tr>
-    )
-  }
-
   /*Returns a full table with patents*/
   renderTable() {
     if (this.state.numPatents > 0) {
-      let table = this.state.patents.map(patent => this.getRow(patent));
-      let header = (
+      const header = (
         <tr>
           <th>Patent Name</th>
           <th>Submission Date</th>
-          <th>Document Hash</th>
           <th>Number of requests</th>
         </tr>
       );
+      const table = this.state.patents.map(patent => (
+        <tr key={patent.name} onClick={this.openDetails.bind(this, patent)}>
+          <td>{patent.name}</td>
+          <td>{stampToDate(patent.timestamp)}</td>
+          <td>{patent.numRequests}</td>
+        </tr>
+      ));
       return (
         <Table striped hover responsive className='patent-table'>
           <thead>{header}</thead>
@@ -208,8 +216,7 @@ class MyFiles_class extends Component {
             Current account {this.state.web3.eth.accounts[0]} (From Metamask)
           </Row>
           <Row>
-            {/* pas besoin de displayDetails ! selected patent suffit */
-              this.state.displayDetails ? this.renderDetails() : this.renderTable()}
+            {this.state.selectedPatent ? this.renderDetails() : this.renderTable()}
           </Row>
         </Grid>)
     }

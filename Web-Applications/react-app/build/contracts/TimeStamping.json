@@ -188,14 +188,14 @@
     "absolutePath": "/Users/axel/Developer/DNAM/Web-Applications/react-app/contracts/TimeStamping.sol",
     "exportedSymbols": {
       "TimeStamping": [
-        1173
+        1267
       ]
     },
-    "id": 1174,
+    "id": 1268,
     "nodeType": "SourceUnit",
     "nodes": [
       {
-        "id": 1016,
+        "id": 1110,
         "literals": [
           "solidity",
           "^",
@@ -208,9 +208,9 @@
       {
         "absolutePath": "/Users/axel/Developer/DNAM/Web-Applications/react-app/contracts/AccessRestricted.sol",
         "file": "./AccessRestricted.sol",
-        "id": 1017,
+        "id": 1111,
         "nodeType": "ImportDirective",
-        "scope": 1174,
+        "scope": 1268,
         "sourceUnit": 60,
         "src": "25:32:4",
         "symbolAliases": [],
@@ -219,9 +219,9 @@
       {
         "absolutePath": "/Users/axel/Developer/DNAM/Web-Applications/react-app/contracts/FiatContract.sol",
         "file": "./FiatContract.sol",
-        "id": 1018,
+        "id": 1112,
         "nodeType": "ImportDirective",
-        "scope": 1174,
+        "scope": 1268,
         "sourceUnit": 98,
         "src": "58:28:4",
         "symbolAliases": [],
@@ -233,7 +233,7 @@
             "arguments": null,
             "baseName": {
               "contractScope": null,
-              "id": 1019,
+              "id": 1113,
               "name": "AccessRestricted",
               "nodeType": "UserDefinedTypeName",
               "referencedDeclaration": 59,
@@ -243,7 +243,7 @@
                 "typeString": "contract AccessRestricted"
               }
             },
-            "id": 1020,
+            "id": 1114,
             "nodeType": "InheritanceSpecifier",
             "src": "113:16:4"
           }
@@ -254,9 +254,9 @@
         "contractKind": "contract",
         "documentation": null,
         "fullyImplemented": true,
-        "id": 1173,
+        "id": 1267,
         "linearizedBaseContracts": [
-          1173,
+          1267,
           59
         ],
         "name": "TimeStamping",
@@ -264,14 +264,14 @@
         "nodes": [
           {
             "canonicalName": "TimeStamping.Stamp",
-            "id": 1025,
+            "id": 1119,
             "members": [
               {
                 "constant": false,
-                "id": 1022,
+                "id": 1116,
                 "name": "user",
                 "nodeType": "VariableDeclaration",
-                "scope": 1025,
+                "scope": 1119,
                 "src": "160:12:4",
                 "stateVariable": false,
                 "storageLocation": "default",
@@ -280,7 +280,7 @@
                   "typeString": "address"
                 },
                 "typeName": {
-                  "id": 1021,
+                  "id": 1115,
                   "name": "address",
                   "nodeType": "ElementaryTypeName",
                   "src": "160:7:4",
@@ -295,10 +295,10 @@
               },
               {
                 "constant": false,
-                "id": 1024,
+                "id": 1118,
                 "name": "timestamp",
                 "nodeType": "VariableDeclaration",
-                "scope": 1025,
+                "scope": 1119,
                 "src": "182:14:4",
                 "stateVariable": false,
                 "storageLocation": "default",
@@ -307,7 +307,7 @@
                   "typeString": "uint256"
                 },
                 "typeName": {
-                  "id": 1023,
+                  "id": 1117,
                   "name": "uint",
                   "nodeType": "ElementaryTypeName",
                   "src": "182:4:4",
@@ -322,27 +322,27 @@
             ],
             "name": "Stamp",
             "nodeType": "StructDefinition",
-            "scope": 1173,
+            "scope": 1267,
             "src": "137:66:4",
             "visibility": "public"
           },
           {
             "constant": false,
-            "id": 1029,
+            "id": 1123,
             "name": "timestamps",
             "nodeType": "VariableDeclaration",
-            "scope": 1173,
+            "scope": 1267,
             "src": "209:35:4",
             "stateVariable": true,
             "storageLocation": "default",
             "typeDescriptions": {
-              "typeIdentifier": "t_mapping$_t_string_memory_$_t_struct$_Stamp_$1025_storage_$",
+              "typeIdentifier": "t_mapping$_t_string_memory_$_t_struct$_Stamp_$1119_storage_$",
               "typeString": "mapping(string => struct TimeStamping.Stamp)"
             },
             "typeName": {
-              "id": 1028,
+              "id": 1122,
               "keyType": {
-                "id": 1026,
+                "id": 1120,
                 "name": "string",
                 "nodeType": "ElementaryTypeName",
                 "src": "217:6:4",
@@ -354,18 +354,18 @@
               "nodeType": "Mapping",
               "src": "209:24:4",
               "typeDescriptions": {
-                "typeIdentifier": "t_mapping$_t_string_memory_$_t_struct$_Stamp_$1025_storage_$",
+                "typeIdentifier": "t_mapping$_t_string_memory_$_t_struct$_Stamp_$1119_storage_$",
                 "typeString": "mapping(string => struct TimeStamping.Stamp)"
               },
               "valueType": {
                 "contractScope": null,
-                "id": 1027,
+                "id": 1121,
                 "name": "Stamp",
                 "nodeType": "UserDefinedTypeName",
-                "referencedDeclaration": 1025,
+                "referencedDeclaration": 1119,
                 "src": "227:5:4",
                 "typeDescriptions": {
-                  "typeIdentifier": "t_struct$_Stamp_$1025_storage_ptr",
+                  "typeIdentifier": "t_struct$_Stamp_$1119_storage_ptr",
                   "typeString": "struct TimeStamping.Stamp"
                 }
               }
@@ -375,10 +375,10 @@
           },
           {
             "constant": false,
-            "id": 1031,
+            "id": 1125,
             "name": "price",
             "nodeType": "VariableDeclaration",
-            "scope": 1173,
+            "scope": 1267,
             "src": "250:17:4",
             "stateVariable": true,
             "storageLocation": "default",
@@ -387,7 +387,7 @@
               "typeString": "uint256"
             },
             "typeName": {
-              "id": 1030,
+              "id": 1124,
               "name": "uint",
               "nodeType": "ElementaryTypeName",
               "src": "250:4:4",
@@ -401,10 +401,10 @@
           },
           {
             "constant": false,
-            "id": 1033,
+            "id": 1127,
             "name": "stampCount",
             "nodeType": "VariableDeclaration",
-            "scope": 1173,
+            "scope": 1267,
             "src": "274:22:4",
             "stateVariable": true,
             "storageLocation": "default",
@@ -413,7 +413,7 @@
               "typeString": "uint256"
             },
             "typeName": {
-              "id": 1032,
+              "id": 1126,
               "name": "uint",
               "nodeType": "ElementaryTypeName",
               "src": "274:4:4",
@@ -427,25 +427,25 @@
           },
           {
             "body": {
-              "id": 1048,
+              "id": 1142,
               "nodeType": "Block",
               "src": "392:102:4",
               "statements": [
                 {
                   "expression": {
                     "argumentTypes": null,
-                    "id": 1042,
+                    "id": 1136,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
                     "lValueRequested": false,
                     "leftHandSide": {
                       "argumentTypes": null,
-                      "id": 1040,
+                      "id": 1134,
                       "name": "price",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
-                      "referencedDeclaration": 1031,
+                      "referencedDeclaration": 1125,
                       "src": "402:5:4",
                       "typeDescriptions": {
                         "typeIdentifier": "t_uint256",
@@ -456,11 +456,11 @@
                     "operator": "=",
                     "rightHandSide": {
                       "argumentTypes": null,
-                      "id": 1041,
+                      "id": 1135,
                       "name": "_price",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
-                      "referencedDeclaration": 1035,
+                      "referencedDeclaration": 1129,
                       "src": "410:6:4",
                       "typeDescriptions": {
                         "typeIdentifier": "t_uint256",
@@ -473,25 +473,25 @@
                       "typeString": "uint256"
                     }
                   },
-                  "id": 1043,
+                  "id": 1137,
                   "nodeType": "ExpressionStatement",
                   "src": "402:14:4"
                 },
                 {
                   "expression": {
                     "argumentTypes": null,
-                    "id": 1046,
+                    "id": 1140,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
                     "lValueRequested": false,
                     "leftHandSide": {
                       "argumentTypes": null,
-                      "id": 1044,
+                      "id": 1138,
                       "name": "stampCount",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
-                      "referencedDeclaration": 1033,
+                      "referencedDeclaration": 1127,
                       "src": "473:10:4",
                       "typeDescriptions": {
                         "typeIdentifier": "t_uint256",
@@ -503,7 +503,7 @@
                     "rightHandSide": {
                       "argumentTypes": null,
                       "hexValue": "30",
-                      "id": 1045,
+                      "id": 1139,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": true,
@@ -524,29 +524,29 @@
                       "typeString": "uint256"
                     }
                   },
-                  "id": 1047,
+                  "id": 1141,
                   "nodeType": "ExpressionStatement",
                   "src": "473:14:4"
                 }
               ]
             },
             "documentation": null,
-            "id": 1049,
+            "id": 1143,
             "implemented": true,
             "kind": "constructor",
             "modifiers": [],
             "name": "",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 1038,
+              "id": 1132,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 1035,
+                  "id": 1129,
                   "name": "_price",
                   "nodeType": "VariableDeclaration",
-                  "scope": 1049,
+                  "scope": 1143,
                   "src": "349:11:4",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -555,7 +555,7 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 1034,
+                    "id": 1128,
                     "name": "uint",
                     "nodeType": "ElementaryTypeName",
                     "src": "349:4:4",
@@ -569,10 +569,10 @@
                 },
                 {
                   "constant": false,
-                  "id": 1037,
+                  "id": 1131,
                   "name": "_fiatContract",
                   "nodeType": "VariableDeclaration",
-                  "scope": 1049,
+                  "scope": 1143,
                   "src": "362:21:4",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -581,7 +581,7 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 1036,
+                    "id": 1130,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
                     "src": "362:7:4",
@@ -598,12 +598,12 @@
               "src": "348:36:4"
             },
             "returnParameters": {
-              "id": 1039,
+              "id": 1133,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "392:0:4"
             },
-            "scope": 1173,
+            "scope": 1267,
             "src": "337:157:4",
             "stateMutability": "nonpayable",
             "superFunction": null,
@@ -611,7 +611,7 @@
           },
           {
             "body": {
-              "id": 1063,
+              "id": 1157,
               "nodeType": "Block",
               "src": "577:54:4",
               "statements": [
@@ -626,14 +626,14 @@
                           "arguments": [
                             {
                               "argumentTypes": null,
-                              "id": 1058,
+                              "id": 1152,
                               "name": "this",
                               "nodeType": "Identifier",
                               "overloadedDeclarations": [],
-                              "referencedDeclaration": 1207,
+                              "referencedDeclaration": 1301,
                               "src": "610:4:4",
                               "typeDescriptions": {
-                                "typeIdentifier": "t_contract$_TimeStamping_$1173",
+                                "typeIdentifier": "t_contract$_TimeStamping_$1267",
                                 "typeString": "contract TimeStamping"
                               }
                             }
@@ -641,11 +641,11 @@
                           "expression": {
                             "argumentTypes": [
                               {
-                                "typeIdentifier": "t_contract$_TimeStamping_$1173",
+                                "typeIdentifier": "t_contract$_TimeStamping_$1267",
                                 "typeString": "contract TimeStamping"
                               }
                             ],
-                            "id": 1057,
+                            "id": 1151,
                             "isConstant": false,
                             "isLValue": false,
                             "isPure": true,
@@ -658,7 +658,7 @@
                             },
                             "typeName": "address"
                           },
-                          "id": 1059,
+                          "id": 1153,
                           "isConstant": false,
                           "isLValue": false,
                           "isPure": false,
@@ -672,7 +672,7 @@
                             "typeString": "address payable"
                           }
                         },
-                        "id": 1060,
+                        "id": 1154,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": false,
@@ -696,7 +696,7 @@
                       ],
                       "expression": {
                         "argumentTypes": null,
-                        "id": 1054,
+                        "id": 1148,
                         "name": "owner",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
@@ -707,7 +707,7 @@
                           "typeString": "address payable"
                         }
                       },
-                      "id": 1056,
+                      "id": 1150,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": false,
@@ -721,7 +721,7 @@
                         "typeString": "function (uint256)"
                       }
                     },
-                    "id": 1061,
+                    "id": 1155,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
@@ -735,23 +735,23 @@
                       "typeString": "tuple()"
                     }
                   },
-                  "id": 1062,
+                  "id": 1156,
                   "nodeType": "ExpressionStatement",
                   "src": "587:37:4"
                 }
               ]
             },
             "documentation": null,
-            "id": 1064,
+            "id": 1158,
             "implemented": true,
             "kind": "function",
             "modifiers": [
               {
                 "arguments": null,
-                "id": 1052,
+                "id": 1146,
                 "modifierName": {
                   "argumentTypes": null,
-                  "id": 1051,
+                  "id": 1145,
                   "name": "onlyOwner",
                   "nodeType": "Identifier",
                   "overloadedDeclarations": [],
@@ -769,18 +769,18 @@
             "name": "withdrawFunds",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 1050,
+              "id": 1144,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "557:2:4"
             },
             "returnParameters": {
-              "id": 1053,
+              "id": 1147,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "577:0:4"
             },
-            "scope": 1173,
+            "scope": 1267,
             "src": "535:96:4",
             "stateMutability": "nonpayable",
             "superFunction": null,
@@ -788,31 +788,31 @@
           },
           {
             "body": {
-              "id": 1067,
+              "id": 1161,
               "nodeType": "Block",
               "src": "693:8:4",
               "statements": []
             },
             "documentation": null,
-            "id": 1068,
+            "id": 1162,
             "implemented": true,
             "kind": "fallback",
             "modifiers": [],
             "name": "",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 1065,
+              "id": 1159,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "673:2:4"
             },
             "returnParameters": {
-              "id": 1066,
+              "id": 1160,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "693:0:4"
             },
-            "scope": 1173,
+            "scope": 1267,
             "src": "664:37:4",
             "stateMutability": "payable",
             "superFunction": null,
@@ -820,7 +820,7 @@
           },
           {
             "body": {
-              "id": 1077,
+              "id": 1171,
               "nodeType": "Block",
               "src": "779:80:4",
               "statements": [
@@ -831,18 +831,18 @@
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
                     },
-                    "id": 1075,
+                    "id": 1169,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
                     "lValueRequested": false,
                     "leftExpression": {
                       "argumentTypes": null,
-                      "id": 1073,
+                      "id": 1167,
                       "name": "price",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
-                      "referencedDeclaration": 1031,
+                      "referencedDeclaration": 1125,
                       "src": "841:5:4",
                       "typeDescriptions": {
                         "typeIdentifier": "t_uint256",
@@ -854,7 +854,7 @@
                     "rightExpression": {
                       "argumentTypes": null,
                       "hexValue": "313330",
-                      "id": 1074,
+                      "id": 1168,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": true,
@@ -875,36 +875,36 @@
                       "typeString": "uint256"
                     }
                   },
-                  "functionReturnParameters": 1072,
-                  "id": 1076,
+                  "functionReturnParameters": 1166,
+                  "id": 1170,
                   "nodeType": "Return",
                   "src": "834:18:4"
                 }
               ]
             },
             "documentation": null,
-            "id": 1078,
+            "id": 1172,
             "implemented": true,
             "kind": "function",
             "modifiers": [],
             "name": "getEthPrice",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 1069,
+              "id": 1163,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "750:2:4"
             },
             "returnParameters": {
-              "id": 1072,
+              "id": 1166,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 1071,
+                  "id": 1165,
                   "name": "",
                   "nodeType": "VariableDeclaration",
-                  "scope": 1078,
+                  "scope": 1172,
                   "src": "774:4:4",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -913,7 +913,7 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 1070,
+                    "id": 1164,
                     "name": "uint",
                     "nodeType": "ElementaryTypeName",
                     "src": "774:4:4",
@@ -928,7 +928,7 @@
               ],
               "src": "773:6:4"
             },
-            "scope": 1173,
+            "scope": 1267,
             "src": "730:129:4",
             "stateMutability": "view",
             "superFunction": null,
@@ -936,7 +936,7 @@
           },
           {
             "body": {
-              "id": 1102,
+              "id": 1196,
               "nodeType": "Block",
               "src": "986:113:4",
               "statements": [
@@ -950,7 +950,7 @@
                           "typeIdentifier": "t_bool",
                           "typeString": "bool"
                         },
-                        "id": 1093,
+                        "id": 1187,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": false,
@@ -961,7 +961,7 @@
                             "typeIdentifier": "t_address_payable",
                             "typeString": "address payable"
                           },
-                          "id": 1087,
+                          "id": 1181,
                           "isConstant": false,
                           "isLValue": false,
                           "isPure": false,
@@ -970,18 +970,18 @@
                             "argumentTypes": null,
                             "expression": {
                               "argumentTypes": null,
-                              "id": 1084,
+                              "id": 1178,
                               "name": "msg",
                               "nodeType": "Identifier",
                               "overloadedDeclarations": [],
-                              "referencedDeclaration": 1188,
+                              "referencedDeclaration": 1282,
                               "src": "1004:3:4",
                               "typeDescriptions": {
                                 "typeIdentifier": "t_magic_message",
                                 "typeString": "msg"
                               }
                             },
-                            "id": 1085,
+                            "id": 1179,
                             "isConstant": false,
                             "isLValue": false,
                             "isPure": false,
@@ -999,7 +999,7 @@
                           "operator": "!=",
                           "rightExpression": {
                             "argumentTypes": null,
-                            "id": 1086,
+                            "id": 1180,
                             "name": "owner",
                             "nodeType": "Identifier",
                             "overloadedDeclarations": [],
@@ -1024,7 +1024,7 @@
                             "typeIdentifier": "t_uint256",
                             "typeString": "uint256"
                           },
-                          "id": 1092,
+                          "id": 1186,
                           "isConstant": false,
                           "isLValue": false,
                           "isPure": false,
@@ -1033,18 +1033,18 @@
                             "argumentTypes": null,
                             "expression": {
                               "argumentTypes": null,
-                              "id": 1088,
+                              "id": 1182,
                               "name": "msg",
                               "nodeType": "Identifier",
                               "overloadedDeclarations": [],
-                              "referencedDeclaration": 1188,
+                              "referencedDeclaration": 1282,
                               "src": "1027:3:4",
                               "typeDescriptions": {
                                 "typeIdentifier": "t_magic_message",
                                 "typeString": "msg"
                               }
                             },
-                            "id": 1089,
+                            "id": 1183,
                             "isConstant": false,
                             "isLValue": false,
                             "isPure": false,
@@ -1065,18 +1065,18 @@
                             "arguments": [],
                             "expression": {
                               "argumentTypes": [],
-                              "id": 1090,
+                              "id": 1184,
                               "name": "getEthPrice",
                               "nodeType": "Identifier",
                               "overloadedDeclarations": [],
-                              "referencedDeclaration": 1078,
+                              "referencedDeclaration": 1172,
                               "src": "1040:11:4",
                               "typeDescriptions": {
                                 "typeIdentifier": "t_function_internal_view$__$returns$_t_uint256_$",
                                 "typeString": "function () view returns (uint256)"
                               }
                             },
-                            "id": 1091,
+                            "id": 1185,
                             "isConstant": false,
                             "isLValue": false,
                             "isPure": false,
@@ -1110,21 +1110,21 @@
                           "typeString": "bool"
                         }
                       ],
-                      "id": 1083,
+                      "id": 1177,
                       "name": "require",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [
-                        1191,
-                        1192
+                        1285,
+                        1286
                       ],
-                      "referencedDeclaration": 1191,
+                      "referencedDeclaration": 1285,
                       "src": "996:7:4",
                       "typeDescriptions": {
                         "typeIdentifier": "t_function_require_pure$_t_bool_$returns$__$",
                         "typeString": "function (bool) pure"
                       }
                     },
-                    "id": 1094,
+                    "id": 1188,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
@@ -1138,7 +1138,7 @@
                       "typeString": "tuple()"
                     }
                   },
-                  "id": 1095,
+                  "id": 1189,
                   "nodeType": "ExpressionStatement",
                   "src": "996:58:4"
                 },
@@ -1148,11 +1148,11 @@
                     "arguments": [
                       {
                         "argumentTypes": null,
-                        "id": 1097,
+                        "id": 1191,
                         "name": "_hash",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 1080,
+                        "referencedDeclaration": 1174,
                         "src": "1074:5:4",
                         "typeDescriptions": {
                           "typeIdentifier": "t_string_memory_ptr",
@@ -1163,18 +1163,18 @@
                         "argumentTypes": null,
                         "expression": {
                           "argumentTypes": null,
-                          "id": 1098,
+                          "id": 1192,
                           "name": "msg",
                           "nodeType": "Identifier",
                           "overloadedDeclarations": [],
-                          "referencedDeclaration": 1188,
+                          "referencedDeclaration": 1282,
                           "src": "1081:3:4",
                           "typeDescriptions": {
                             "typeIdentifier": "t_magic_message",
                             "typeString": "msg"
                           }
                         },
-                        "id": 1099,
+                        "id": 1193,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": false,
@@ -1200,18 +1200,18 @@
                           "typeString": "address payable"
                         }
                       ],
-                      "id": 1096,
+                      "id": 1190,
                       "name": "stampHash",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
-                      "referencedDeclaration": 1146,
+                      "referencedDeclaration": 1240,
                       "src": "1064:9:4",
                       "typeDescriptions": {
                         "typeIdentifier": "t_function_internal_nonpayable$_t_string_memory_ptr_$_t_address_$returns$__$",
                         "typeString": "function (string memory,address)"
                       }
                     },
-                    "id": 1100,
+                    "id": 1194,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
@@ -1225,29 +1225,29 @@
                       "typeString": "tuple()"
                     }
                   },
-                  "id": 1101,
+                  "id": 1195,
                   "nodeType": "ExpressionStatement",
                   "src": "1064:28:4"
                 }
               ]
             },
             "documentation": null,
-            "id": 1103,
+            "id": 1197,
             "implemented": true,
             "kind": "function",
             "modifiers": [],
             "name": "stamp",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 1081,
+              "id": 1175,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 1080,
+                  "id": 1174,
                   "name": "_hash",
                   "nodeType": "VariableDeclaration",
-                  "scope": 1103,
+                  "scope": 1197,
                   "src": "951:19:4",
                   "stateVariable": false,
                   "storageLocation": "memory",
@@ -1256,7 +1256,7 @@
                     "typeString": "string"
                   },
                   "typeName": {
-                    "id": 1079,
+                    "id": 1173,
                     "name": "string",
                     "nodeType": "ElementaryTypeName",
                     "src": "951:6:4",
@@ -1272,12 +1272,12 @@
               "src": "950:21:4"
             },
             "returnParameters": {
-              "id": 1082,
+              "id": 1176,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "986:0:4"
             },
-            "scope": 1173,
+            "scope": 1267,
             "src": "936:163:4",
             "stateMutability": "payable",
             "superFunction": null,
@@ -1285,7 +1285,7 @@
           },
           {
             "body": {
-              "id": 1116,
+              "id": 1210,
               "nodeType": "Block",
               "src": "1242:45:4",
               "statements": [
@@ -1295,11 +1295,11 @@
                     "arguments": [
                       {
                         "argumentTypes": null,
-                        "id": 1111,
+                        "id": 1205,
                         "name": "_hash",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 1105,
+                        "referencedDeclaration": 1199,
                         "src": "1262:5:4",
                         "typeDescriptions": {
                           "typeIdentifier": "t_string_memory_ptr",
@@ -1310,18 +1310,18 @@
                         "argumentTypes": null,
                         "expression": {
                           "argumentTypes": null,
-                          "id": 1112,
+                          "id": 1206,
                           "name": "msg",
                           "nodeType": "Identifier",
                           "overloadedDeclarations": [],
-                          "referencedDeclaration": 1188,
+                          "referencedDeclaration": 1282,
                           "src": "1269:3:4",
                           "typeDescriptions": {
                             "typeIdentifier": "t_magic_message",
                             "typeString": "msg"
                           }
                         },
-                        "id": 1113,
+                        "id": 1207,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": false,
@@ -1347,18 +1347,18 @@
                           "typeString": "address payable"
                         }
                       ],
-                      "id": 1110,
+                      "id": 1204,
                       "name": "stampHash",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
-                      "referencedDeclaration": 1146,
+                      "referencedDeclaration": 1240,
                       "src": "1252:9:4",
                       "typeDescriptions": {
                         "typeIdentifier": "t_function_internal_nonpayable$_t_string_memory_ptr_$_t_address_$returns$__$",
                         "typeString": "function (string memory,address)"
                       }
                     },
-                    "id": 1114,
+                    "id": 1208,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
@@ -1372,23 +1372,23 @@
                       "typeString": "tuple()"
                     }
                   },
-                  "id": 1115,
+                  "id": 1209,
                   "nodeType": "ExpressionStatement",
                   "src": "1252:28:4"
                 }
               ]
             },
             "documentation": null,
-            "id": 1117,
+            "id": 1211,
             "implemented": true,
             "kind": "function",
             "modifiers": [
               {
                 "arguments": null,
-                "id": 1108,
+                "id": 1202,
                 "modifierName": {
                   "argumentTypes": null,
-                  "id": 1107,
+                  "id": 1201,
                   "name": "onlyOwner",
                   "nodeType": "Identifier",
                   "overloadedDeclarations": [],
@@ -1406,15 +1406,15 @@
             "name": "ownerStamp",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 1106,
+              "id": 1200,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 1105,
+                  "id": 1199,
                   "name": "_hash",
                   "nodeType": "VariableDeclaration",
-                  "scope": 1117,
+                  "scope": 1211,
                   "src": "1196:19:4",
                   "stateVariable": false,
                   "storageLocation": "memory",
@@ -1423,7 +1423,7 @@
                     "typeString": "string"
                   },
                   "typeName": {
-                    "id": 1104,
+                    "id": 1198,
                     "name": "string",
                     "nodeType": "ElementaryTypeName",
                     "src": "1196:6:4",
@@ -1439,12 +1439,12 @@
               "src": "1195:21:4"
             },
             "returnParameters": {
-              "id": 1109,
+              "id": 1203,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "1242:0:4"
             },
-            "scope": 1173,
+            "scope": 1267,
             "src": "1176:111:4",
             "stateMutability": "payable",
             "superFunction": null,
@@ -1452,7 +1452,7 @@
           },
           {
             "body": {
-              "id": 1145,
+              "id": 1239,
               "nodeType": "Block",
               "src": "1410:126:4",
               "statements": [
@@ -1466,7 +1466,7 @@
                           "typeIdentifier": "t_uint256",
                           "typeString": "uint256"
                         },
-                        "id": 1130,
+                        "id": 1224,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": false,
@@ -1477,25 +1477,25 @@
                             "argumentTypes": null,
                             "baseExpression": {
                               "argumentTypes": null,
-                              "id": 1125,
+                              "id": 1219,
                               "name": "timestamps",
                               "nodeType": "Identifier",
                               "overloadedDeclarations": [],
-                              "referencedDeclaration": 1029,
+                              "referencedDeclaration": 1123,
                               "src": "1428:10:4",
                               "typeDescriptions": {
-                                "typeIdentifier": "t_mapping$_t_string_memory_$_t_struct$_Stamp_$1025_storage_$",
+                                "typeIdentifier": "t_mapping$_t_string_memory_$_t_struct$_Stamp_$1119_storage_$",
                                 "typeString": "mapping(string memory => struct TimeStamping.Stamp storage ref)"
                               }
                             },
-                            "id": 1127,
+                            "id": 1221,
                             "indexExpression": {
                               "argumentTypes": null,
-                              "id": 1126,
+                              "id": 1220,
                               "name": "_hash",
                               "nodeType": "Identifier",
                               "overloadedDeclarations": [],
-                              "referencedDeclaration": 1119,
+                              "referencedDeclaration": 1213,
                               "src": "1439:5:4",
                               "typeDescriptions": {
                                 "typeIdentifier": "t_string_memory_ptr",
@@ -1509,18 +1509,18 @@
                             "nodeType": "IndexAccess",
                             "src": "1428:17:4",
                             "typeDescriptions": {
-                              "typeIdentifier": "t_struct$_Stamp_$1025_storage",
+                              "typeIdentifier": "t_struct$_Stamp_$1119_storage",
                               "typeString": "struct TimeStamping.Stamp storage ref"
                             }
                           },
-                          "id": 1128,
+                          "id": 1222,
                           "isConstant": false,
                           "isLValue": true,
                           "isPure": false,
                           "lValueRequested": false,
                           "memberName": "timestamp",
                           "nodeType": "MemberAccess",
-                          "referencedDeclaration": 1024,
+                          "referencedDeclaration": 1118,
                           "src": "1428:27:4",
                           "typeDescriptions": {
                             "typeIdentifier": "t_uint256",
@@ -1532,7 +1532,7 @@
                         "rightExpression": {
                           "argumentTypes": null,
                           "hexValue": "30",
-                          "id": 1129,
+                          "id": 1223,
                           "isConstant": false,
                           "isLValue": false,
                           "isPure": true,
@@ -1561,21 +1561,21 @@
                           "typeString": "bool"
                         }
                       ],
-                      "id": 1124,
+                      "id": 1218,
                       "name": "require",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [
-                        1191,
-                        1192
+                        1285,
+                        1286
                       ],
-                      "referencedDeclaration": 1191,
+                      "referencedDeclaration": 1285,
                       "src": "1420:7:4",
                       "typeDescriptions": {
                         "typeIdentifier": "t_function_require_pure$_t_bool_$returns$__$",
                         "typeString": "function (bool) pure"
                       }
                     },
-                    "id": 1131,
+                    "id": 1225,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
@@ -1589,14 +1589,14 @@
                       "typeString": "tuple()"
                     }
                   },
-                  "id": 1132,
+                  "id": 1226,
                   "nodeType": "ExpressionStatement",
                   "src": "1420:41:4"
                 },
                 {
                   "expression": {
                     "argumentTypes": null,
-                    "id": 1140,
+                    "id": 1234,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
@@ -1605,25 +1605,25 @@
                       "argumentTypes": null,
                       "baseExpression": {
                         "argumentTypes": null,
-                        "id": 1133,
+                        "id": 1227,
                         "name": "timestamps",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 1029,
+                        "referencedDeclaration": 1123,
                         "src": "1471:10:4",
                         "typeDescriptions": {
-                          "typeIdentifier": "t_mapping$_t_string_memory_$_t_struct$_Stamp_$1025_storage_$",
+                          "typeIdentifier": "t_mapping$_t_string_memory_$_t_struct$_Stamp_$1119_storage_$",
                           "typeString": "mapping(string memory => struct TimeStamping.Stamp storage ref)"
                         }
                       },
-                      "id": 1135,
+                      "id": 1229,
                       "indexExpression": {
                         "argumentTypes": null,
-                        "id": 1134,
+                        "id": 1228,
                         "name": "_hash",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 1119,
+                        "referencedDeclaration": 1213,
                         "src": "1482:5:4",
                         "typeDescriptions": {
                           "typeIdentifier": "t_string_memory_ptr",
@@ -1637,7 +1637,7 @@
                       "nodeType": "IndexAccess",
                       "src": "1471:17:4",
                       "typeDescriptions": {
-                        "typeIdentifier": "t_struct$_Stamp_$1025_storage",
+                        "typeIdentifier": "t_struct$_Stamp_$1119_storage",
                         "typeString": "struct TimeStamping.Stamp storage ref"
                       }
                     },
@@ -1648,11 +1648,11 @@
                       "arguments": [
                         {
                           "argumentTypes": null,
-                          "id": 1137,
+                          "id": 1231,
                           "name": "user",
                           "nodeType": "Identifier",
                           "overloadedDeclarations": [],
-                          "referencedDeclaration": 1121,
+                          "referencedDeclaration": 1215,
                           "src": "1497:4:4",
                           "typeDescriptions": {
                             "typeIdentifier": "t_address",
@@ -1661,11 +1661,11 @@
                         },
                         {
                           "argumentTypes": null,
-                          "id": 1138,
+                          "id": 1232,
                           "name": "now",
                           "nodeType": "Identifier",
                           "overloadedDeclarations": [],
-                          "referencedDeclaration": 1190,
+                          "referencedDeclaration": 1284,
                           "src": "1503:3:4",
                           "typeDescriptions": {
                             "typeIdentifier": "t_uint256",
@@ -1684,18 +1684,18 @@
                             "typeString": "uint256"
                           }
                         ],
-                        "id": 1136,
+                        "id": 1230,
                         "name": "Stamp",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 1025,
+                        "referencedDeclaration": 1119,
                         "src": "1491:5:4",
                         "typeDescriptions": {
-                          "typeIdentifier": "t_type$_t_struct$_Stamp_$1025_storage_ptr_$",
+                          "typeIdentifier": "t_type$_t_struct$_Stamp_$1119_storage_ptr_$",
                           "typeString": "type(struct TimeStamping.Stamp storage pointer)"
                         }
                       },
-                      "id": 1139,
+                      "id": 1233,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": false,
@@ -1705,24 +1705,24 @@
                       "nodeType": "FunctionCall",
                       "src": "1491:16:4",
                       "typeDescriptions": {
-                        "typeIdentifier": "t_struct$_Stamp_$1025_memory",
+                        "typeIdentifier": "t_struct$_Stamp_$1119_memory",
                         "typeString": "struct TimeStamping.Stamp memory"
                       }
                     },
                     "src": "1471:36:4",
                     "typeDescriptions": {
-                      "typeIdentifier": "t_struct$_Stamp_$1025_storage",
+                      "typeIdentifier": "t_struct$_Stamp_$1119_storage",
                       "typeString": "struct TimeStamping.Stamp storage ref"
                     }
                   },
-                  "id": 1141,
+                  "id": 1235,
                   "nodeType": "ExpressionStatement",
                   "src": "1471:36:4"
                 },
                 {
                   "expression": {
                     "argumentTypes": null,
-                    "id": 1143,
+                    "id": 1237,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
@@ -1733,11 +1733,11 @@
                     "src": "1517:12:4",
                     "subExpression": {
                       "argumentTypes": null,
-                      "id": 1142,
+                      "id": 1236,
                       "name": "stampCount",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
-                      "referencedDeclaration": 1033,
+                      "referencedDeclaration": 1127,
                       "src": "1517:10:4",
                       "typeDescriptions": {
                         "typeIdentifier": "t_uint256",
@@ -1749,29 +1749,29 @@
                       "typeString": "uint256"
                     }
                   },
-                  "id": 1144,
+                  "id": 1238,
                   "nodeType": "ExpressionStatement",
                   "src": "1517:12:4"
                 }
               ]
             },
             "documentation": null,
-            "id": 1146,
+            "id": 1240,
             "implemented": true,
             "kind": "function",
             "modifiers": [],
             "name": "stampHash",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 1122,
+              "id": 1216,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 1119,
+                  "id": 1213,
                   "name": "_hash",
                   "nodeType": "VariableDeclaration",
-                  "scope": 1146,
+                  "scope": 1240,
                   "src": "1367:19:4",
                   "stateVariable": false,
                   "storageLocation": "memory",
@@ -1780,7 +1780,7 @@
                     "typeString": "string"
                   },
                   "typeName": {
-                    "id": 1118,
+                    "id": 1212,
                     "name": "string",
                     "nodeType": "ElementaryTypeName",
                     "src": "1367:6:4",
@@ -1794,10 +1794,10 @@
                 },
                 {
                   "constant": false,
-                  "id": 1121,
+                  "id": 1215,
                   "name": "user",
                   "nodeType": "VariableDeclaration",
-                  "scope": 1146,
+                  "scope": 1240,
                   "src": "1388:12:4",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -1806,7 +1806,7 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 1120,
+                    "id": 1214,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
                     "src": "1388:7:4",
@@ -1823,12 +1823,12 @@
               "src": "1366:35:4"
             },
             "returnParameters": {
-              "id": 1123,
+              "id": 1217,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "1410:0:4"
             },
-            "scope": 1173,
+            "scope": 1267,
             "src": "1348:188:4",
             "stateMutability": "nonpayable",
             "superFunction": null,
@@ -1836,7 +1836,7 @@
           },
           {
             "body": {
-              "id": 1158,
+              "id": 1252,
               "nodeType": "Block",
               "src": "1675:51:4",
               "statements": [
@@ -1847,25 +1847,25 @@
                       "argumentTypes": null,
                       "baseExpression": {
                         "argumentTypes": null,
-                        "id": 1153,
+                        "id": 1247,
                         "name": "timestamps",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 1029,
+                        "referencedDeclaration": 1123,
                         "src": "1692:10:4",
                         "typeDescriptions": {
-                          "typeIdentifier": "t_mapping$_t_string_memory_$_t_struct$_Stamp_$1025_storage_$",
+                          "typeIdentifier": "t_mapping$_t_string_memory_$_t_struct$_Stamp_$1119_storage_$",
                           "typeString": "mapping(string memory => struct TimeStamping.Stamp storage ref)"
                         }
                       },
-                      "id": 1155,
+                      "id": 1249,
                       "indexExpression": {
                         "argumentTypes": null,
-                        "id": 1154,
+                        "id": 1248,
                         "name": "_hash",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 1148,
+                        "referencedDeclaration": 1242,
                         "src": "1703:5:4",
                         "typeDescriptions": {
                           "typeIdentifier": "t_string_memory_ptr",
@@ -1879,48 +1879,48 @@
                       "nodeType": "IndexAccess",
                       "src": "1692:17:4",
                       "typeDescriptions": {
-                        "typeIdentifier": "t_struct$_Stamp_$1025_storage",
+                        "typeIdentifier": "t_struct$_Stamp_$1119_storage",
                         "typeString": "struct TimeStamping.Stamp storage ref"
                       }
                     },
-                    "id": 1156,
+                    "id": 1250,
                     "isConstant": false,
                     "isLValue": true,
                     "isPure": false,
                     "lValueRequested": false,
                     "memberName": "timestamp",
                     "nodeType": "MemberAccess",
-                    "referencedDeclaration": 1024,
+                    "referencedDeclaration": 1118,
                     "src": "1692:27:4",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
                     }
                   },
-                  "functionReturnParameters": 1152,
-                  "id": 1157,
+                  "functionReturnParameters": 1246,
+                  "id": 1251,
                   "nodeType": "Return",
                   "src": "1685:34:4"
                 }
               ]
             },
             "documentation": null,
-            "id": 1159,
+            "id": 1253,
             "implemented": true,
             "kind": "function",
             "modifiers": [],
             "name": "getTimestamp",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 1149,
+              "id": 1243,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 1148,
+                  "id": 1242,
                   "name": "_hash",
                   "nodeType": "VariableDeclaration",
-                  "scope": 1159,
+                  "scope": 1253,
                   "src": "1628:19:4",
                   "stateVariable": false,
                   "storageLocation": "memory",
@@ -1929,7 +1929,7 @@
                     "typeString": "string"
                   },
                   "typeName": {
-                    "id": 1147,
+                    "id": 1241,
                     "name": "string",
                     "nodeType": "ElementaryTypeName",
                     "src": "1628:6:4",
@@ -1945,15 +1945,15 @@
               "src": "1627:21:4"
             },
             "returnParameters": {
-              "id": 1152,
+              "id": 1246,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 1151,
+                  "id": 1245,
                   "name": "",
                   "nodeType": "VariableDeclaration",
-                  "scope": 1159,
+                  "scope": 1253,
                   "src": "1670:4:4",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -1962,7 +1962,7 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 1150,
+                    "id": 1244,
                     "name": "uint",
                     "nodeType": "ElementaryTypeName",
                     "src": "1670:4:4",
@@ -1977,7 +1977,7 @@
               ],
               "src": "1669:6:4"
             },
-            "scope": 1173,
+            "scope": 1267,
             "src": "1606:120:4",
             "stateMutability": "view",
             "superFunction": null,
@@ -1985,7 +1985,7 @@
           },
           {
             "body": {
-              "id": 1171,
+              "id": 1265,
               "nodeType": "Block",
               "src": "1856:46:4",
               "statements": [
@@ -1996,25 +1996,25 @@
                       "argumentTypes": null,
                       "baseExpression": {
                         "argumentTypes": null,
-                        "id": 1166,
+                        "id": 1260,
                         "name": "timestamps",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 1029,
+                        "referencedDeclaration": 1123,
                         "src": "1873:10:4",
                         "typeDescriptions": {
-                          "typeIdentifier": "t_mapping$_t_string_memory_$_t_struct$_Stamp_$1025_storage_$",
+                          "typeIdentifier": "t_mapping$_t_string_memory_$_t_struct$_Stamp_$1119_storage_$",
                           "typeString": "mapping(string memory => struct TimeStamping.Stamp storage ref)"
                         }
                       },
-                      "id": 1168,
+                      "id": 1262,
                       "indexExpression": {
                         "argumentTypes": null,
-                        "id": 1167,
+                        "id": 1261,
                         "name": "_hash",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 1161,
+                        "referencedDeclaration": 1255,
                         "src": "1884:5:4",
                         "typeDescriptions": {
                           "typeIdentifier": "t_string_memory_ptr",
@@ -2028,48 +2028,48 @@
                       "nodeType": "IndexAccess",
                       "src": "1873:17:4",
                       "typeDescriptions": {
-                        "typeIdentifier": "t_struct$_Stamp_$1025_storage",
+                        "typeIdentifier": "t_struct$_Stamp_$1119_storage",
                         "typeString": "struct TimeStamping.Stamp storage ref"
                       }
                     },
-                    "id": 1169,
+                    "id": 1263,
                     "isConstant": false,
                     "isLValue": true,
                     "isPure": false,
                     "lValueRequested": false,
                     "memberName": "user",
                     "nodeType": "MemberAccess",
-                    "referencedDeclaration": 1022,
+                    "referencedDeclaration": 1116,
                     "src": "1873:22:4",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
                       "typeString": "address"
                     }
                   },
-                  "functionReturnParameters": 1165,
-                  "id": 1170,
+                  "functionReturnParameters": 1259,
+                  "id": 1264,
                   "nodeType": "Return",
                   "src": "1866:29:4"
                 }
               ]
             },
             "documentation": null,
-            "id": 1172,
+            "id": 1266,
             "implemented": true,
             "kind": "function",
             "modifiers": [],
             "name": "getUser",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 1162,
+              "id": 1256,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 1161,
+                  "id": 1255,
                   "name": "_hash",
                   "nodeType": "VariableDeclaration",
-                  "scope": 1172,
+                  "scope": 1266,
                   "src": "1806:19:4",
                   "stateVariable": false,
                   "storageLocation": "memory",
@@ -2078,7 +2078,7 @@
                     "typeString": "string"
                   },
                   "typeName": {
-                    "id": 1160,
+                    "id": 1254,
                     "name": "string",
                     "nodeType": "ElementaryTypeName",
                     "src": "1806:6:4",
@@ -2094,15 +2094,15 @@
               "src": "1805:21:4"
             },
             "returnParameters": {
-              "id": 1165,
+              "id": 1259,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 1164,
+                  "id": 1258,
                   "name": "",
                   "nodeType": "VariableDeclaration",
-                  "scope": 1172,
+                  "scope": 1266,
                   "src": "1848:7:4",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -2111,7 +2111,7 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 1163,
+                    "id": 1257,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
                     "src": "1848:7:4",
@@ -2127,14 +2127,14 @@
               ],
               "src": "1847:9:4"
             },
-            "scope": 1173,
+            "scope": 1267,
             "src": "1789:113:4",
             "stateMutability": "view",
             "superFunction": null,
             "visibility": "public"
           }
         ],
-        "scope": 1174,
+        "scope": 1268,
         "src": "88:1816:4"
       }
     ],
@@ -2144,14 +2144,14 @@
     "absolutePath": "/Users/axel/Developer/DNAM/Web-Applications/react-app/contracts/TimeStamping.sol",
     "exportedSymbols": {
       "TimeStamping": [
-        1173
+        1267
       ]
     },
-    "id": 1174,
+    "id": 1268,
     "nodeType": "SourceUnit",
     "nodes": [
       {
-        "id": 1016,
+        "id": 1110,
         "literals": [
           "solidity",
           "^",
@@ -2164,9 +2164,9 @@
       {
         "absolutePath": "/Users/axel/Developer/DNAM/Web-Applications/react-app/contracts/AccessRestricted.sol",
         "file": "./AccessRestricted.sol",
-        "id": 1017,
+        "id": 1111,
         "nodeType": "ImportDirective",
-        "scope": 1174,
+        "scope": 1268,
         "sourceUnit": 60,
         "src": "25:32:4",
         "symbolAliases": [],
@@ -2175,9 +2175,9 @@
       {
         "absolutePath": "/Users/axel/Developer/DNAM/Web-Applications/react-app/contracts/FiatContract.sol",
         "file": "./FiatContract.sol",
-        "id": 1018,
+        "id": 1112,
         "nodeType": "ImportDirective",
-        "scope": 1174,
+        "scope": 1268,
         "sourceUnit": 98,
         "src": "58:28:4",
         "symbolAliases": [],
@@ -2189,7 +2189,7 @@
             "arguments": null,
             "baseName": {
               "contractScope": null,
-              "id": 1019,
+              "id": 1113,
               "name": "AccessRestricted",
               "nodeType": "UserDefinedTypeName",
               "referencedDeclaration": 59,
@@ -2199,7 +2199,7 @@
                 "typeString": "contract AccessRestricted"
               }
             },
-            "id": 1020,
+            "id": 1114,
             "nodeType": "InheritanceSpecifier",
             "src": "113:16:4"
           }
@@ -2210,9 +2210,9 @@
         "contractKind": "contract",
         "documentation": null,
         "fullyImplemented": true,
-        "id": 1173,
+        "id": 1267,
         "linearizedBaseContracts": [
-          1173,
+          1267,
           59
         ],
         "name": "TimeStamping",
@@ -2220,14 +2220,14 @@
         "nodes": [
           {
             "canonicalName": "TimeStamping.Stamp",
-            "id": 1025,
+            "id": 1119,
             "members": [
               {
                 "constant": false,
-                "id": 1022,
+                "id": 1116,
                 "name": "user",
                 "nodeType": "VariableDeclaration",
-                "scope": 1025,
+                "scope": 1119,
                 "src": "160:12:4",
                 "stateVariable": false,
                 "storageLocation": "default",
@@ -2236,7 +2236,7 @@
                   "typeString": "address"
                 },
                 "typeName": {
-                  "id": 1021,
+                  "id": 1115,
                   "name": "address",
                   "nodeType": "ElementaryTypeName",
                   "src": "160:7:4",
@@ -2251,10 +2251,10 @@
               },
               {
                 "constant": false,
-                "id": 1024,
+                "id": 1118,
                 "name": "timestamp",
                 "nodeType": "VariableDeclaration",
-                "scope": 1025,
+                "scope": 1119,
                 "src": "182:14:4",
                 "stateVariable": false,
                 "storageLocation": "default",
@@ -2263,7 +2263,7 @@
                   "typeString": "uint256"
                 },
                 "typeName": {
-                  "id": 1023,
+                  "id": 1117,
                   "name": "uint",
                   "nodeType": "ElementaryTypeName",
                   "src": "182:4:4",
@@ -2278,27 +2278,27 @@
             ],
             "name": "Stamp",
             "nodeType": "StructDefinition",
-            "scope": 1173,
+            "scope": 1267,
             "src": "137:66:4",
             "visibility": "public"
           },
           {
             "constant": false,
-            "id": 1029,
+            "id": 1123,
             "name": "timestamps",
             "nodeType": "VariableDeclaration",
-            "scope": 1173,
+            "scope": 1267,
             "src": "209:35:4",
             "stateVariable": true,
             "storageLocation": "default",
             "typeDescriptions": {
-              "typeIdentifier": "t_mapping$_t_string_memory_$_t_struct$_Stamp_$1025_storage_$",
+              "typeIdentifier": "t_mapping$_t_string_memory_$_t_struct$_Stamp_$1119_storage_$",
               "typeString": "mapping(string => struct TimeStamping.Stamp)"
             },
             "typeName": {
-              "id": 1028,
+              "id": 1122,
               "keyType": {
-                "id": 1026,
+                "id": 1120,
                 "name": "string",
                 "nodeType": "ElementaryTypeName",
                 "src": "217:6:4",
@@ -2310,18 +2310,18 @@
               "nodeType": "Mapping",
               "src": "209:24:4",
               "typeDescriptions": {
-                "typeIdentifier": "t_mapping$_t_string_memory_$_t_struct$_Stamp_$1025_storage_$",
+                "typeIdentifier": "t_mapping$_t_string_memory_$_t_struct$_Stamp_$1119_storage_$",
                 "typeString": "mapping(string => struct TimeStamping.Stamp)"
               },
               "valueType": {
                 "contractScope": null,
-                "id": 1027,
+                "id": 1121,
                 "name": "Stamp",
                 "nodeType": "UserDefinedTypeName",
-                "referencedDeclaration": 1025,
+                "referencedDeclaration": 1119,
                 "src": "227:5:4",
                 "typeDescriptions": {
-                  "typeIdentifier": "t_struct$_Stamp_$1025_storage_ptr",
+                  "typeIdentifier": "t_struct$_Stamp_$1119_storage_ptr",
                   "typeString": "struct TimeStamping.Stamp"
                 }
               }
@@ -2331,10 +2331,10 @@
           },
           {
             "constant": false,
-            "id": 1031,
+            "id": 1125,
             "name": "price",
             "nodeType": "VariableDeclaration",
-            "scope": 1173,
+            "scope": 1267,
             "src": "250:17:4",
             "stateVariable": true,
             "storageLocation": "default",
@@ -2343,7 +2343,7 @@
               "typeString": "uint256"
             },
             "typeName": {
-              "id": 1030,
+              "id": 1124,
               "name": "uint",
               "nodeType": "ElementaryTypeName",
               "src": "250:4:4",
@@ -2357,10 +2357,10 @@
           },
           {
             "constant": false,
-            "id": 1033,
+            "id": 1127,
             "name": "stampCount",
             "nodeType": "VariableDeclaration",
-            "scope": 1173,
+            "scope": 1267,
             "src": "274:22:4",
             "stateVariable": true,
             "storageLocation": "default",
@@ -2369,7 +2369,7 @@
               "typeString": "uint256"
             },
             "typeName": {
-              "id": 1032,
+              "id": 1126,
               "name": "uint",
               "nodeType": "ElementaryTypeName",
               "src": "274:4:4",
@@ -2383,25 +2383,25 @@
           },
           {
             "body": {
-              "id": 1048,
+              "id": 1142,
               "nodeType": "Block",
               "src": "392:102:4",
               "statements": [
                 {
                   "expression": {
                     "argumentTypes": null,
-                    "id": 1042,
+                    "id": 1136,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
                     "lValueRequested": false,
                     "leftHandSide": {
                       "argumentTypes": null,
-                      "id": 1040,
+                      "id": 1134,
                       "name": "price",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
-                      "referencedDeclaration": 1031,
+                      "referencedDeclaration": 1125,
                       "src": "402:5:4",
                       "typeDescriptions": {
                         "typeIdentifier": "t_uint256",
@@ -2412,11 +2412,11 @@
                     "operator": "=",
                     "rightHandSide": {
                       "argumentTypes": null,
-                      "id": 1041,
+                      "id": 1135,
                       "name": "_price",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
-                      "referencedDeclaration": 1035,
+                      "referencedDeclaration": 1129,
                       "src": "410:6:4",
                       "typeDescriptions": {
                         "typeIdentifier": "t_uint256",
@@ -2429,25 +2429,25 @@
                       "typeString": "uint256"
                     }
                   },
-                  "id": 1043,
+                  "id": 1137,
                   "nodeType": "ExpressionStatement",
                   "src": "402:14:4"
                 },
                 {
                   "expression": {
                     "argumentTypes": null,
-                    "id": 1046,
+                    "id": 1140,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
                     "lValueRequested": false,
                     "leftHandSide": {
                       "argumentTypes": null,
-                      "id": 1044,
+                      "id": 1138,
                       "name": "stampCount",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
-                      "referencedDeclaration": 1033,
+                      "referencedDeclaration": 1127,
                       "src": "473:10:4",
                       "typeDescriptions": {
                         "typeIdentifier": "t_uint256",
@@ -2459,7 +2459,7 @@
                     "rightHandSide": {
                       "argumentTypes": null,
                       "hexValue": "30",
-                      "id": 1045,
+                      "id": 1139,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": true,
@@ -2480,29 +2480,29 @@
                       "typeString": "uint256"
                     }
                   },
-                  "id": 1047,
+                  "id": 1141,
                   "nodeType": "ExpressionStatement",
                   "src": "473:14:4"
                 }
               ]
             },
             "documentation": null,
-            "id": 1049,
+            "id": 1143,
             "implemented": true,
             "kind": "constructor",
             "modifiers": [],
             "name": "",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 1038,
+              "id": 1132,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 1035,
+                  "id": 1129,
                   "name": "_price",
                   "nodeType": "VariableDeclaration",
-                  "scope": 1049,
+                  "scope": 1143,
                   "src": "349:11:4",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -2511,7 +2511,7 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 1034,
+                    "id": 1128,
                     "name": "uint",
                     "nodeType": "ElementaryTypeName",
                     "src": "349:4:4",
@@ -2525,10 +2525,10 @@
                 },
                 {
                   "constant": false,
-                  "id": 1037,
+                  "id": 1131,
                   "name": "_fiatContract",
                   "nodeType": "VariableDeclaration",
-                  "scope": 1049,
+                  "scope": 1143,
                   "src": "362:21:4",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -2537,7 +2537,7 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 1036,
+                    "id": 1130,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
                     "src": "362:7:4",
@@ -2554,12 +2554,12 @@
               "src": "348:36:4"
             },
             "returnParameters": {
-              "id": 1039,
+              "id": 1133,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "392:0:4"
             },
-            "scope": 1173,
+            "scope": 1267,
             "src": "337:157:4",
             "stateMutability": "nonpayable",
             "superFunction": null,
@@ -2567,7 +2567,7 @@
           },
           {
             "body": {
-              "id": 1063,
+              "id": 1157,
               "nodeType": "Block",
               "src": "577:54:4",
               "statements": [
@@ -2582,14 +2582,14 @@
                           "arguments": [
                             {
                               "argumentTypes": null,
-                              "id": 1058,
+                              "id": 1152,
                               "name": "this",
                               "nodeType": "Identifier",
                               "overloadedDeclarations": [],
-                              "referencedDeclaration": 1207,
+                              "referencedDeclaration": 1301,
                               "src": "610:4:4",
                               "typeDescriptions": {
-                                "typeIdentifier": "t_contract$_TimeStamping_$1173",
+                                "typeIdentifier": "t_contract$_TimeStamping_$1267",
                                 "typeString": "contract TimeStamping"
                               }
                             }
@@ -2597,11 +2597,11 @@
                           "expression": {
                             "argumentTypes": [
                               {
-                                "typeIdentifier": "t_contract$_TimeStamping_$1173",
+                                "typeIdentifier": "t_contract$_TimeStamping_$1267",
                                 "typeString": "contract TimeStamping"
                               }
                             ],
-                            "id": 1057,
+                            "id": 1151,
                             "isConstant": false,
                             "isLValue": false,
                             "isPure": true,
@@ -2614,7 +2614,7 @@
                             },
                             "typeName": "address"
                           },
-                          "id": 1059,
+                          "id": 1153,
                           "isConstant": false,
                           "isLValue": false,
                           "isPure": false,
@@ -2628,7 +2628,7 @@
                             "typeString": "address payable"
                           }
                         },
-                        "id": 1060,
+                        "id": 1154,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": false,
@@ -2652,7 +2652,7 @@
                       ],
                       "expression": {
                         "argumentTypes": null,
-                        "id": 1054,
+                        "id": 1148,
                         "name": "owner",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
@@ -2663,7 +2663,7 @@
                           "typeString": "address payable"
                         }
                       },
-                      "id": 1056,
+                      "id": 1150,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": false,
@@ -2677,7 +2677,7 @@
                         "typeString": "function (uint256)"
                       }
                     },
-                    "id": 1061,
+                    "id": 1155,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
@@ -2691,23 +2691,23 @@
                       "typeString": "tuple()"
                     }
                   },
-                  "id": 1062,
+                  "id": 1156,
                   "nodeType": "ExpressionStatement",
                   "src": "587:37:4"
                 }
               ]
             },
             "documentation": null,
-            "id": 1064,
+            "id": 1158,
             "implemented": true,
             "kind": "function",
             "modifiers": [
               {
                 "arguments": null,
-                "id": 1052,
+                "id": 1146,
                 "modifierName": {
                   "argumentTypes": null,
-                  "id": 1051,
+                  "id": 1145,
                   "name": "onlyOwner",
                   "nodeType": "Identifier",
                   "overloadedDeclarations": [],
@@ -2725,18 +2725,18 @@
             "name": "withdrawFunds",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 1050,
+              "id": 1144,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "557:2:4"
             },
             "returnParameters": {
-              "id": 1053,
+              "id": 1147,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "577:0:4"
             },
-            "scope": 1173,
+            "scope": 1267,
             "src": "535:96:4",
             "stateMutability": "nonpayable",
             "superFunction": null,
@@ -2744,31 +2744,31 @@
           },
           {
             "body": {
-              "id": 1067,
+              "id": 1161,
               "nodeType": "Block",
               "src": "693:8:4",
               "statements": []
             },
             "documentation": null,
-            "id": 1068,
+            "id": 1162,
             "implemented": true,
             "kind": "fallback",
             "modifiers": [],
             "name": "",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 1065,
+              "id": 1159,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "673:2:4"
             },
             "returnParameters": {
-              "id": 1066,
+              "id": 1160,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "693:0:4"
             },
-            "scope": 1173,
+            "scope": 1267,
             "src": "664:37:4",
             "stateMutability": "payable",
             "superFunction": null,
@@ -2776,7 +2776,7 @@
           },
           {
             "body": {
-              "id": 1077,
+              "id": 1171,
               "nodeType": "Block",
               "src": "779:80:4",
               "statements": [
@@ -2787,18 +2787,18 @@
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
                     },
-                    "id": 1075,
+                    "id": 1169,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
                     "lValueRequested": false,
                     "leftExpression": {
                       "argumentTypes": null,
-                      "id": 1073,
+                      "id": 1167,
                       "name": "price",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
-                      "referencedDeclaration": 1031,
+                      "referencedDeclaration": 1125,
                       "src": "841:5:4",
                       "typeDescriptions": {
                         "typeIdentifier": "t_uint256",
@@ -2810,7 +2810,7 @@
                     "rightExpression": {
                       "argumentTypes": null,
                       "hexValue": "313330",
-                      "id": 1074,
+                      "id": 1168,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": true,
@@ -2831,36 +2831,36 @@
                       "typeString": "uint256"
                     }
                   },
-                  "functionReturnParameters": 1072,
-                  "id": 1076,
+                  "functionReturnParameters": 1166,
+                  "id": 1170,
                   "nodeType": "Return",
                   "src": "834:18:4"
                 }
               ]
             },
             "documentation": null,
-            "id": 1078,
+            "id": 1172,
             "implemented": true,
             "kind": "function",
             "modifiers": [],
             "name": "getEthPrice",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 1069,
+              "id": 1163,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "750:2:4"
             },
             "returnParameters": {
-              "id": 1072,
+              "id": 1166,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 1071,
+                  "id": 1165,
                   "name": "",
                   "nodeType": "VariableDeclaration",
-                  "scope": 1078,
+                  "scope": 1172,
                   "src": "774:4:4",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -2869,7 +2869,7 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 1070,
+                    "id": 1164,
                     "name": "uint",
                     "nodeType": "ElementaryTypeName",
                     "src": "774:4:4",
@@ -2884,7 +2884,7 @@
               ],
               "src": "773:6:4"
             },
-            "scope": 1173,
+            "scope": 1267,
             "src": "730:129:4",
             "stateMutability": "view",
             "superFunction": null,
@@ -2892,7 +2892,7 @@
           },
           {
             "body": {
-              "id": 1102,
+              "id": 1196,
               "nodeType": "Block",
               "src": "986:113:4",
               "statements": [
@@ -2906,7 +2906,7 @@
                           "typeIdentifier": "t_bool",
                           "typeString": "bool"
                         },
-                        "id": 1093,
+                        "id": 1187,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": false,
@@ -2917,7 +2917,7 @@
                             "typeIdentifier": "t_address_payable",
                             "typeString": "address payable"
                           },
-                          "id": 1087,
+                          "id": 1181,
                           "isConstant": false,
                           "isLValue": false,
                           "isPure": false,
@@ -2926,18 +2926,18 @@
                             "argumentTypes": null,
                             "expression": {
                               "argumentTypes": null,
-                              "id": 1084,
+                              "id": 1178,
                               "name": "msg",
                               "nodeType": "Identifier",
                               "overloadedDeclarations": [],
-                              "referencedDeclaration": 1188,
+                              "referencedDeclaration": 1282,
                               "src": "1004:3:4",
                               "typeDescriptions": {
                                 "typeIdentifier": "t_magic_message",
                                 "typeString": "msg"
                               }
                             },
-                            "id": 1085,
+                            "id": 1179,
                             "isConstant": false,
                             "isLValue": false,
                             "isPure": false,
@@ -2955,7 +2955,7 @@
                           "operator": "!=",
                           "rightExpression": {
                             "argumentTypes": null,
-                            "id": 1086,
+                            "id": 1180,
                             "name": "owner",
                             "nodeType": "Identifier",
                             "overloadedDeclarations": [],
@@ -2980,7 +2980,7 @@
                             "typeIdentifier": "t_uint256",
                             "typeString": "uint256"
                           },
-                          "id": 1092,
+                          "id": 1186,
                           "isConstant": false,
                           "isLValue": false,
                           "isPure": false,
@@ -2989,18 +2989,18 @@
                             "argumentTypes": null,
                             "expression": {
                               "argumentTypes": null,
-                              "id": 1088,
+                              "id": 1182,
                               "name": "msg",
                               "nodeType": "Identifier",
                               "overloadedDeclarations": [],
-                              "referencedDeclaration": 1188,
+                              "referencedDeclaration": 1282,
                               "src": "1027:3:4",
                               "typeDescriptions": {
                                 "typeIdentifier": "t_magic_message",
                                 "typeString": "msg"
                               }
                             },
-                            "id": 1089,
+                            "id": 1183,
                             "isConstant": false,
                             "isLValue": false,
                             "isPure": false,
@@ -3021,18 +3021,18 @@
                             "arguments": [],
                             "expression": {
                               "argumentTypes": [],
-                              "id": 1090,
+                              "id": 1184,
                               "name": "getEthPrice",
                               "nodeType": "Identifier",
                               "overloadedDeclarations": [],
-                              "referencedDeclaration": 1078,
+                              "referencedDeclaration": 1172,
                               "src": "1040:11:4",
                               "typeDescriptions": {
                                 "typeIdentifier": "t_function_internal_view$__$returns$_t_uint256_$",
                                 "typeString": "function () view returns (uint256)"
                               }
                             },
-                            "id": 1091,
+                            "id": 1185,
                             "isConstant": false,
                             "isLValue": false,
                             "isPure": false,
@@ -3066,21 +3066,21 @@
                           "typeString": "bool"
                         }
                       ],
-                      "id": 1083,
+                      "id": 1177,
                       "name": "require",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [
-                        1191,
-                        1192
+                        1285,
+                        1286
                       ],
-                      "referencedDeclaration": 1191,
+                      "referencedDeclaration": 1285,
                       "src": "996:7:4",
                       "typeDescriptions": {
                         "typeIdentifier": "t_function_require_pure$_t_bool_$returns$__$",
                         "typeString": "function (bool) pure"
                       }
                     },
-                    "id": 1094,
+                    "id": 1188,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
@@ -3094,7 +3094,7 @@
                       "typeString": "tuple()"
                     }
                   },
-                  "id": 1095,
+                  "id": 1189,
                   "nodeType": "ExpressionStatement",
                   "src": "996:58:4"
                 },
@@ -3104,11 +3104,11 @@
                     "arguments": [
                       {
                         "argumentTypes": null,
-                        "id": 1097,
+                        "id": 1191,
                         "name": "_hash",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 1080,
+                        "referencedDeclaration": 1174,
                         "src": "1074:5:4",
                         "typeDescriptions": {
                           "typeIdentifier": "t_string_memory_ptr",
@@ -3119,18 +3119,18 @@
                         "argumentTypes": null,
                         "expression": {
                           "argumentTypes": null,
-                          "id": 1098,
+                          "id": 1192,
                           "name": "msg",
                           "nodeType": "Identifier",
                           "overloadedDeclarations": [],
-                          "referencedDeclaration": 1188,
+                          "referencedDeclaration": 1282,
                           "src": "1081:3:4",
                           "typeDescriptions": {
                             "typeIdentifier": "t_magic_message",
                             "typeString": "msg"
                           }
                         },
-                        "id": 1099,
+                        "id": 1193,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": false,
@@ -3156,18 +3156,18 @@
                           "typeString": "address payable"
                         }
                       ],
-                      "id": 1096,
+                      "id": 1190,
                       "name": "stampHash",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
-                      "referencedDeclaration": 1146,
+                      "referencedDeclaration": 1240,
                       "src": "1064:9:4",
                       "typeDescriptions": {
                         "typeIdentifier": "t_function_internal_nonpayable$_t_string_memory_ptr_$_t_address_$returns$__$",
                         "typeString": "function (string memory,address)"
                       }
                     },
-                    "id": 1100,
+                    "id": 1194,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
@@ -3181,29 +3181,29 @@
                       "typeString": "tuple()"
                     }
                   },
-                  "id": 1101,
+                  "id": 1195,
                   "nodeType": "ExpressionStatement",
                   "src": "1064:28:4"
                 }
               ]
             },
             "documentation": null,
-            "id": 1103,
+            "id": 1197,
             "implemented": true,
             "kind": "function",
             "modifiers": [],
             "name": "stamp",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 1081,
+              "id": 1175,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 1080,
+                  "id": 1174,
                   "name": "_hash",
                   "nodeType": "VariableDeclaration",
-                  "scope": 1103,
+                  "scope": 1197,
                   "src": "951:19:4",
                   "stateVariable": false,
                   "storageLocation": "memory",
@@ -3212,7 +3212,7 @@
                     "typeString": "string"
                   },
                   "typeName": {
-                    "id": 1079,
+                    "id": 1173,
                     "name": "string",
                     "nodeType": "ElementaryTypeName",
                     "src": "951:6:4",
@@ -3228,12 +3228,12 @@
               "src": "950:21:4"
             },
             "returnParameters": {
-              "id": 1082,
+              "id": 1176,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "986:0:4"
             },
-            "scope": 1173,
+            "scope": 1267,
             "src": "936:163:4",
             "stateMutability": "payable",
             "superFunction": null,
@@ -3241,7 +3241,7 @@
           },
           {
             "body": {
-              "id": 1116,
+              "id": 1210,
               "nodeType": "Block",
               "src": "1242:45:4",
               "statements": [
@@ -3251,11 +3251,11 @@
                     "arguments": [
                       {
                         "argumentTypes": null,
-                        "id": 1111,
+                        "id": 1205,
                         "name": "_hash",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 1105,
+                        "referencedDeclaration": 1199,
                         "src": "1262:5:4",
                         "typeDescriptions": {
                           "typeIdentifier": "t_string_memory_ptr",
@@ -3266,18 +3266,18 @@
                         "argumentTypes": null,
                         "expression": {
                           "argumentTypes": null,
-                          "id": 1112,
+                          "id": 1206,
                           "name": "msg",
                           "nodeType": "Identifier",
                           "overloadedDeclarations": [],
-                          "referencedDeclaration": 1188,
+                          "referencedDeclaration": 1282,
                           "src": "1269:3:4",
                           "typeDescriptions": {
                             "typeIdentifier": "t_magic_message",
                             "typeString": "msg"
                           }
                         },
-                        "id": 1113,
+                        "id": 1207,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": false,
@@ -3303,18 +3303,18 @@
                           "typeString": "address payable"
                         }
                       ],
-                      "id": 1110,
+                      "id": 1204,
                       "name": "stampHash",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
-                      "referencedDeclaration": 1146,
+                      "referencedDeclaration": 1240,
                       "src": "1252:9:4",
                       "typeDescriptions": {
                         "typeIdentifier": "t_function_internal_nonpayable$_t_string_memory_ptr_$_t_address_$returns$__$",
                         "typeString": "function (string memory,address)"
                       }
                     },
-                    "id": 1114,
+                    "id": 1208,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
@@ -3328,23 +3328,23 @@
                       "typeString": "tuple()"
                     }
                   },
-                  "id": 1115,
+                  "id": 1209,
                   "nodeType": "ExpressionStatement",
                   "src": "1252:28:4"
                 }
               ]
             },
             "documentation": null,
-            "id": 1117,
+            "id": 1211,
             "implemented": true,
             "kind": "function",
             "modifiers": [
               {
                 "arguments": null,
-                "id": 1108,
+                "id": 1202,
                 "modifierName": {
                   "argumentTypes": null,
-                  "id": 1107,
+                  "id": 1201,
                   "name": "onlyOwner",
                   "nodeType": "Identifier",
                   "overloadedDeclarations": [],
@@ -3362,15 +3362,15 @@
             "name": "ownerStamp",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 1106,
+              "id": 1200,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 1105,
+                  "id": 1199,
                   "name": "_hash",
                   "nodeType": "VariableDeclaration",
-                  "scope": 1117,
+                  "scope": 1211,
                   "src": "1196:19:4",
                   "stateVariable": false,
                   "storageLocation": "memory",
@@ -3379,7 +3379,7 @@
                     "typeString": "string"
                   },
                   "typeName": {
-                    "id": 1104,
+                    "id": 1198,
                     "name": "string",
                     "nodeType": "ElementaryTypeName",
                     "src": "1196:6:4",
@@ -3395,12 +3395,12 @@
               "src": "1195:21:4"
             },
             "returnParameters": {
-              "id": 1109,
+              "id": 1203,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "1242:0:4"
             },
-            "scope": 1173,
+            "scope": 1267,
             "src": "1176:111:4",
             "stateMutability": "payable",
             "superFunction": null,
@@ -3408,7 +3408,7 @@
           },
           {
             "body": {
-              "id": 1145,
+              "id": 1239,
               "nodeType": "Block",
               "src": "1410:126:4",
               "statements": [
@@ -3422,7 +3422,7 @@
                           "typeIdentifier": "t_uint256",
                           "typeString": "uint256"
                         },
-                        "id": 1130,
+                        "id": 1224,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": false,
@@ -3433,25 +3433,25 @@
                             "argumentTypes": null,
                             "baseExpression": {
                               "argumentTypes": null,
-                              "id": 1125,
+                              "id": 1219,
                               "name": "timestamps",
                               "nodeType": "Identifier",
                               "overloadedDeclarations": [],
-                              "referencedDeclaration": 1029,
+                              "referencedDeclaration": 1123,
                               "src": "1428:10:4",
                               "typeDescriptions": {
-                                "typeIdentifier": "t_mapping$_t_string_memory_$_t_struct$_Stamp_$1025_storage_$",
+                                "typeIdentifier": "t_mapping$_t_string_memory_$_t_struct$_Stamp_$1119_storage_$",
                                 "typeString": "mapping(string memory => struct TimeStamping.Stamp storage ref)"
                               }
                             },
-                            "id": 1127,
+                            "id": 1221,
                             "indexExpression": {
                               "argumentTypes": null,
-                              "id": 1126,
+                              "id": 1220,
                               "name": "_hash",
                               "nodeType": "Identifier",
                               "overloadedDeclarations": [],
-                              "referencedDeclaration": 1119,
+                              "referencedDeclaration": 1213,
                               "src": "1439:5:4",
                               "typeDescriptions": {
                                 "typeIdentifier": "t_string_memory_ptr",
@@ -3465,18 +3465,18 @@
                             "nodeType": "IndexAccess",
                             "src": "1428:17:4",
                             "typeDescriptions": {
-                              "typeIdentifier": "t_struct$_Stamp_$1025_storage",
+                              "typeIdentifier": "t_struct$_Stamp_$1119_storage",
                               "typeString": "struct TimeStamping.Stamp storage ref"
                             }
                           },
-                          "id": 1128,
+                          "id": 1222,
                           "isConstant": false,
                           "isLValue": true,
                           "isPure": false,
                           "lValueRequested": false,
                           "memberName": "timestamp",
                           "nodeType": "MemberAccess",
-                          "referencedDeclaration": 1024,
+                          "referencedDeclaration": 1118,
                           "src": "1428:27:4",
                           "typeDescriptions": {
                             "typeIdentifier": "t_uint256",
@@ -3488,7 +3488,7 @@
                         "rightExpression": {
                           "argumentTypes": null,
                           "hexValue": "30",
-                          "id": 1129,
+                          "id": 1223,
                           "isConstant": false,
                           "isLValue": false,
                           "isPure": true,
@@ -3517,21 +3517,21 @@
                           "typeString": "bool"
                         }
                       ],
-                      "id": 1124,
+                      "id": 1218,
                       "name": "require",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [
-                        1191,
-                        1192
+                        1285,
+                        1286
                       ],
-                      "referencedDeclaration": 1191,
+                      "referencedDeclaration": 1285,
                       "src": "1420:7:4",
                       "typeDescriptions": {
                         "typeIdentifier": "t_function_require_pure$_t_bool_$returns$__$",
                         "typeString": "function (bool) pure"
                       }
                     },
-                    "id": 1131,
+                    "id": 1225,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
@@ -3545,14 +3545,14 @@
                       "typeString": "tuple()"
                     }
                   },
-                  "id": 1132,
+                  "id": 1226,
                   "nodeType": "ExpressionStatement",
                   "src": "1420:41:4"
                 },
                 {
                   "expression": {
                     "argumentTypes": null,
-                    "id": 1140,
+                    "id": 1234,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
@@ -3561,25 +3561,25 @@
                       "argumentTypes": null,
                       "baseExpression": {
                         "argumentTypes": null,
-                        "id": 1133,
+                        "id": 1227,
                         "name": "timestamps",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 1029,
+                        "referencedDeclaration": 1123,
                         "src": "1471:10:4",
                         "typeDescriptions": {
-                          "typeIdentifier": "t_mapping$_t_string_memory_$_t_struct$_Stamp_$1025_storage_$",
+                          "typeIdentifier": "t_mapping$_t_string_memory_$_t_struct$_Stamp_$1119_storage_$",
                           "typeString": "mapping(string memory => struct TimeStamping.Stamp storage ref)"
                         }
                       },
-                      "id": 1135,
+                      "id": 1229,
                       "indexExpression": {
                         "argumentTypes": null,
-                        "id": 1134,
+                        "id": 1228,
                         "name": "_hash",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 1119,
+                        "referencedDeclaration": 1213,
                         "src": "1482:5:4",
                         "typeDescriptions": {
                           "typeIdentifier": "t_string_memory_ptr",
@@ -3593,7 +3593,7 @@
                       "nodeType": "IndexAccess",
                       "src": "1471:17:4",
                       "typeDescriptions": {
-                        "typeIdentifier": "t_struct$_Stamp_$1025_storage",
+                        "typeIdentifier": "t_struct$_Stamp_$1119_storage",
                         "typeString": "struct TimeStamping.Stamp storage ref"
                       }
                     },
@@ -3604,11 +3604,11 @@
                       "arguments": [
                         {
                           "argumentTypes": null,
-                          "id": 1137,
+                          "id": 1231,
                           "name": "user",
                           "nodeType": "Identifier",
                           "overloadedDeclarations": [],
-                          "referencedDeclaration": 1121,
+                          "referencedDeclaration": 1215,
                           "src": "1497:4:4",
                           "typeDescriptions": {
                             "typeIdentifier": "t_address",
@@ -3617,11 +3617,11 @@
                         },
                         {
                           "argumentTypes": null,
-                          "id": 1138,
+                          "id": 1232,
                           "name": "now",
                           "nodeType": "Identifier",
                           "overloadedDeclarations": [],
-                          "referencedDeclaration": 1190,
+                          "referencedDeclaration": 1284,
                           "src": "1503:3:4",
                           "typeDescriptions": {
                             "typeIdentifier": "t_uint256",
@@ -3640,18 +3640,18 @@
                             "typeString": "uint256"
                           }
                         ],
-                        "id": 1136,
+                        "id": 1230,
                         "name": "Stamp",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 1025,
+                        "referencedDeclaration": 1119,
                         "src": "1491:5:4",
                         "typeDescriptions": {
-                          "typeIdentifier": "t_type$_t_struct$_Stamp_$1025_storage_ptr_$",
+                          "typeIdentifier": "t_type$_t_struct$_Stamp_$1119_storage_ptr_$",
                           "typeString": "type(struct TimeStamping.Stamp storage pointer)"
                         }
                       },
-                      "id": 1139,
+                      "id": 1233,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": false,
@@ -3661,24 +3661,24 @@
                       "nodeType": "FunctionCall",
                       "src": "1491:16:4",
                       "typeDescriptions": {
-                        "typeIdentifier": "t_struct$_Stamp_$1025_memory",
+                        "typeIdentifier": "t_struct$_Stamp_$1119_memory",
                         "typeString": "struct TimeStamping.Stamp memory"
                       }
                     },
                     "src": "1471:36:4",
                     "typeDescriptions": {
-                      "typeIdentifier": "t_struct$_Stamp_$1025_storage",
+                      "typeIdentifier": "t_struct$_Stamp_$1119_storage",
                       "typeString": "struct TimeStamping.Stamp storage ref"
                     }
                   },
-                  "id": 1141,
+                  "id": 1235,
                   "nodeType": "ExpressionStatement",
                   "src": "1471:36:4"
                 },
                 {
                   "expression": {
                     "argumentTypes": null,
-                    "id": 1143,
+                    "id": 1237,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
@@ -3689,11 +3689,11 @@
                     "src": "1517:12:4",
                     "subExpression": {
                       "argumentTypes": null,
-                      "id": 1142,
+                      "id": 1236,
                       "name": "stampCount",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
-                      "referencedDeclaration": 1033,
+                      "referencedDeclaration": 1127,
                       "src": "1517:10:4",
                       "typeDescriptions": {
                         "typeIdentifier": "t_uint256",
@@ -3705,29 +3705,29 @@
                       "typeString": "uint256"
                     }
                   },
-                  "id": 1144,
+                  "id": 1238,
                   "nodeType": "ExpressionStatement",
                   "src": "1517:12:4"
                 }
               ]
             },
             "documentation": null,
-            "id": 1146,
+            "id": 1240,
             "implemented": true,
             "kind": "function",
             "modifiers": [],
             "name": "stampHash",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 1122,
+              "id": 1216,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 1119,
+                  "id": 1213,
                   "name": "_hash",
                   "nodeType": "VariableDeclaration",
-                  "scope": 1146,
+                  "scope": 1240,
                   "src": "1367:19:4",
                   "stateVariable": false,
                   "storageLocation": "memory",
@@ -3736,7 +3736,7 @@
                     "typeString": "string"
                   },
                   "typeName": {
-                    "id": 1118,
+                    "id": 1212,
                     "name": "string",
                     "nodeType": "ElementaryTypeName",
                     "src": "1367:6:4",
@@ -3750,10 +3750,10 @@
                 },
                 {
                   "constant": false,
-                  "id": 1121,
+                  "id": 1215,
                   "name": "user",
                   "nodeType": "VariableDeclaration",
-                  "scope": 1146,
+                  "scope": 1240,
                   "src": "1388:12:4",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -3762,7 +3762,7 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 1120,
+                    "id": 1214,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
                     "src": "1388:7:4",
@@ -3779,12 +3779,12 @@
               "src": "1366:35:4"
             },
             "returnParameters": {
-              "id": 1123,
+              "id": 1217,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "1410:0:4"
             },
-            "scope": 1173,
+            "scope": 1267,
             "src": "1348:188:4",
             "stateMutability": "nonpayable",
             "superFunction": null,
@@ -3792,7 +3792,7 @@
           },
           {
             "body": {
-              "id": 1158,
+              "id": 1252,
               "nodeType": "Block",
               "src": "1675:51:4",
               "statements": [
@@ -3803,25 +3803,25 @@
                       "argumentTypes": null,
                       "baseExpression": {
                         "argumentTypes": null,
-                        "id": 1153,
+                        "id": 1247,
                         "name": "timestamps",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 1029,
+                        "referencedDeclaration": 1123,
                         "src": "1692:10:4",
                         "typeDescriptions": {
-                          "typeIdentifier": "t_mapping$_t_string_memory_$_t_struct$_Stamp_$1025_storage_$",
+                          "typeIdentifier": "t_mapping$_t_string_memory_$_t_struct$_Stamp_$1119_storage_$",
                           "typeString": "mapping(string memory => struct TimeStamping.Stamp storage ref)"
                         }
                       },
-                      "id": 1155,
+                      "id": 1249,
                       "indexExpression": {
                         "argumentTypes": null,
-                        "id": 1154,
+                        "id": 1248,
                         "name": "_hash",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 1148,
+                        "referencedDeclaration": 1242,
                         "src": "1703:5:4",
                         "typeDescriptions": {
                           "typeIdentifier": "t_string_memory_ptr",
@@ -3835,48 +3835,48 @@
                       "nodeType": "IndexAccess",
                       "src": "1692:17:4",
                       "typeDescriptions": {
-                        "typeIdentifier": "t_struct$_Stamp_$1025_storage",
+                        "typeIdentifier": "t_struct$_Stamp_$1119_storage",
                         "typeString": "struct TimeStamping.Stamp storage ref"
                       }
                     },
-                    "id": 1156,
+                    "id": 1250,
                     "isConstant": false,
                     "isLValue": true,
                     "isPure": false,
                     "lValueRequested": false,
                     "memberName": "timestamp",
                     "nodeType": "MemberAccess",
-                    "referencedDeclaration": 1024,
+                    "referencedDeclaration": 1118,
                     "src": "1692:27:4",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
                     }
                   },
-                  "functionReturnParameters": 1152,
-                  "id": 1157,
+                  "functionReturnParameters": 1246,
+                  "id": 1251,
                   "nodeType": "Return",
                   "src": "1685:34:4"
                 }
               ]
             },
             "documentation": null,
-            "id": 1159,
+            "id": 1253,
             "implemented": true,
             "kind": "function",
             "modifiers": [],
             "name": "getTimestamp",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 1149,
+              "id": 1243,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 1148,
+                  "id": 1242,
                   "name": "_hash",
                   "nodeType": "VariableDeclaration",
-                  "scope": 1159,
+                  "scope": 1253,
                   "src": "1628:19:4",
                   "stateVariable": false,
                   "storageLocation": "memory",
@@ -3885,7 +3885,7 @@
                     "typeString": "string"
                   },
                   "typeName": {
-                    "id": 1147,
+                    "id": 1241,
                     "name": "string",
                     "nodeType": "ElementaryTypeName",
                     "src": "1628:6:4",
@@ -3901,15 +3901,15 @@
               "src": "1627:21:4"
             },
             "returnParameters": {
-              "id": 1152,
+              "id": 1246,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 1151,
+                  "id": 1245,
                   "name": "",
                   "nodeType": "VariableDeclaration",
-                  "scope": 1159,
+                  "scope": 1253,
                   "src": "1670:4:4",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -3918,7 +3918,7 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 1150,
+                    "id": 1244,
                     "name": "uint",
                     "nodeType": "ElementaryTypeName",
                     "src": "1670:4:4",
@@ -3933,7 +3933,7 @@
               ],
               "src": "1669:6:4"
             },
-            "scope": 1173,
+            "scope": 1267,
             "src": "1606:120:4",
             "stateMutability": "view",
             "superFunction": null,
@@ -3941,7 +3941,7 @@
           },
           {
             "body": {
-              "id": 1171,
+              "id": 1265,
               "nodeType": "Block",
               "src": "1856:46:4",
               "statements": [
@@ -3952,25 +3952,25 @@
                       "argumentTypes": null,
                       "baseExpression": {
                         "argumentTypes": null,
-                        "id": 1166,
+                        "id": 1260,
                         "name": "timestamps",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 1029,
+                        "referencedDeclaration": 1123,
                         "src": "1873:10:4",
                         "typeDescriptions": {
-                          "typeIdentifier": "t_mapping$_t_string_memory_$_t_struct$_Stamp_$1025_storage_$",
+                          "typeIdentifier": "t_mapping$_t_string_memory_$_t_struct$_Stamp_$1119_storage_$",
                           "typeString": "mapping(string memory => struct TimeStamping.Stamp storage ref)"
                         }
                       },
-                      "id": 1168,
+                      "id": 1262,
                       "indexExpression": {
                         "argumentTypes": null,
-                        "id": 1167,
+                        "id": 1261,
                         "name": "_hash",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 1161,
+                        "referencedDeclaration": 1255,
                         "src": "1884:5:4",
                         "typeDescriptions": {
                           "typeIdentifier": "t_string_memory_ptr",
@@ -3984,48 +3984,48 @@
                       "nodeType": "IndexAccess",
                       "src": "1873:17:4",
                       "typeDescriptions": {
-                        "typeIdentifier": "t_struct$_Stamp_$1025_storage",
+                        "typeIdentifier": "t_struct$_Stamp_$1119_storage",
                         "typeString": "struct TimeStamping.Stamp storage ref"
                       }
                     },
-                    "id": 1169,
+                    "id": 1263,
                     "isConstant": false,
                     "isLValue": true,
                     "isPure": false,
                     "lValueRequested": false,
                     "memberName": "user",
                     "nodeType": "MemberAccess",
-                    "referencedDeclaration": 1022,
+                    "referencedDeclaration": 1116,
                     "src": "1873:22:4",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
                       "typeString": "address"
                     }
                   },
-                  "functionReturnParameters": 1165,
-                  "id": 1170,
+                  "functionReturnParameters": 1259,
+                  "id": 1264,
                   "nodeType": "Return",
                   "src": "1866:29:4"
                 }
               ]
             },
             "documentation": null,
-            "id": 1172,
+            "id": 1266,
             "implemented": true,
             "kind": "function",
             "modifiers": [],
             "name": "getUser",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 1162,
+              "id": 1256,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 1161,
+                  "id": 1255,
                   "name": "_hash",
                   "nodeType": "VariableDeclaration",
-                  "scope": 1172,
+                  "scope": 1266,
                   "src": "1806:19:4",
                   "stateVariable": false,
                   "storageLocation": "memory",
@@ -4034,7 +4034,7 @@
                     "typeString": "string"
                   },
                   "typeName": {
-                    "id": 1160,
+                    "id": 1254,
                     "name": "string",
                     "nodeType": "ElementaryTypeName",
                     "src": "1806:6:4",
@@ -4050,15 +4050,15 @@
               "src": "1805:21:4"
             },
             "returnParameters": {
-              "id": 1165,
+              "id": 1259,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 1164,
+                  "id": 1258,
                   "name": "",
                   "nodeType": "VariableDeclaration",
-                  "scope": 1172,
+                  "scope": 1266,
                   "src": "1848:7:4",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -4067,7 +4067,7 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 1163,
+                    "id": 1257,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
                     "src": "1848:7:4",
@@ -4083,14 +4083,14 @@
               ],
               "src": "1847:9:4"
             },
-            "scope": 1173,
+            "scope": 1267,
             "src": "1789:113:4",
             "stateMutability": "view",
             "superFunction": null,
             "visibility": "public"
           }
         ],
-        "scope": 1174,
+        "scope": 1268,
         "src": "88:1816:4"
       }
     ],
@@ -4110,8 +4110,8 @@
     "5777": {
       "events": {},
       "links": {},
-      "address": "0xf32235620Ce7aE274c377A27cD1a2F087c23a104",
-      "transactionHash": "0xcdaf69dd3674562d6925e9dccd2360d59edb090db57925eafef4f2604f4ab60f"
+      "address": "0x00ff6EE6902D3464D6152dd8f998f41258d75247",
+      "transactionHash": "0x9284816a89c8142d7e77489c83120d34f38d927a96fc87695689ede11862d75c"
     },
     "1551869363759": {
       "events": {},
@@ -4145,7 +4145,7 @@
     }
   },
   "schemaVersion": "3.0.2",
-  "updatedAt": "2019-03-31T14:53:09.799Z",
+  "updatedAt": "2019-05-13T12:10:16.820Z",
   "devdoc": {
     "methods": {}
   },

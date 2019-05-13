@@ -33,7 +33,7 @@ const RequestStatus_String = {
 
 /*Returns the string associated to the given status (Between 0 and 3)*/
 const getStatusString = (status) => {
-  switch (status.toNumber()) {
+  switch (status) {
     case RequestStatus.NOT_REQUESTED:
       return RequestStatus_String.NOT_REQUESTED;
     case RequestStatus.PENDING:

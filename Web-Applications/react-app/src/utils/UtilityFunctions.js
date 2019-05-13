@@ -1,8 +1,10 @@
 /*Set of utility functions used multiple times */
 
-import Dialog from 'react-bootstrap-dialog';
 import {LARGE_FILE} from "./ErrorHandler";
 import {Constants} from "./Constants";
+import Dialog from 'react-bootstrap-dialog'
+
+const EMAIL_REGEX = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
 
 /*Function that triggers the download of the given bytes*/
 const saveByteArray = (name, bytes, window, document) => {
@@ -77,21 +79,45 @@ const fromEther = (priceInEth, web3) => {
   }
 };
 
-/*Utility function to validate emails*/
+// ==================== Form fields validation functions ====================
+
+/*Checks if Patent Name length is less than 100 */
+const validateName = (name) => {
+  let length = name.length;
+  if (length === 0) {
+    return null;
+  } else if (length <= 100) {
+    return "success"
+  } else {
+    return "error";
+  }
+};
+
+/*Checks that price >= 0*/
+const validatePrice = (price) => {
+  if (price === "") {
+    return null;
+  }
+  const floatPrice = parseFloat(price);
+  // ensure price not negative and is in float format
+  return (floatPrice >= 0 && String(floatPrice) === price ? 'success' : 'error');
+};
+
+/*Utility function to validate email*/
 const validateEmail = (email) => {
-  const email_regex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
-  return email.match(email_regex) !== null ? 'success' : 'error';
+  if (email === '') {
+    return null;
+  }
+  return email.match(EMAIL_REGEX) !== null ? 'success' : 'error';
 };
 
 /*Utility function to validate emails*/
 const validateEmails = (email, repeat) => {
   if (email === '' || repeat === '') {
     return null;
-  } else if (email === repeat) {
-    return 'success'
-  } else {
-    return 'error'
   }
+  // (validateEmail(email) == 'success' &&
+  return (email === repeat) ? 'success' : 'error';
 };
 
 /*Utility function that returns true if the file is valid*/
@@ -135,7 +161,7 @@ const validateFiles = (files, showAlert=true) => {
     window.dialog.showAlert('At least one the file is not valid. Click for more info... (TBD)');
   }
   return validFiles;
-}
+};
 
 module.exports = {
   extractJson,
@@ -144,6 +170,8 @@ module.exports = {
   successfullTx,
   toEther,
   fromEther,
+  validateName,
+  validatePrice,
   validateFile,
   validateFiles,
   validateEmail,

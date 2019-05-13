@@ -2,8 +2,8 @@ import '../css/Pages.css'
 
 import React, {Component} from 'react';
 import {Grid, Row, Col} from 'react-bootstrap';
-import {EncryptFileButton, FieldGroup, SubmitButton, ContractNotFound} from '../utils/FunctionalComponents';
-import {validateEmail, validateFile} from '../utils/UtilityFunctions';
+import { EncryptFileButton, FieldGroup, SubmitButton, ContractNotFound, LicencesMenu } from '../utils/FunctionalComponents';
+import { validateName, validatePrice, validateEmail, validateEmails, validateFile } from '../utils/UtilityFunctions';
 import {getFileHash} from '../utils/CryptoUtils'
 import wrapWithMetamask from '../MetaMaskWrapper'
 import Patenting from '../../build/contracts/Patenting';
@@ -15,8 +15,9 @@ import {INVALID_FORM, KEY_GENERATION_ERROR, IPFS_ERROR, contractError} from '../
 import Dialog from 'react-bootstrap-dialog';
 import Paper from "@material-ui/core/Paper";
 import Divider from "@material-ui/core/Divider";
+import licences from '../utils/Licences'
 
-/*---------------------------------------------------------------------------------- DONE ----------------------------------------------------------------------------------*/
+/*----------------------------------------------------- DONE -----------------------------------------------------*/
 
 
 /*Component for Patent Deposit*/
@@ -30,8 +31,9 @@ class DepositFile_class extends Component {
       hash: "",
       ipfsLocation: "",
       patentName: "",
-      price: "",
-      email_address: "",
+      licencePrices: Array(Object.keys(licences).length).fill(''),
+      licence: Object.keys(licences).length - 1,
+      email: "",
       repeat_email: "",
       file: "",
       fileState: FileStates.NOT_ENCRYPTED,
@@ -76,48 +78,33 @@ class DepositFile_class extends Component {
       hash: "",
       ipfsLocation: "",
       patentName: "",
-      price: "",
+      licencePrices: Array(Object.keys(licences).length).fill(''),
+      licence: Object.keys(licences).length - 1,
       file: "",
       fileExt: '',
       fileState: FileStates.NOT_ENCRYPTED,
-      email_address: "",
+      email: "",
       repeat_email: "",
       waitingTransaction: false
     })
   }
 
-  /*Checks if Patent Name length is less than 100 */
-  validateName() {
-    let length = this.state.patentName.length;
-    if (length === 0) {
-      return null;
-    } else if (length <= 100) {
-      return "success"
-    } else {
-      return "error";
-    }
-  }
-
-  /*Checks that price >= 0*/
-  validatePrice() {
-    if (!this.state.price) {
-      return null
-    } else {
-      const price = parseInt(this.state.price, 10);
-      return (price >= 0 ? 'success' : 'error');
-    }
-  }
-
+  // Component validation functions
+  validatePrices = () => this.state.licencePrices.slice(1, this.state.licence+1).every(price => (validatePrice(price) === 'success'));
+  validateName = () => validateName(this.state.patentName);
+  validateEmail = () => validateEmail(this.state.email);
+  validateEmails = () => validateEmails(this.state.email, this.state.repeat_email);
 
   /*Returns True if all form validation pass*/
   validateForm() {
-    return (this.validatePrice() === 'success'
+    return (this.validatePrices()
+      && this.validateEmail() === 'success'
+      && this.validateEmails() === 'success'
       && this.validateName() === 'success'
       && this.state.hash !== ""
       && this.state.ipfsLocation !== ""
       && this.state.fileState === FileStates.ENCRYPTED)
   }
-
 
   /*--------------------------------- EVENT HANDLERS ---------------------------------*/
 
@@ -147,17 +134,23 @@ class DepositFile_class extends Component {
   handleFileUpload(file) {
     if (validateFile(file)) {
       const nameSplit = file.name.split('.');
-      // default patent name is the file name
-      if (!this.state.patentName) {
-        this.setState({ patentName: nameSplit[0] });
-      }
-      this.setState({ fileExt: nameSplit[1], waitingTransaction: true });
+      // patent name is the file name
+      this.setState({ patentName: nameSplit[0], fileExt: nameSplit[1], waitingTransaction: true });
       getFileHash(file, window).then(res => {
         this.setState({ waitingTransaction: false, file: file, hash: res, fileState: FileStates.NOT_ENCRYPTED })
       }).catch(err => window.dialog.showAlert(err));
     }
   }
 
+  handleLicenceChange(newLicence) {
+    this.setState({ licence: parseInt(newLicence, 10) });
+  }
+
+  handlePricesChange(licence, newPrice) {
+    let newPrices = this.state.licencePrices;
+    newPrices[licence] = newPrice;
+    this.setState({ licencePrices: newPrices });
+  }
 
   /* Handles the change in a form component
   * Computes : sha256 of the plain text document
@@ -176,30 +169,33 @@ class DepositFile_class extends Component {
 
 
   /*Function that triggers the contract call to Deposit a patent*/
+  // TODO: does not work with licence 0 only
   submitFile(e) {
     e.preventDefault();
     if (this.validateForm()) {
       this.setState({waitingTransaction: true});
-      const { patentName, fileExt, hash, price, ipfsLocation, email_address } = this.state;
+      const { patentName, fileExt, hash, licence, licencePrices, ipfsLocation, email } = this.state;
+      const prices = licencePrices.slice(1, this.state.licence+1).map(parseFloat);
       const completeName = patentName + '.' + fileExt;
-      this.state.contractInstance.depositPatent(completeName, hash, price, ipfsLocation, email_address, {
+      this.state.contractInstance.depositPatent(completeName, hash, licence, prices, ipfsLocation, email, {
         from: this.state.web3.eth.coinbase,
         value: this.state.etherPrice,
         gas: process.env.REACT_APP_GAS_LIMIT,
         gasPrice : this.state.gasPrice
-      }).then(tx => {
+      }).then(() => {
         return this.bundle.addFile() // Add the encrypted file to IPFS
       }).then(filesAdded => {
         this.resetForm();
+        const url = "https://ipfs.io/ipfs/" + filesAdded[0].hash;
         window.dialog.show({
           title: "Encrypted file has been successfully added to IPFS",
-          body: "IPFS location : ipfs.io/ipfs/" + filesAdded[0].hash,
+          body: "IPFS location : " + url,
           actions: [
             Dialog.OKAction(),
             Dialog.Action(
               'View encrypted File',
               () => {
-                let win = window.open("https://ipfs.io/ipfs/" + filesAdded[0].hash);
+                let win = window.open(url);
                 win.focus();
               })],
           bsSize: "large"
@@ -259,18 +255,19 @@ class DepositFile_class extends Component {
                              disabled={this.state.file === '' || this.state.fileState !== FileStates.NOT_ENCRYPTED} />
           <br/><Divider/><br/>
 
-          <FieldGroup name="price" id="formsControlsName" label="Price (in USD)" type="text"
-                      value={this.state.price} help=""
-                      onChange={this.handleChange} validation={this.validatePrice()}/>
-          <FieldGroup name="email_address" id="formsControlsEmail" label="Email address" type="email"
-                      value={this.state.email_address} placeholder="john@doe.com" help=""
-                      onChange={this.handleChange}/>
+          <LicencesMenu licence={this.state.licence} onLicenceChange={i => this.handleLicenceChange(i)}
+                        validatePrice={validatePrice} prices={this.state.licencePrices}
+                        onPricesChange={(l, p) => this.handlePricesChange(l, p)}/>
+          <br/><Divider/><br/>
+
+          <FieldGroup name="email" id="formsControlsEmail" label="Email address" type="email"
+                      value={this.state.email} placeholder="john@doe.com" help=""
+                      validation={this.validateEmail()} onChange={this.handleChange} />
           <FieldGroup name="repeat_email" id="formsControlsEmail" label="Repeat Email address" type="email"
                       value={this.state.repeat_email} placeholder="john@doe.com" help=""
-                      onChange={this.handleChange}
-                      validation={validateEmail(this.state.email_address, this.state.repeat_email)}/>
-
+                      validation={this.validateEmails()} onChange={this.handleChange}/>
           <Divider/><br/>
+
           <SubmitButton running={this.state.waitingTransaction} disabled={!this.validateForm()}/>
         </form>
       </Paper>

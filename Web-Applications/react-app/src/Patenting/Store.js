@@ -1,19 +1,26 @@
 import '../css/Pages.css'
 import React, {Component} from 'react';
 import {Table, Grid, Row} from 'react-bootstrap';
-import {ContractNotFound} from '../utils/FunctionalComponents';
-import {stampToDate, successfullTx} from '../utils/UtilityFunctions';
+import {
+  ContractNotFound,
+  FieldGroup,
+  LicenceSelector,
+  SubmitButton
+} from '../utils/FunctionalComponents';
+import {stampToDate, successfullTx, validateEmail, validateEmails} from '../utils/UtilityFunctions';
 import {getStatusString} from '../utils/Constants';
 import Patenting from '../../build/contracts/Patenting';
 import wrapWithMetamask from '../MetaMaskWrapper'
 
-import Dialog from 'react-bootstrap-dialog'
+import MuiDialog from '@material-ui/core/Dialog';
+import Dialog from 'react-bootstrap-dialog';
 import {generatePrivateKey, generatePublicKey} from '../utils/KeyGenerator'
-import {ALREADY_REQUESTED, KEY_GENERATION_ERROR, contractError} from '../utils/ErrorHandler'
+import {ALREADY_REQUESTED, ALREADY_OWNER, KEY_GENERATION_ERROR, contractError} from '../utils/ErrorHandler'
+import Divider from "@material-ui/core/Divider";
+import Paper from "@material-ui/core/Paper";
 
 /*Component for requesting access to a patent*/
 class Store_class extends Component {
-
 
   /*Constructor Method, initializes the State*/
   constructor(props) {
@@ -21,13 +28,17 @@ class Store_class extends Component {
     this.state = {
       web3: props.web3,
       contractInstance: null,
-      selectedPatent: "",
+      selectedPatent: null,
       numPatents: 0,
       patents: [],
-      gasPrice : 0
+      gasPrice : 0,
+      showRequestForm: false,
+      email: '',
+      repeat_email: '',
+      requestedLicence: 1,
     };
-
     this.getPatents = this.getPatents.bind(this);
+    this.handleChange = this.handleChange.bind(this);
   }
 
   /*Method called before the component is mounted, initializes the contract and the page content*/
@@ -45,6 +56,29 @@ class Store_class extends Component {
     }).catch(error => this.setState({contractInstance: null}));
   }
 
+  validateEmail = () => validateEmail(this.state.email);
+  validateEmails = () => validateEmails(this.state.email, this.state.repeat_email);
+
+  /*Returns True if all form validation pass*/
+  validateForm() {
+    return this.validateEmail() === 'success'
+      && this.validateEmails() === 'success'
+      && this.selectedPatent !== null;
+  }
+
+  closeForm() {
+    this.setState({ showRequestForm: false });
+    this.resetForm()
+  }
+
+  resetForm() {
+    this.setState({
+      email: '',
+      repeat_email: '',
+      requestedLicence: 1,
+      selectedPatent: null,
+    })
+  }
 
   resetPatents() {
     setTimeout(() => {
@@ -53,15 +87,20 @@ class Store_class extends Component {
     }, 3000)
   }
 
+  handleChange(e) {
+    e.preventDefault();
+    this.setState({ [e.target.name]: e.target.value });
+  }
+
   /*Function that gets all patent information form the contract and stores them in the state*/
   getPatents(numPatents) {
     if (this.state.contractInstance !== null) {
-      let instance = this.state.contractInstance;
+      const instance = this.state.contractInstance;
       for (let i = 0; i < numPatents; i++) {
         let new_entry = {};
         instance.patentNames.call(i).then(name => {
           new_entry['name'] = name;
-          return instance.getPatentOwner.call(name);
+          return instance.getPatentOwner.call(new_entry['name']);
         }).then(owner => {
           new_entry['owner'] = owner;
           return instance.getTimeStamp.call(new_entry['name'])
@@ -70,19 +109,22 @@ class Store_class extends Component {
           return instance.getPatentHash.call(new_entry['name']);
         }).then(hash => {
           new_entry['hash'] = hash;
-          return instance.getRequestStatus.call(new_entry['name'], this.state.web3.eth.coinbase);
+          return instance.getRequestStatus.call(new_entry['name'], this.state.web3.eth.accounts[0]);
         }).then(status => {
-          new_entry['status'] = getStatusString(status);
-          return instance.getPrice.call(new_entry['name'])
-        }).then(price => {
-          new_entry['price'] = price.toNumber();
-          return instance.getEthPrice(price);
-        }).then(ethPrice => {
-          new_entry['ethPrice'] = ethPrice;
+          new_entry['status'] = status.toNumber();
+          return instance.isDeleted.call(new_entry['name'])
+        }).then(isDeleted => {
+          new_entry['deleted'] = isDeleted;
+          return instance.getPrices.call(new_entry['name'])
+        }).then(prices => {
+          new_entry['prices'] = prices.map(price => price.toNumber());
+          return Promise.all(prices.map(price => instance.getEthPrice(price)));
+        }).then(ethPrices => {
+          new_entry['ethPrices'] = ethPrices.map(price => price.toNumber()); // = 0 because integers
           let patents = this.state.patents;
           patents.push(new_entry);
           this.setState({ patents });
-        })
+        });
       }
     }
   }
@@ -90,57 +132,51 @@ class Store_class extends Component {
   /*--------------------------------- EVENT HANDLERS ---------------------------------*/
 
 
-  promptEmail(patent) {
-    if (patent.owner !== this.state.web3.eth.coinbase) {
+  promptInformartions(patent) {
+    if (patent.owner !== this.state.web3.eth.accounts[0]) {
       this.state.contractInstance.canRequest.call(patent.name, this.state.web3.eth.coinbase).then(canRequest => {
         if (canRequest) {
-          window.dialog.show({
-            body: "Please provide us with your email so we can send you notifications regarding this request",
-            bsSize: 'medium',
-            prompt: Dialog.TextPrompt({placeholder: "your email"}),
-            actions: [
-              Dialog.CancelAction(),
-              Dialog.OKAction(diag => this.requestAccess(patent, diag.value))
-            ]
-          })
+          this.setState({ showRequestForm: true, selectedPatent: patent })
         } else {
           window.dialog.showAlert(ALREADY_REQUESTED)
         }
       })
     } else {
-      window.dialog.showAlert("You already own this file.");
-
+      window.dialog.showAlert(ALREADY_OWNER);
     }
   }
 
   /*Function that initiates the contract call and creates a request*/
-  requestAccess(patent, email) {
-    if (email === undefined){
+  // requestAccess(selectedPatent, requestedLicence, email) {
+  requestAccess(e) {
+    e.preventDefault();
+    const { selectedPatent, requestedLicence, email } = this.state;
+    if (email === ''){
       window.dialog.showAlert("Your email is needed to receive notifications");
-    } else if (email.match(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/) !== null){
-      generatePrivateKey(this.state.web3, patent.hash).then(key => { //Generate privateKey = ECDSA(sha3(sha256(file))
+    }
+    else if (email.match(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/) !== null){
+      generatePrivateKey(this.state.web3, selectedPatent.hash).then(key => { //Generate privateKey = ECDSA(sha3(sha256(file))
         let publicKey = generatePublicKey(key); // Generate public key associated to this private key
-        return this.state.contractInstance.requestAccess(patent.name, publicKey, email, { // New request = (account, publicKey, "")
-          from: this.state.web3.eth.coinbase,
-          value: patent.ethPrice,
+        return this.state.contractInstance.requestAccess(selectedPatent.name, requestedLicence, publicKey, email, {
+          from: this.state.web3.eth.accounts[0],
+          value: selectedPatent.ethPrices[requestedLicence-1],
           gas: process.env.REACT_APP_GAS_LIMIT,
           gasPrice : this.state.gasPrice
         });
       }).then(tx => {
+        this.closeForm()
         successfullTx(tx);
         this.resetPatents();
-      }).catch(e => {
-        if (e === KEY_GENERATION_ERROR){
+      }).catch(err => {
+        if (err === KEY_GENERATION_ERROR){
           window.dialog.showAlert(KEY_GENERATION_ERROR)
         } else {
-          contractError(e);
+          contractError(err);
         }
       });
     } else {
       window.dialog.showAlert("Please enter a valid email address")
     }
-
-
   }
 
   /*--------------------------------- USER INTERFACE COMPONENTS ---------------------------------*/
@@ -164,29 +200,49 @@ class Store_class extends Component {
     );
   }
 
+  renderRequestForm() {
+    return (
+      <Paper style={{ padding: 20 }}>
+        <form onSubmit={e => this.requestAccess(e)}>
+          <LicenceSelector prices={this.state.selectedPatent.prices}
+                           onLicenceChange={e => this.handleChange(e)} />
+          <FieldGroup name="email" id="formsControlsEmail" label="Email address" type="email"
+                      value={this.state.email} placeholder="john@doe.com"
+                      help={"So we can send you notifications regarding this request"}
+                      validation={this.validateEmail()} onChange={this.handleChange} />
+          <FieldGroup name="repeat_email" id="formsControlsEmail" label="Repeat Email address" type="email"
+                      value={this.state.repeat_email} placeholder="john@doe.com" help=""
+                      validation={this.validateEmails()}
+                      onChange={this.handleChange}/>
+          <Divider/><br/>
+          <SubmitButton disabled={!this.validateForm()}/>
+        </form>
+      </Paper>
+    );
+  }
+
   /*Returns a table row for the given patent*/
   getRow(patent) {
+    const isOwner = (patent.owner === this.state.web3.eth.accounts[0]);
     return (
-      <tr key={patent.name} onClick={this.promptEmail.bind(this, patent)}>
+      <tr key={patent.name} onClick={this.promptInformartions.bind(this, patent)}>
         <td>{patent.name}</td>
-        <td>{patent.owner === this.state.web3.eth.coinbase ? 'You' : patent.owner}</td>
+        <td>{isOwner ? 'You' : patent.owner}</td>
         <td>{stampToDate(patent.timestamp)}</td>
-        <td>{patent.price}</td>
-        <td>{patent.status}</td>
+        <td>{isOwner ? '-' : getStatusString(patent.status)}</td>
       </tr>
-    )
+    );
   }
 
   /*Returns a full table with patents*/
   renderTable() {
     if (this.state.numPatents !== 0) {
-      let table = this.state.patents.map(patent => this.getRow(patent));
+      let table = this.state.patents.filter(p => !p.deleted).map(patent => this.getRow(patent));
       let header = (
         <tr>
           <th>File Name</th>
           <th>Owner's address</th>
           <th>Submission Date</th>
-          <th>Price (USD)</th>
           <th>Request Status</th>
         </tr>
       );
@@ -206,13 +262,19 @@ class Store_class extends Component {
       return <ContractNotFound/>;
     } else {
       return (
-        <Grid>
-          <Row bsClass='contract-address'>
-            Contract at {this.state.contractInstance.address} <br/>
-            <br/> Current account {this.state.web3.eth.accounts[0]} (From Metamask)
-          </Row>
-          <Row>{this.renderTable()}</Row>
-        </Grid>);
+        <div>¨
+          <Grid>
+            <Row bsClass='contract-address'>
+              Contract at {this.state.contractInstance.address} <br/>
+              <br/> Current account {this.state.web3.eth.accounts[0]} (From Metamask)
+            </Row>
+            <Row>{this.renderTable()}</Row>
+          </Grid>
+          <MuiDialog disableEnforceFocus open={this.state.showRequestForm} onClose={() => this.closeForm()}>
+            {this.state.showRequestForm && this.renderRequestForm()}
+          </MuiDialog>
+        </div>
+      );
     }
   }
 }

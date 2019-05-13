@@ -2,7 +2,6 @@ import '../css/Pages.css'
 import React, {Component} from 'react';
 import {Grid, Row, PanelGroup} from 'react-bootstrap';
 import {ContractNotFound} from '../utils/FunctionalComponents';
-import {getStatusString} from '../utils/Constants';
 import Patenting from '../../build/contracts/Patenting';
 import wrapWithMetamask from '../MetaMaskWrapper'
 import {NOT_REQUESTED, contractError} from "../utils/ErrorHandler";
@@ -46,35 +45,43 @@ class MyRequests_class extends Component {
   /*Fetches the requests from the smart contract*/
   getMyRequests(numPatents) {
     if (this.state.contractInstance !== null) {
-      let instance = this.state.contractInstance;
+      const instance = this.state.contractInstance;
+      const currentAccount = this.state.web3.eth.accounts[0]
       for (let i = 0; i < numPatents; i++) {
-        let patentName;
         let new_entry = {};
         instance.patentNames.call(i).then(name => {
-          patentName = name;
-          return instance.isNotRequested.call(patentName, this.state.web3.eth.coinbase)
-        }).then(isNotRequested => {
-          if (!isNotRequested) {
-            return instance.getRequestStatus.call(patentName, this.state.web3.eth.coinbase)
+          new_entry['patentName'] = name;
+          return instance.hasBeenRequested.call(new_entry['patentName'], currentAccount)
+        }).then(alreadyRequested => {
+          if (alreadyRequested) {
+            return instance.getRequestStatus.call(new_entry['patentName'], currentAccount)
           } else {
             throw Error(NOT_REQUESTED)
           }
         }).then(status => {
-          new_entry['name'] = patentName;
-          new_entry['status'] = getStatusString(status);
-          return instance.getPatentHash.call(patentName);
+          new_entry['status'] = status.toNumber();
+          return instance.getPatentHash.call(new_entry['patentName']);
         }).then(hash => {
           new_entry['hash'] = hash;
-          return instance.getPatentLocation.call(patentName);
+          return instance.getPatentLocation.call(new_entry['patentName']);
         }).then(loc => {
           new_entry['ipfsLocation'] = loc;
-          return instance.getPrice.call(patentName)
-        }).then(price => {
-          new_entry['price'] = price.toNumber();
-          return instance.getEthPrice(price);
-        }).then(ethPrice => {
-          new_entry['ethPrice'] = ethPrice;
-          return instance.getOwnerEmail.call(patentName);
+          return instance.getRequestedLicence.call(new_entry['patentName'], currentAccount);
+        }).then(requestedLicence => {
+          new_entry['requestedLicence'] = requestedLicence.toNumber();
+          return instance.getAcceptedLicence.call(new_entry['patentName'], currentAccount);
+        }).then(acceptedLicence => {
+          new_entry['acceptedLicence'] = acceptedLicence.toNumber();
+          return instance.getPrices.call(new_entry['patentName']);
+        }).then(prices => {
+          new_entry['patentPrices'] = prices.map(price => price.toNumber());
+          return Promise.all(prices.map(price => instance.getEthPrice(price)));
+        }).then(ethPrices => {
+          new_entry['patentEthPrices'] = ethPrices.map(ethPrice => ethPrice.toNumber());
+          return instance.getMaxLicence(new_entry['patentName']);
+        }).then(maxLicence => {
+          new_entry['patentMaxLicence'] = maxLicence.toNumber();
+          return instance.getOwnerEmail.call(new_entry['patentName']);
         }).then(mail => {
           new_entry['ownerEmail'] = mail;
           new_entry['id'] = (this.state.numRequests + 1);

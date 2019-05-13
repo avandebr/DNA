@@ -8,9 +8,9 @@ import {KEY_GENERATION_ERROR} from './ErrorHandler'
 const generatePrivateKey = function (web3, fileHash) {
   let toSign = web3.sha3(fileHash); // Hash the address
   return new Promise((resolve, reject) => {
-    web3.eth.sign(web3.eth.coinbase, toSign, (err, res) => {
+    web3.eth.sign(web3.eth.accounts[0], toSign, (err, res) => {
       if (!err) {
-        resolve(res.substr(2, 64));
+        resolve(res.substr(2, 64)); // 66 ?
       } else {
         reject(KEY_GENERATION_ERROR)
       }

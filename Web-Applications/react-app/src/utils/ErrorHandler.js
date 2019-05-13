@@ -8,6 +8,7 @@ const INVALID_NETWORK = "Please choose the network that corresponds to your curr
 const LARGE_FILE = "File is too large (exceeds 10MB)";
 const NOT_OWNER = "Not owner";
 const ALREADY_REQUESTED = "You have already requested access to this patent";
+const ALREADY_OWNER = "You already own this file";
 const NOT_PENDING = "Request not pending";
 const IPFS_ERROR = "There was an error communicating with IPFS";
 const KEY_ERROR = "The key does not match";
@@ -54,6 +55,7 @@ module.exports = {
   INVALID_NETWORK,
   LARGE_FILE,
   ALREADY_REQUESTED,
+  ALREADY_OWNER,
   NOT_OWNER,
   NOT_REQUESTED,
   NOT_PENDING,

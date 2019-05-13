@@ -2,7 +2,8 @@ import '../css/Pages.css'
 import React, {Component} from 'react';
 import {ListGroupItem, Button, ButtonGroup, Panel, Row, Col} from 'react-bootstrap';
 import {Constants, FileStates} from '../utils/Constants'
-import Dialog from '@material-ui/core/Dialog';
+import MuiDialog from '@material-ui/core/Dialog';
+import Dialog from 'react-bootstrap-dialog';
 
 import {generatePrivateKey} from '../utils/KeyGenerator'
 import {
@@ -31,6 +32,7 @@ class FileManager extends Component {
   /*Constructor with IPFS bundle*/
   constructor(props) {
     super(props);
+    this.hideDetails = props.hideDetails;
     this.bundle = new Bundle();
     this.state = {
       contractInstance: props.contractInstance,
@@ -90,19 +92,29 @@ class FileManager extends Component {
   fetchRequests(patent) {
     let numReq = patent.numRequests;
     for (let i = 0; i < numReq; i++) {
-      let user;
-      this.state.contractInstance.getBuyers.call(patent.name, i).then(_user => {
-        user = _user;
-        return this.state.contractInstance.isPending.call(patent.name, user)
+      let request = {};
+      this.state.contractInstance.getBuyers.call(patent.name, i).then(user => {
+        request['account'] = user;
+        return this.state.contractInstance.getRequestedLicence.call(patent.name, request['account'])
+      }).then(licence => {
+        request['requestedLicence'] = licence.toNumber();
+        return this.state.contractInstance.getAcceptedLicence.call(patent.name, request['account'])
+      }).then(licence => {
+        request['acceptedLicence'] = licence.toNumber();
+        return this.state.contractInstance.getPrice.call(patent.name, request['requestedLicence'])
+      }).then(price => {
+        request['price'] = price.toNumber();
+        return this.state.contractInstance.isPending.call(patent.name, request['account'])
       }).then(isPending => {
         if (isPending) {
-          return this.state.contractInstance.getEncryptionKey(patent.name, user, {from: this.state.web3.eth.coinbase})
+          return this.state.contractInstance.getEncryptionKey(patent.name, request['account'], {from: this.state.web3.eth.accounts[0]})
         } else {
           throw Error(NOT_PENDING);
         }
       }).then(key => {
+        request['key'] = key;
         let requests = this.state.pendingRequests;
-        requests.push({'account': user, 'key': key});
+        requests.push(request);
         this.setState({pendingRequests: requests});
       }).catch(e => {
         if (e.message !== NOT_PENDING) {
@@ -116,34 +128,50 @@ class FileManager extends Component {
 
   /*Handler for accepting a given request : takes care of encrypting the key and communicating with the smart contract*/
   acceptRequest(request) {
-    generatePrivateKey(this.state.web3, this.state.patent.hash).then(key => {
-      return publicKeyEncrypt(key, request.key);
-    }).then(encrypted => {
-      return this.state.contractInstance.grantAccess(this.state.patent.name, request.account, encrypted, {
-        from: this.state.web3.eth.coinbase,
+    if (request.acceptedLicence === 0) {
+      generatePrivateKey(this.state.web3, this.state.patent.hash).then(key => {
+        return publicKeyEncrypt(key, request.key);
+      }).then(encrypted => {
+        return this.state.contractInstance.grantAccess(this.state.patent.name, request.account, encrypted, {
+          from: this.state.web3.eth.accounts[0],
+          gas: process.env.REACT_APP_GAS_LIMIT,
+          gasPrice : this.state.gasPrice
+        });
+      }).then(tx => {
+        setTimeout(() => this.setState({pendingRequests: []}), 3000); // this.fetchRequests(this.state.patent)
+        successfullTx(tx);
+      }).catch(e => {
+        if (e === KEY_GENERATION_ERROR || e === ENCRYPTION_ERROR) {
+          window.dialog.showAlert(e)
+        } else {
+          contractError(e)
+        }
+      })
+    } else {
+      this.state.contractInstance.acceptUpgrade(this.state.patent.name, request.account, {
+        from: this.state.web3.eth.accounts[0],
         gas: process.env.REACT_APP_GAS_LIMIT,
         gasPrice : this.state.gasPrice
-      });
-    }).then(tx => {
-      setTimeout(() => this.setState({pendingRequests: []}), 4000);
-      successfullTx(tx);
-    }).catch(e => {
-      if (e === KEY_GENERATION_ERROR || e === ENCRYPTION_ERROR) {
-        window.dialog.showAlert(e)
-      } else {
+      }).then(tx => {
+        setTimeout(() => this.setState({pendingRequests: []}), 3000); // this.fetchRequests(this.state.patent)
+        successfullTx(tx);
+      }).catch(e => {
         contractError(e)
-      }
-    })
+      })
+    }
   }
 
   /*Handler for rejecting a given request */
   rejectRequest(request) {
-    this.state.contractInstance.rejectAccess(this.state.patent.name, request.account, {
-      from: this.state.web3.eth.coinbase,
+    const reject = request.acceptedLicence === 0
+      ? this.state.contractInstance.rejectAccess
+      : this.state.contractInstance.rejectUpgrade;
+    reject(this.state.patent.name, request.account, {
+      from: this.state.web3.eth.accounts[0],
       gas: process.env.REACT_APP_GAS_LIMIT,
       gasPrice : this.state.gasPrice
     }).then(tx => {
-      setTimeout(() => this.setState({pendingRequests: []}), 4000);
+      setTimeout(() => this.setState({pendingRequests: []}), 3000); // this.fetchRequests(this.state.patent)
       successfullTx(tx)
     }).catch(e => {
       contractError(e)
@@ -151,6 +179,7 @@ class FileManager extends Component {
   }
 
   /* Allows to accept all the pending requests */
+  // TODO: modify so that owner only signs once to generate all needed keys
   acceptAllRequests() {
     this.state.pendingRequests.forEach(req => this.acceptRequest(req))
   }
@@ -164,7 +193,6 @@ class FileManager extends Component {
 
   /*Decrypts and downloads the file from IPFS the document*/
   downloadCopy() {
-    console.log('download at', this.state.patent);
     const hash = this.state.patent.hash;
     generatePrivateKey(this.state.web3, hash).then(key => {
       const ipfsLoc = this.state.patent.ipfsLocation;
@@ -181,7 +209,32 @@ class FileManager extends Component {
     })
   }
 
-  /*--------------------------------- UPDATE HANDLERS ---------------------------------*/
+  /*--------------------------------- UPDATE AND DELETE HANDLERS ---------------------------------*/
+
+  /* Allows to delete a patent by hiding it in the store
+   * but by letting the ability for people having already bought it to download it */
+  deletePatent() {
+    /* window.dialog.show({
+      body: "Do you confirm you want to delete this patent ?",
+      bsSize: 'medium',
+      prompt: Dialog.TextPrompt({placeholder: "your email"}),
+      actions: [
+        Dialog.CancelAction(),
+        Dialog.OKAction(diag => this.requestAccess(patent, 1, diag.value))
+      ]
+    })*/
+    this.state.contractInstance.deletePatent.call(this.state.patent.name, {
+      from: this.state.web3.eth.accounts[0],
+      gas: process.env.REACT_APP_GAS_LIMIT,
+      gasPrice : this.state.gasPrice
+    });
+    this.hideDetails();
+    window.dialog.show({
+      title: "Patent has been successfully deleted",
+      body: 'You can undo this action in your file manager',
+      actions: [Dialog.OKAction()],
+    });
+  }
 
   /* Allows to open a dialog to update a patent file, re encrypt it unsing the key, update the IPFS location of the patent,
    * and notify other users that have already bought the patent than the file has been updated */
@@ -209,6 +262,7 @@ class FileManager extends Component {
     return (this.state.newFile.ipfsLocation !== "" && this.state.newFile.fileState === FileStates.ENCRYPTED)
   }
 
+  // TODO: remove because useless and so can reput hash verification when decrypting
   /*Encrypts the file using AES and the key produced by the owner*/
   encryptFile(e) {
     e.preventDefault();
@@ -238,7 +292,7 @@ class FileManager extends Component {
       this.setState({ newFile: { ...this.state.newFile, waitingTransaction: true } });
       console.log('Adding to:', this.state.newFile.ipfsLocation);
       this.state.contractInstance.setIpfsLocation.call(this.state.patent.name, this.state.newFile.ipfsLocation, {
-        from: this.state.web3.eth.coinbase, //coinbase?
+        from: this.state.web3.eth.accounts[0],
         gas: process.env.REACT_APP_GAS_LIMIT,
         gasPrice : this.state.gasPrice
       }).then(tx => {
@@ -247,7 +301,7 @@ class FileManager extends Component {
         // this.setState({ patent: { ...this.state.patent, ipfsLocation: filesAdded[0].path } })
         console.log('new IPFS loc: ', filesAdded[0].path);
         this.closeForm(); // reset and close the form
-        /*window.dialog.show({
+        window.dialog.show({
           title: "Encrypted file has been successfully added to IPFS",
           body: "New IPFS location : ipfs.io/ipfs/" + filesAdded[0].path,
           actions: [
@@ -259,7 +313,7 @@ class FileManager extends Component {
                 win.focus();
               })],
           bsSize: "large"
-        });*/
+        });
       }).catch(error => {
         this.setState({ newFile: { ...this.state.newFile, waitingTransaction: false } });
         contractError(error); // Handles the error
@@ -274,15 +328,6 @@ class FileManager extends Component {
     }
   }
 
-  /*--------------------------------- DELETE HANDLERS ---------------------------------*/
-
-  /* Allows to delete a patent by hiding it in the store
-   * but by letting the ability for people having already bought it to download it */
-  deletePatent() {
-
-  }
-
-
   /*--------------------------------- USER INTERFACE COMPONENTS ---------------------------------*/
 
   /*Renders the form to update a patent*/
@@ -294,7 +339,8 @@ class FileManager extends Component {
                       onChange={e => this.handleFileChange(e)}/>
           <Divider/><br/>
           <EncryptFileButton fileState={this.state.newFile.fileState} onClick={e => this.encryptFile(e)}
-                             disabled={this.state.newFile.fileState !== FileStates.NOT_ENCRYPTED} />
+                             disabled={this.state.newFile.file === ''
+                             || this.state.newFile.fileState !== FileStates.NOT_ENCRYPTED} />
           <br/>
           <SubmitButton running={this.state.newFile.waitingTransaction} disabled={!this.validateForm()}/>
         </form>
@@ -307,7 +353,7 @@ class FileManager extends Component {
     return this.state.pendingRequests.map(req => (
       <ListGroupItem key={req.account}>
         <Row>
-          <Col md={6}>From: {req.account}</Col>
+          <Col md={6}>New request for licence {req.requestedLicence} (price at {req.price} USD) from: {req.account}</Col>
           <Col md={6}>
             <ButtonGroup className="pull-right">
               <Button onClick={() => this.acceptRequest(req)} bsStyle="success">Accept</Button>
@@ -328,10 +374,10 @@ class FileManager extends Component {
         </Panel.Heading>
         <ButtonGroup justified>
           <ButtonGroup>
-            <Button style={{ borderRadius: 0 }} onClick={() => this.downloadCopy()}>Download a copy</Button>
+            <Button style={{ borderRadius: 0 }} onClick={() => this.downloadCopy()}>Download copy</Button>
           </ButtonGroup>
           <ButtonGroup>
-            <Button style={{ borderRadius: 0 }} onClick={() => this.updateFile()}>Update file</Button>
+            <Button style={{ borderRadius: 0 }} onClick={() => this.updateFile()}>Update info</Button>
           </ButtonGroup>
           <ButtonGroup>
             <Button style={{ borderRadius: 0 }} onClick={() => this.deletePatent()}>Delete patent</Button>
@@ -362,13 +408,12 @@ class FileManager extends Component {
   }
 
   render() {
-    console.log(this.state.patent);
     return (
       <div>
         {this.renderPanel()}
-        <Dialog open={this.state.updatingFile} onClose={() => this.closeForm()}>
+        <MuiDialog open={this.state.updatingFile} onClose={() => this.closeForm()}>
           {this.renderForm()}
-        </Dialog>
+        </MuiDialog>
       </div>
     )
   }

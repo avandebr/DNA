@@ -1,33 +1,35 @@
 import {getEncryptedFileBuffer, getDecryptedFileBuffer} from './CryptoUtils'
 import { /*KEY_ERROR,*/ IPFS_ERROR } from '../utils/ErrorHandler'
-import sha256 from 'sha256'
+// import sha256 from 'sha256'
 
 /*Simple bundle to upload, encrypt and get files to IPFS*/
 class Bundle {
   constructor() {
     this.node = window.IpfsApi(process.env.REACT_APP_IPFS, 5001, {protocol: 'https'});
     this.encryptedFile = null;
-    this.encryptedAlbum = {};
+    this.encryptedAlbum = [];
     this.albumName = '';
   }
 
   reset() {
     this.encryptedFile = null;
-    this.encryptedAlbum = {};
+    this.encryptedAlbum = [];
     this.albumName = ''
   }
 
   /*Function that encrypts the file and stores it*/
   encryptFile(file, key) {
     return getEncryptedFileBuffer(file, window, key).then(res => {
+      this.encryptedAlbum.push(res);
       this.encryptedFile = res;
       return this.getHash() //new Promise((resolve, reject) => resolve("file encrypted"))
     })
   }
 
   /*Function that encrypts a full album and stores it*/
-  encryptAlbum(name, files, masterKey) {
+  /* encryptAlbum(name, files, masterKey) {
     this.albumName = name;
+    // modify this using Promise.All()
     const hashes = files.map((file, i) => {
       // derive file key from master key by sha256(masterKey + file hash)
       const fileKey = sha256(masterKey + file.hash);
@@ -38,7 +40,7 @@ class Bundle {
       });
     });
     return hashes[hashes.length - 1];
-  }
+  } */
 
   /*Gets the IPFS hash of the stored encrypted file*/
   getHash = () => this.addFile(true);
@@ -50,10 +52,15 @@ class Bundle {
   }
 
   /*Gets the IPFS hash of the stored encrypted file*/
-  getHashes = () => this.addFiles(true);
+  getHashes = () => this.addAlbum(true);
 
-  // TODO: Publish all files in one shot
   addFiles(onlyHash = false) {
+    if(this.encryptedAlbum.length > 1 ){
+      return this.encryptedAlbum.map(encryptedFile => this.node.add(encryptedFile, { onlyHash }));
+    }
+  }
+
+  addAlbum(onlyHash = false) {
     const albumName = this.albumName;
     const fileNames = Object.keys(this.encryptedAlbum);
     if (fileNames.length > 0 && albumName !== '') {
