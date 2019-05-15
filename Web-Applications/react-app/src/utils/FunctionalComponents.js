@@ -8,6 +8,7 @@ import {stampToDate} from './UtilityFunctions'
 import {FileStates} from "./Constants";
 import licences from './Licences'
 
+
 /* encryption button component for file uploading form */
 const EncryptFileButton = (props) => {
   let buttonState, buttonText;
@@ -115,10 +116,12 @@ const LicencesMenu = (props) => {
 const LicenceSelect = (props) => {
   return (
     <Form inline>
-      <Checkbox checked={props.checked} onChange={() => props.onLicenceChange(props.licence)}> Licence {props.licence}</Checkbox>
+      <Checkbox checked={props.checked} onChange={() => props.onLicenceChange(props.licence)}>
+        {" Licence " + props.licence}
+      </Checkbox>
       <FieldGroup name="price" id="formsControlsName" type="text" style={{ marginLeft: 20 }} value={props.licencePrice}
-                  disabled={props.disabled || !props.checked} onChange={e => props.onPricesChange(props.licence, e.target.value)}
-                  validation={props.validatePrice(props.licencePrice)}/>
+                disabled={props.disabled || !props.checked} onChange={e => props.onPricesChange(props.licence, e.target.value)}
+                validation={props.validatePrice(props.licencePrice)}/>
     </Form>
   );
 };

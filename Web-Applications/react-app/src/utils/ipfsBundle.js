@@ -1,6 +1,6 @@
 import {getEncryptedFileBuffer, getDecryptedFileBuffer} from './CryptoUtils'
-import { /*KEY_ERROR,*/ IPFS_ERROR } from '../utils/ErrorHandler'
-// import sha256 from 'sha256'
+import { KEY_ERROR, IPFS_ERROR } from '../utils/ErrorHandler'
+import sha256 from 'sha256'
 
 /*Simple bundle to upload, encrypt and get files to IPFS*/
 class Bundle {
@@ -82,12 +82,11 @@ class Bundle {
           if (!err) {
             let byteContent = files[0].content;
             let decrypted = getDecryptedFileBuffer(byteContent, key);
-            // let hash = sha256(decrypted);
-            // if (hash === fileHash) {
-            resolve(decrypted)
-            /*} else {
+            if (sha256(decrypted) === fileHash) {
+              resolve(decrypted)
+            } else {
               reject(KEY_ERROR)
-            }*/
+            }
           } else {
             reject(IPFS_ERROR)
           }

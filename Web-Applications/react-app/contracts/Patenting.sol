@@ -23,6 +23,11 @@ contract Patenting is AccessRestricted {
         string encryptedIpfsKey;
     }
 
+    // remove email and add a mapping address => email ?
+
+    // TODO: put patentName in struct and index mapping by patentHash (depends on content)
+    // => store array of hashes => redo album registration by forgetting names for the moment
+
     /* Struct for patent */
     struct Patent {
         address owner;
@@ -39,8 +44,8 @@ contract Patenting is AccessRestricted {
     }
 
     struct Album {
-        Patent patent; // album info, same infos than single patent
-        // string[] songsName;
+        Patent patent; // album info, same info than single patent
+        // string[] songsName; // songHashes
     }
 
     // mapping for songs
@@ -84,7 +89,7 @@ contract Patenting is AccessRestricted {
         return _dollars / 130;
     }
 
-    /* ======================================== DEPOSIT FUNCTIONS ======================================= */
+    /* ======================================== PATENT MANAGEMENT FUNCTIONS ======================================= */
 
     /* Function to deposit a patent
     * {params} the patent parameters
@@ -97,27 +102,26 @@ contract Patenting is AccessRestricted {
         patentCount++;
     }
 
-    /* ======================================== PATENT MANAGEMENT FUNCTIONS ======================================= */
-
-    /* Function called when a file is updated to set its IPFS location
-    * {params} the new IPFS location
-    */
-    function setIpfsLocation(string memory _patentName, string memory _newIpfs) public {
-        // require(isRegistered(_patentName) && isOwner(_patentName, msg.sender));
-        // if(patents[_patentName].ipfs != _newIpfs)
+    /* Function to modify the licences and prices of a patent */
+    function modifyPatent(string memory _patentName, uint _newMaxLicence, uint[] memory _newLicencePrices) public {
+        require(isRegistered(_patentName) && isOwner(_patentName, msg.sender));
         Patent storage p = patents[_patentName];
-        p.ipfs = _newIpfs;
-
-        // emit un event pour notifier que ca a change et envoyer un mail aux buyers du patent
-        // emit modifiedPatent(true);
+        p.maxLicence = _newMaxLicence;
+        p.licencePrices = _newLicencePrices;
     }
 
-    /* delete a patent (i.e. not accessible to other users) */
+    /* delete a patent (i.e. set it not accessible to other users) */
     function deletePatent(string memory _patentName) public {
         require(isRegistered(_patentName) && isOwner(_patentName, msg.sender) && !isDeleted(_patentName));
         Patent storage p = patents[_patentName];
         p.deleted = true;
-        patentCount--;
+    }
+
+    /* undelete a patent (i.e. set it back accessible to other users) */
+    function undeletePatent(string memory _patentName) public {
+        require(isRegistered(_patentName) && isOwner(_patentName, msg.sender) && isDeleted(_patentName));
+        Patent storage p = patents[_patentName];
+        p.deleted = false;
     }
 
     /* ======================================== REQUEST MANAGEMENT FUNCTIONS ======================================= */
@@ -320,7 +324,7 @@ contract Patenting is AccessRestricted {
 
     /*Returns true if account is owner of given patent*/
     function isOwner(string memory _patentName, address _account) public view returns (bool){
-        return getPatentOwner(_patentName) == _account;
+        return patents[_patentName].owner == _account;
     }
 
     /*Returns time-stamp of the Patent*/
@@ -338,14 +342,9 @@ contract Patenting is AccessRestricted {
         return patents[_patentName].owner;
     }
 
-    /*Returns album's owner*/
-    function getAlbumOwner(string memory _albumName) public view returns (address) {
-        return albums[_albumName].patent.owner;
-    }
-
-    /*Returns the price of a patent*/
+    /*Returns the price of a patent for a given licence*/
     function getPrice(string memory _patentName, uint _licence) public view returns (uint) {
-        // index by licence-1 because licence 0 price not stored in licencePrices since free
+        // index by licence-1 because licence 0 price not stored in licence prices since free
         return patents[_patentName].licencePrices[_licence-1];
     }
 
@@ -366,7 +365,7 @@ contract Patenting is AccessRestricted {
 
     /*Returns the requester's public key*/
     function getEncryptionKey(string memory _patentName, address _user) public view returns (string memory){
-        require(msg.sender == patents[_patentName].owner);
+        require(isOwner(_patentName, msg.sender));
         return patents[_patentName].requests[_user].encryptionKey;
     }
 

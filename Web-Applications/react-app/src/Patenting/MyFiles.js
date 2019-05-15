@@ -67,6 +67,9 @@ class MyFiles_class extends Component {
           }
         }).then(timestamp => {
           new_entry['timestamp'] = timestamp.toNumber();
+          return instance.isDeleted.call(new_entry['name']);
+        }).then(deleted => {
+          new_entry['deleted'] = deleted;
           return instance.getNumRequests.call(new_entry['name']);
         }).then(num => {
           new_entry['numRequests'] = num.toNumber();
@@ -76,6 +79,12 @@ class MyFiles_class extends Component {
           return instance.getPatentLocation.call(new_entry['name']);
         }).then(loc => {
           new_entry['ipfsLocation'] = loc;
+          return instance.getMaxLicence.call(new_entry['name']);
+        }).then(licence => {
+          new_entry['maxLicence'] = licence.toNumber();
+          return instance.getPrices.call(new_entry['name']);
+        }).then(prices => {
+          new_entry['licencePrices'] = prices.map(price => price.toNumber());
           new_entry['index'] = this.state.numPatents;
           let patents = this.state.patents;
           patents.push(new_entry);
@@ -111,14 +120,6 @@ class MyFiles_class extends Component {
     if (this.state.selectedPatent && this.state.selectedPatent.index < this.state.numPatents - 1) {
       this.setState({selectedPatent: this.state.patents[this.state.selectedPatent.index + 1]})
     }
-  }
-
-  deletePatent() {
-    this.hideDetails();
-    this.setState({numPatents: this.state.numPatents-1})
-    this.state.contractInstance.patentCount.call().then(count => {
-      this.getMyPatents(count.toNumber());
-    });
   }
 
   /*--------------------------------- USER INTERFACE COMPONENTS ---------------------------------*/
@@ -177,6 +178,7 @@ class MyFiles_class extends Component {
   }
 
   /*Returns a full table with patents*/
+  // TODO: put deleted patents in a separate table ?
   renderTable() {
     if (this.state.numPatents > 0) {
       const header = (
@@ -218,7 +220,8 @@ class MyFiles_class extends Component {
           <Row>
             {this.state.selectedPatent ? this.renderDetails() : this.renderTable()}
           </Row>
-        </Grid>)
+        </Grid>
+      );
     }
   }
 }

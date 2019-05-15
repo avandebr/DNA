@@ -26,7 +26,6 @@ const extractJson = (file, window) => {
     if (typeof window.FileReader !== 'function') {
       reject('Browser does not support FileReader');
     }
-
     if (!f) {
       reject("Please select a file");
     } else if (f.type !== 'application/json') {
@@ -95,12 +94,12 @@ const validateName = (name) => {
 
 /*Checks that price >= 0*/
 const validatePrice = (price) => {
-  if (price === "") {
+  if (!price || price === "") {
     return null;
   }
   const floatPrice = parseFloat(price);
   // ensure price not negative and is in float format
-  return (floatPrice >= 0 && String(floatPrice) === price ? 'success' : 'error');
+  return (floatPrice >= 0 && String(floatPrice) === String(price) ? 'success' : 'error');
 };
 
 /*Utility function to validate email*/

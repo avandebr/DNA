@@ -13,9 +13,8 @@ import Patenting from '../../build/contracts/Patenting';
 import wrapWithMetamask from '../MetaMaskWrapper'
 
 import MuiDialog from '@material-ui/core/Dialog';
-import Dialog from 'react-bootstrap-dialog';
 import {generatePrivateKey, generatePublicKey} from '../utils/KeyGenerator'
-import {ALREADY_REQUESTED, ALREADY_OWNER, KEY_GENERATION_ERROR, contractError} from '../utils/ErrorHandler'
+import {ALREADY_REQUESTED, NOT_REQUESTABLE, ALREADY_OWNER, KEY_GENERATION_ERROR, contractError} from '../utils/ErrorHandler'
 import Divider from "@material-ui/core/Divider";
 import Paper from "@material-ui/core/Paper";
 
@@ -112,6 +111,9 @@ class Store_class extends Component {
           return instance.getRequestStatus.call(new_entry['name'], this.state.web3.eth.accounts[0]);
         }).then(status => {
           new_entry['status'] = status.toNumber();
+          return instance.getMaxLicence.call(new_entry['name'])
+        }).then(maxLicence => {
+          new_entry['maxLicence'] = maxLicence.toNumber();
           return instance.isDeleted.call(new_entry['name'])
         }).then(isDeleted => {
           new_entry['deleted'] = isDeleted;
@@ -134,13 +136,17 @@ class Store_class extends Component {
 
   promptInformartions(patent) {
     if (patent.owner !== this.state.web3.eth.accounts[0]) {
-      this.state.contractInstance.canRequest.call(patent.name, this.state.web3.eth.coinbase).then(canRequest => {
-        if (canRequest) {
-          this.setState({ showRequestForm: true, selectedPatent: patent })
-        } else {
-          window.dialog.showAlert(ALREADY_REQUESTED)
-        }
-      })
+      if (patent.maxLicence > 0) {
+        this.state.contractInstance.canRequest.call(patent.name, this.state.web3.eth.accounts[0]).then(canRequest => {
+          if (canRequest) {
+            this.setState({showRequestForm: true, selectedPatent: patent})
+          } else {
+            window.dialog.showAlert(ALREADY_REQUESTED)
+          }
+        })
+      } else {
+        window.dialog.showAlert(NOT_REQUESTABLE);
+      }
     } else {
       window.dialog.showAlert(ALREADY_OWNER);
     }
@@ -229,15 +235,16 @@ class Store_class extends Component {
         <td>{patent.name}</td>
         <td>{isOwner ? 'You' : patent.owner}</td>
         <td>{stampToDate(patent.timestamp)}</td>
-        <td>{isOwner ? '-' : getStatusString(patent.status)}</td>
+        <td>{isOwner || patent.maxLicence === 0 ? '-' : getStatusString(patent.status)}</td>
       </tr>
     );
   }
 
   /*Returns a full table with patents*/
   renderTable() {
-    if (this.state.numPatents !== 0) {
-      let table = this.state.patents.filter(p => !p.deleted).map(patent => this.getRow(patent));
+    const patentsToDisplay = this.state.patents.filter(p => !p.deleted);
+    if (patentsToDisplay.length > 0) {
+      let table = patentsToDisplay.map(patent => this.getRow(patent));
       let header = (
         <tr>
           <th>File Name</th>
