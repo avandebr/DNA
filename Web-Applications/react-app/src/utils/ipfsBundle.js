@@ -1,11 +1,12 @@
 import {getEncryptedFileBuffer, getDecryptedFileBuffer} from './CryptoUtils'
 import { KEY_ERROR, IPFS_ERROR } from '../utils/ErrorHandler'
+// import ipfsClient from 'ipfs-http-client';
 import sha256 from 'sha256'
 
 /*Simple bundle to upload, encrypt and get files to IPFS*/
 class Bundle {
   constructor() {
-    this.node = window.IpfsApi(process.env.REACT_APP_IPFS, 5001, {protocol: 'https'});
+    this.node = window.IpfsHttpClient(process.env.REACT_APP_IPFS, 5001, {protocol: 'https'});
     this.encryptedFile = null;
     this.encryptedAlbum = [];
     this.albumName = '';

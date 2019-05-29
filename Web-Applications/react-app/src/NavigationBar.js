@@ -1,7 +1,8 @@
 import './css/Pages.css'
 
 import React, {Component} from 'react';
-import {Navbar, Nav, NavItem, NavDropdown, MenuItem, FormControl, Form} from 'react-bootstrap';
+import {Navbar, Nav, NavItem, NavDropdown, MenuItem} from 'react-bootstrap';
+import SearchBar from './SearchBar';
 
 import {LinkContainer} from 'react-router-bootstrap'
 import SvgIcon from "@material-ui/core/SvgIcon";
@@ -13,7 +14,7 @@ const GitHubIcn = () => (
 );
 
 /*---------------------------------------------------------------------------------- DONE ----------------------------------------------------------------------------------*/
-//TODO : Add About, Additional INfo and API
+//TODO : Add About, Additional Info, Licences and API
 /*
 * Class representing the Navigation Bar component
 * */
@@ -30,7 +31,9 @@ export default class NavigationBar extends Component {
         </Navbar.Header>
         <Navbar.Collapse>
           <Nav>
-            <NavDropdown title="Deposit" id="basic-nav-dropdown">
+            <NavDropdown title="Register" id="basic-nav-dropdown">
+              <LinkContainer to="/RegisterArtist"><MenuItem>Artist Registration</MenuItem></LinkContainer>
+              <MenuItem divider/>
               <LinkContainer to="/RegisterSong"><MenuItem>Song Registration</MenuItem></LinkContainer>
               <LinkContainer to="/RegisterAlbum"><MenuItem>Album Registration</MenuItem></LinkContainer>
             </NavDropdown>
@@ -40,19 +43,14 @@ export default class NavigationBar extends Component {
           </Nav>
 
           <Nav pullRight>
-            <LinkContainer to="/About">
-              <NavItem>About DNA</NavItem>
-            </LinkContainer>
+            <LinkContainer to="/Licences"><NavItem>Our Licences</NavItem></LinkContainer>
+            <LinkContainer to="/About"><NavItem>About DNA</NavItem></LinkContainer>
             <Navbar.Brand>
               <NavItem href="https://github.com/avandebr/DNAM"><GitHubIcn/></NavItem>
             </Navbar.Brand>
           </Nav>
 
-          <Nav pullRight>
-            <Form className="searchbar-container">
-              <FormControl type="text" placeholder="Search" className="searchbar"/>
-            </Form>
-          </Nav>
+          <SearchBar/>
 
         </Navbar.Collapse>
       </Navbar>

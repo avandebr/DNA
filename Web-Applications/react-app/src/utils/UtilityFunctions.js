@@ -60,7 +60,6 @@ const successfullTx = (tx) => {
     actions: [
       Dialog.OKAction()
     ]
-
   });
 };
 
@@ -94,7 +93,7 @@ const validateName = (name) => {
 
 /*Checks that price >= 0*/
 const validatePrice = (price) => {
-  if (!price || price === "") {
+  if ((!price && price !== 0) || price === "") {
     return null;
   }
   const floatPrice = parseFloat(price);

@@ -7,29 +7,28 @@ import Dialog from 'react-bootstrap-dialog';
 
 import {generatePrivateKey} from '../utils/KeyGenerator'
 import {
-  NOT_PENDING,
   KEY_GENERATION_ERROR,
   KEY_ERROR,
   IPFS_ERROR,
   ENCRYPTION_ERROR,
   contractError,
 } from '../utils/ErrorHandler'
-import {saveByteArray, successfullTx, validatePrice} from '../utils/UtilityFunctions'
+import {saveByteArray, successfullTx, validateName, validatePrice} from '../utils/UtilityFunctions'
 import {publicKeyEncrypt} from '../utils/CryptoUtils'
 import Bundle from '../utils/ipfsBundle'
 import Paper from "@material-ui/core/Paper";
-import {LicencesMenu, SubmitButton} from "../utils/FunctionalComponents";
+import {FieldGroup, LicencesMenu, SubmitButton} from "../utils/FunctionalComponents";
 import licences from "../utils/Licences";
 import Divider from "@material-ui/core/Divider";
 
 
 /* Component to manage an owned given patent, i.e. its requests and information */
+// TODO: fetch all requests with their status and filter pending requests when displaying
 class FileManager extends Component {
 
   /*Constructor with IPFS bundle*/
   constructor(props) {
     super(props);
-    this.hideDetails = props.hideDetails;
     this.bundle = new Bundle();
     this.state = {
       contractInstance: props.contractInstance,
@@ -40,33 +39,26 @@ class FileManager extends Component {
       updatingPatent: false,
       waitingTransaction: false,
       newMaxLicence: props.patent.maxLicence,
+      newName: props.patent.name.split('.')[0],
       newLicencePrices: Array(Object.keys(licences).length).fill(''),
     };
-  }
-
-  /*Called whenever new props are passed or props are updated*/
-  static getDerivedStateFromProps(nextProps, prevState) {
-    if (nextProps.patent.name !== prevState.patent.name) {
-      return ({
-        contractInstance: prevState.contractInstance,
-        web3: prevState.web3,
-        patent: nextProps.patent,
-        pendingRequests: []
-      });
-    }
-    return null
+    this.handleNameChange = this.handleNameChange.bind(this);
+    this.handleLicenceChange = this.handleLicenceChange.bind(this);
+    this.handlePricesChange = this.handlePricesChange.bind(this);
   }
 
   /*Called just after the component is mounted*/
   componentDidMount() {
-    this.fetchRequests(this.state.patent);
     this.initPrices();
+    this.fetchRequests(this.state.patent);
   }
 
-  /*Called after the state is changed to update the pendingRequests when a new props is passed*/
+  /*Called just after the component is updated when received new props*/
   componentDidUpdate(prevProps, prevState) {
-    if (this.state.pendingRequests.length === 0) {
-      this.fetchRequests(this.state.patent);
+    if (prevState.patent.id !== this.props.patent.id) {
+      this.setState({ patent: this.props.patent });
+      this.fetchRequests(this.props.patent);
+      this.resetForm();
     }
   }
 
@@ -83,11 +75,17 @@ class FileManager extends Component {
     this.setState({
       waitingTransaction: false,
       newMaxLicence: this.state.patent.maxLicence,
+      newName: this.state.patent.name.split('.')[0],
     })
   }
 
   handleLicenceChange(newLicence) {
     this.setState({ newMaxLicence: parseInt(newLicence, 10) });
+  }
+
+  handleNameChange(e) {
+    e.preventDefault();
+    this.setState({ newName: e.target.value });
   }
 
   handlePricesChange(licence, newPrice) {
@@ -105,47 +103,44 @@ class FileManager extends Component {
     this.resetForm();
   }
 
+  validateName = () => validateName(this.state.patent.name);
+
   /*Returns true if prices are valid and have changed*/
   validateForm() {
     const newLicencePrices = this.state.newLicencePrices.slice(1, this.state.newMaxLicence+1);
-    return newLicencePrices.every(price => (validatePrice(price) === 'success'));
+    return this.validateName() === 'success'
+      && newLicencePrices.every(price => (validatePrice(price) === 'success'));
   }
 
-  /*Fetches the pending pendingRequests for the given patent*/
+  /*Fetches the pending requests for the given patent*/
   fetchRequests(patent) {
-    let numReq = patent.numRequests;
-    for (let i = 0; i < numReq; i++) {
+    let requests = [];
+    this.setState({pendingRequests: []});
+    for (let i = 0; i < patent.numRequests; i++) {
       let request = {};
-      this.state.contractInstance.getBuyers.call(patent.name, i).then(user => {
+      this.state.contractInstance.getBuyers.call(patent.id, i).then(user => {
         request['account'] = user;
-        return this.state.contractInstance.getRequestedLicence.call(patent.name, request['account'])
-      }).then(licence => {
-        request['requestedLicence'] = licence.toNumber();
-        return this.state.contractInstance.getAcceptedLicence.call(patent.name, request['account'])
-      }).then(licence => {
-        request['acceptedLicence'] = licence.toNumber();
-        return this.state.contractInstance.getPrice.call(patent.name, request['requestedLicence'])
-      }).then(price => {
-        request['price'] = price.toNumber();
-        return this.state.contractInstance.isPending.call(patent.name, request['account'])
+        return this.state.contractInstance.isPending.call(patent.id, request.account)
       }).then(isPending => {
         if (isPending) {
-          return this.state.contractInstance.getEncryptionKey(patent.name, request['account'], {
-            from: this.state.web3.eth.accounts[0]
+          this.state.contractInstance.getRequestedLicence.call(patent.id, request.account).then(licence => {
+            request['requestedLicence'] = licence.toNumber();
+            return this.state.contractInstance.getAcceptedLicence.call(patent.id, request.account)
+          }).then(licence => {
+            request['acceptedLicence'] = licence.toNumber();
+            return this.state.contractInstance.getPrice.call(patent.id, request.requestedLicence)
+          }).then(price => {
+            request['price'] = price.toNumber();
+            return this.state.contractInstance.getEncryptionKey(patent.id, request.account, {
+              from: this.state.web3.eth.accounts[0]
+            })
+          }).then(key => {
+            request['key'] = key;
+            requests.push(request);
+            this.setState({pendingRequests: requests});
           });
-        } else {
-          throw Error(NOT_PENDING);
         }
-      }).then(key => {
-        request['key'] = key;
-        let requests = this.state.pendingRequests;
-        requests.push(request);
-        this.setState({pendingRequests: requests});
-      }).catch(e => {
-        if (e.message !== NOT_PENDING) {
-          contractError(e);
-        }
-      })
+      }).catch(contractError);
     }
   }
 
@@ -154,17 +149,17 @@ class FileManager extends Component {
   /*Handler for accepting a given request : takes care of encrypting the key and communicating with the smart contract*/
   acceptRequest(request) {
     if (request.acceptedLicence === 0) {
-      generatePrivateKey(this.state.web3, this.state.patent.hash).then(key => {
+      generatePrivateKey(this.state.web3, this.state.patent.id).then(key => {
         return publicKeyEncrypt(key, request.key);
       }).then(encrypted => {
-        return this.state.contractInstance.grantAccess(this.state.patent.name, request.account, encrypted, {
+        return this.state.contractInstance.grantAccess(this.state.patent.id, request.account, encrypted, {
           from: this.state.web3.eth.accounts[0],
           gas: process.env.REACT_APP_GAS_LIMIT,
           gasPrice: this.state.gasPrice
         });
       }).then(tx => {
-        setTimeout(() => this.setState({pendingRequests: []}), 3000); // this.fetchRequests(this.state.patent)
         successfullTx(tx);
+        this.fetchRequests(this.state.patent);
       }).catch(e => {
         if (e === KEY_GENERATION_ERROR || e === ENCRYPTION_ERROR) {
           window.dialog.showAlert(e)
@@ -173,13 +168,13 @@ class FileManager extends Component {
         }
       })
     } else {
-      this.state.contractInstance.acceptUpgrade(this.state.patent.name, request.account, {
+      this.state.contractInstance.acceptRequest(this.state.patent.id, request.account, {
         from: this.state.web3.eth.accounts[0],
         gas: process.env.REACT_APP_GAS_LIMIT,
         gasPrice: this.state.gasPrice
       }).then(tx => {
-        setTimeout(() => this.setState({pendingRequests: []}), 3000);
         successfullTx(tx);
+        this.fetchRequests(this.state.patent);
       }).catch(e => {
         contractError(e)
       })
@@ -188,16 +183,13 @@ class FileManager extends Component {
 
   /*Handler for rejecting a given request */
   rejectRequest(request) {
-    const reject = request.acceptedLicence === 0
-      ? this.state.contractInstance.rejectAccess
-      : this.state.contractInstance.rejectUpgrade;
-    reject(this.state.patent.name, request.account, {
+    this.state.contractInstance.rejectRequest(this.state.patent.id, request.account, {
       from: this.state.web3.eth.accounts[0],
       gas: process.env.REACT_APP_GAS_LIMIT,
       gasPrice: this.state.gasPrice
     }).then(tx => {
-      setTimeout(() => this.setState({pendingRequests: []}), 3000);
-      successfullTx(tx)
+      successfullTx(tx);
+      this.fetchRequests(this.state.patent);
     }).catch(e => {
       contractError(e)
     })
@@ -218,7 +210,7 @@ class FileManager extends Component {
 
   /*Decrypts and downloads the file from IPFS the document*/
   downloadCopy() {
-    const hash = this.state.patent.hash;
+    const hash = this.state.patent.id;
     generatePrivateKey(this.state.web3, hash).then(key => {
       const ipfsLoc = this.state.patent.ipfsLocation;
       window.dialog.showAlert("Download will start shortly");
@@ -240,14 +232,14 @@ class FileManager extends Component {
    * but by letting the ability for people having already bought it to download it */
   deletePatent() {
     window.dialog.show({
-      body: "Please enter the patent name to confirm this action",
+      body: "Please enter the patent name (with its extension) to confirm this action",
       bsSize: 'medium',
       prompt: Dialog.TextPrompt({placeholder: "Patent name"}),
       actions: [
         Dialog.CancelAction(),
         Dialog.OKAction(diag => {
           if (diag.value === this.state.patent.name) {
-            this.state.contractInstance.deletePatent(this.state.patent.name, {
+            this.state.contractInstance.setVisibility(this.state.patent.id, {
               from: this.state.web3.eth.accounts[0],
               gas: process.env.REACT_APP_GAS_LIMIT,
               gasPrice: this.state.gasPrice
@@ -256,7 +248,6 @@ class FileManager extends Component {
               let patent = this.state.patent;
               patent.deleted = true;
               this.setState({ patent });
-              // this.hideDetails();
             }).catch(e => {
               contractError(e)
             });
@@ -271,7 +262,7 @@ class FileManager extends Component {
   /* Allows to undelete a patent
    * but by letting the ability for people having already bought it to download it */
   undeletePatent() {
-    this.state.contractInstance.undeletePatent(this.state.patent.name, {
+    this.state.contractInstance.setVisibility(this.state.patent.id, {
       from: this.state.web3.eth.accounts[0],
       gas: process.env.REACT_APP_GAS_LIMIT,
       gasPrice: this.state.gasPrice
@@ -285,25 +276,28 @@ class FileManager extends Component {
     });
   }
 
-  // TODO: allow modify patent name when patents will be indexed by their hash
   /* Function that triggers the contract call to update some patent information */
   submitForm(e) {
     e.preventDefault();
-    const newLicencePrices = this.state.newLicencePrices.slice(1, this.state.newMaxLicence+1);
-    const hasNotChanged = (this.state.newMaxLicence === this.state.patent.maxLicence
-      && newLicencePrices.every((p, i) => this.state.patent.licencePrices[i] === p));
+    const { patent, newName, newMaxLicence } = this.state;
+    const newLicencePrices = this.state.newLicencePrices.slice(1, newMaxLicence + 1);
+    const hasNotChanged = (newName === patent.name && newMaxLicence === patent.maxLicence
+      && newLicencePrices.every((p, i) => patent.licencePrices[i] === p));
     if (hasNotChanged) {
       this.closeForm();
-      window.dialog.showAlert("Please modify at least one licence or price before submitting");
+      window.dialog.showAlert("Please modify at least one information before submitting");
     }
     else if (this.validateForm()) {
       this.setState({ waitingTransaction: true });
-      this.state.contractInstance.modifyPatent(this.state.patent.name, this.state.newMaxLicence, newLicencePrices, {
+      const split = patent.name.split('.');
+      const newCompleteName = newName + '.' + split[split.length - 1];
+      this.state.contractInstance.modifyPatent(patent.id, newCompleteName, newMaxLicence, newLicencePrices, {
         from: this.state.web3.eth.accounts[0],
         gas: process.env.REACT_APP_GAS_LIMIT,
         gasPrice : this.state.gasPrice
       }).then(tx => {
         let patent = this.state.patent;
+        patent.name = newCompleteName;
         patent.maxLicence = this.state.newMaxLicence;
         patent.licencePrices = newLicencePrices;
         this.setState({ patent });
@@ -323,9 +317,13 @@ class FileManager extends Component {
     return (
       <Paper style={{ padding: 20 }}>
         <form onSubmit={e => this.submitForm(e)}>
-          <LicencesMenu licence={this.state.newMaxLicence} onLicenceChange={i => this.handleLicenceChange(i)}
+          <FieldGroup name="patentName" id="formsControlsName" label="Patent Name"
+                      type="text" value={this.state.newName} placeholder="New name"
+                      validation={this.validateName()} onChange={this.handleNameChange} />
+          <Divider/><br/>
+          <LicencesMenu licence={this.state.newMaxLicence} onLicenceChange={this.handleLicenceChange}
                         validatePrice={validatePrice} prices={this.state.newLicencePrices}
-                        onPricesChange={(l, p) => this.handlePricesChange(l, p)}/>
+                        onPricesChange={this.handlePricesChange}/>
           <br/><Divider/><br/>
           <SubmitButton running={this.state.waitingTransaction} disabled={!this.validateForm()}/>
         </form>
@@ -347,7 +345,7 @@ class FileManager extends Component {
           </Col>
         </Row>
       </ListGroupItem>
-    ))
+    ));
   }
 
   renderPanel() {

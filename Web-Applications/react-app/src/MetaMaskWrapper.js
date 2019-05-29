@@ -70,8 +70,10 @@ function wrapWithMetamask(Wrapped, header) {
           } else {
             this.setNetwork();
           }
-        })
-
+        });
+        this.state.web3.currentProvider.on('networkChanged', netId => {
+          this.setState({ selectedNetwork: netId });
+        });
       }).catch(e => {
         window.dialog.showAlert(METAMASK_NOTFOUND);
       });

@@ -3,7 +3,7 @@ import '../css/Pages.css'
 import React, {Component} from 'react';
 import {Grid, Row, Col} from 'react-bootstrap';
 import { EncryptFileButton, FieldGroup, SubmitButton, ContractNotFound, LicencesMenu } from '../utils/FunctionalComponents';
-import { validateName, validatePrice, validateEmail, validateEmails, validateFile } from '../utils/UtilityFunctions';
+import { validateName, validatePrice, validateFile } from '../utils/UtilityFunctions';
 import {getFileHash} from '../utils/CryptoUtils'
 import wrapWithMetamask from '../MetaMaskWrapper'
 import Patenting from '../../build/contracts/Patenting';
@@ -33,16 +33,16 @@ class DepositFile_class extends Component {
       patentName: "",
       licencePrices: Array(Object.keys(licences).length).fill(''),
       licence: Object.keys(licences).length - 1,
-      email: "",
-      repeat_email: "",
       file: "",
+      fileExt: '',
       fileState: FileStates.NOT_ENCRYPTED,
       web3: props.web3,
       contractInstance: null,
       waitingTransaction: false,
-      patentPrice: 0,
+      depositPrice: 0,
       etherPrice : 0,
-      gasPrice : 0
+      gasPrice : 0,
+      currentAccountRegistered: false,
     };
     this.handleChange = this.handleChange.bind(this);
     this.submitFile = this.submitFile.bind(this);
@@ -57,15 +57,23 @@ class DepositFile_class extends Component {
     const patenting = contract(Patenting);
     patenting.setProvider(this.state.web3.currentProvider);
     // patenting.at('0x90Aa08D8542925bc95b1D7347bF21068A0659c70').then(instance => { // for ROPSTEN
-    // patenting.at('0xddfc2E31EEcA6Ed9E39ed4B7BA30F7217B3032A3').then(instance => { // for LOCAL RPC
     patenting.deployed().then(instance => { // for LOCAL RPC
       this.setState({contractInstance: instance});
-      return instance.patentPrice.call()
+      return instance.hasAccount.call(this.state.web3.eth.accounts[0]);
+    }).then(registered => {
+      this.setState({ currentAccountRegistered: registered });
+      return this.state.contractInstance.depositPrice.call();
     }).then(price => {
-      this.setState({patentPrice: price.toNumber()});
-      return this.state.contractInstance.getEthPrice.call(price.toNumber())
-    }).then(ethPrice => this.setState({ etherPrice: ethPrice }))
-      .catch(error => this.setState({ contractInstance: null }));
+      this.setState({depositPrice: price.toNumber()});
+      return this.state.contractInstance.getEthPrice.call(price.toNumber());
+    }).then(ethPrice => {
+      this.setState({ etherPrice: ethPrice })
+    }).catch(error => console.log(error));
+    this.state.web3.currentProvider.on('accountsChanged', accounts => {
+      this.state.contractInstance.hasAccount.call(accounts[0]).then(registered => {
+        this.setState({currentAccountRegistered: registered});
+      })
+    });
   }
 
 
@@ -83,8 +91,6 @@ class DepositFile_class extends Component {
       file: "",
       fileExt: '',
       fileState: FileStates.NOT_ENCRYPTED,
-      email: "",
-      repeat_email: "",
       waitingTransaction: false
     })
   }
@@ -92,14 +98,10 @@ class DepositFile_class extends Component {
   // Component validation functions
   validatePrices = () => this.state.licencePrices.slice(1, this.state.licence+1).every(price => (validatePrice(price) === 'success'));
   validateName = () => validateName(this.state.patentName);
-  validateEmail = () => validateEmail(this.state.email);
-  validateEmails = () => validateEmails(this.state.email, this.state.repeat_email);
 
   /*Returns True if all form validation pass*/
   validateForm() {
     return (this.validatePrices()
-      && this.validateEmail() === 'success'
-      && this.validateEmails() === 'success'
       && this.validateName() === 'success'
       && this.state.hash !== ""
       && this.state.ipfsLocation !== ""
@@ -107,7 +109,6 @@ class DepositFile_class extends Component {
   }
 
   /*--------------------------------- EVENT HANDLERS ---------------------------------*/
-
 
   /*Encrypts the file using AES and the key produced by the owner*/
   encryptFile(e) {
@@ -169,16 +170,16 @@ class DepositFile_class extends Component {
 
 
   /*Function that triggers the contract call to Deposit a patent*/
-  // TODO: does not work with licence 0 only
+  // TODO: tell the user if the file he wants to submit has already been (by him or by someone else)
   submitFile(e) {
     e.preventDefault();
     if (this.validateForm()) {
       this.setState({waitingTransaction: true});
-      const { patentName, fileExt, hash, licence, licencePrices, ipfsLocation, email } = this.state;
+      const { patentName, fileExt, hash, licence, licencePrices, ipfsLocation } = this.state;
       const prices = licencePrices.slice(1, this.state.licence+1).map(parseFloat);
       const completeName = patentName + '.' + fileExt;
-      this.state.contractInstance.depositPatent(completeName, hash, licence, prices, ipfsLocation, email, {
-        from: this.state.web3.eth.coinbase,
+      this.state.contractInstance.depositPatent(completeName, hash, licence, prices, ipfsLocation, {
+        from: this.state.web3.eth.accounts[0],
         value: this.state.etherPrice,
         gas: process.env.REACT_APP_GAS_LIMIT,
         gasPrice : this.state.gasPrice
@@ -227,10 +228,8 @@ class DepositFile_class extends Component {
           <p>This page allows users that have an Ethereum account and are using it on the Metamask
             extension for browsers, to register files and allow other users to access them for a set
             fee. <br/> Whenever another user requests to buy access to the file you uploaded, an email will be sent
-            to you and
-            you will need to <a href="/MyFiles" className="link">
-              accept the requests</a>, then the funds will be transferred to
-            your account and the user will be able to download a copy of the document.
+            to you and you will need to <a href="/MyFiles" className="link">accept the requests</a>,
+            then the funds will be transferred to your account and the user will be able to download a copy of the document.
             <br/><br/>You only need to <b>unlock your Metamask extension</b> and choose the document.
             <br/>Note that we do not store any data regarding the documents you upload; Only the hashes are retrieved.
             The document will be stored in an encrypted format on the IPFS network, using AES 256-bit encryption
@@ -260,14 +259,6 @@ class DepositFile_class extends Component {
                         onPricesChange={(l, p) => this.handlePricesChange(l, p)}/>
           <br/><Divider/><br/>
 
-          <FieldGroup name="email" id="formsControlsEmail" label="Email address" type="email"
-                      value={this.state.email} placeholder="john@doe.com" help=""
-                      validation={this.validateEmail()} onChange={this.handleChange} />
-          <FieldGroup name="repeat_email" id="formsControlsEmail" label="Repeat Email address" type="email"
-                      value={this.state.repeat_email} placeholder="john@doe.com" help=""
-                      validation={this.validateEmails()} onChange={this.handleChange}/>
-          <Divider/><br/>
-
           <SubmitButton running={this.state.waitingTransaction} disabled={!this.validateForm()}/>
         </form>
       </Paper>
@@ -282,10 +273,19 @@ class DepositFile_class extends Component {
         <Grid>
           <Row bsClass="contract-address">
             <Col xsHidden>Contract at {this.state.contractInstance.address}</Col>
-            <Row>Deposit price at {this.state.patentPrice} USD </Row> {/* price to pay to deposit a patent */}
-            <br/> <Row><Col xsHidden>Current account {this.state.web3.eth.accounts[0]} (From Metamask)</Col></Row>
+            <Row>Deposit price at {this.state.depositPrice} USD </Row> {/* price to pay to deposit a patent */}
+            <br/>
+            <Col xsHidden>
+              Current account {this.state.web3.eth.accounts[0]} (From Metamask)
+              <br/>
+              {!this.state.currentAccountRegistered && "Your current Metamask account is not registered. Please "}
+              <a href="/registerArtist">{!this.state.currentAccountRegistered && "register it here"}</a>
+              {!this.state.currentAccountRegistered && " to deposit a patent"}
+            </Col>
           </Row>
-          <Row><Col sm={3} md={5} mdOffset={3} className="form">{this.renderForm()}</Col></Row>
+          {this.state.currentAccountRegistered && <Col sm={3} md={5} mdOffset={3} className="form">
+            {this.renderForm()}
+          </Col>}
         </Grid>
       )
     }

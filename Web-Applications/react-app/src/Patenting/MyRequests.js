@@ -4,12 +4,10 @@ import {Grid, Row, PanelGroup} from 'react-bootstrap';
 import {ContractNotFound} from '../utils/FunctionalComponents';
 import Patenting from '../../build/contracts/Patenting';
 import wrapWithMetamask from '../MetaMaskWrapper'
-import {NOT_REQUESTED, contractError} from "../utils/ErrorHandler";
-
+import {contractError} from "../utils/ErrorHandler";
 import Bundle from '../utils/ipfsBundle';
-
 import RequestPanel from './RequestPanel';
-
+import {RequestStatus, getStatusString} from '../utils/Constants'
 
 /*Component for browsing submitted requests*/
 class MyRequests_class extends Component {
@@ -39,82 +37,86 @@ class MyRequests_class extends Component {
       return instance.patentCount.call()
     }).then(count => {
       this.getMyRequests(count.toNumber());
-    }).catch(error => this.setState({contractInstance: null}));
+    }).catch(console.log);
+    this.state.web3.currentProvider.on('accountsChanged', () => {
+      this.state.contractInstance.patentCount.call().then(count => {
+        this.getMyRequests(count.toNumber());
+      }).catch(contractError);
+    });
   }
 
   /*Fetches the requests from the smart contract*/
   getMyRequests(numPatents) {
+    this.setState({requests: [], numRequests: 0});
     if (this.state.contractInstance !== null) {
       const instance = this.state.contractInstance;
-      const currentAccount = this.state.web3.eth.accounts[0]
+      const currentAccount = this.state.web3.eth.accounts[0];
       for (let i = 0; i < numPatents; i++) {
         let new_entry = {};
-        instance.patentNames.call(i).then(name => {
-          new_entry['patentName'] = name;
-          return instance.hasBeenRequested.call(new_entry['patentName'], currentAccount)
-        }).then(alreadyRequested => {
-          if (alreadyRequested) {
-            return instance.getRequestStatus.call(new_entry['patentName'], currentAccount)
-          } else {
-            throw Error(NOT_REQUESTED)
-          }
+        instance.patentIDs.call(i).then(id => {
+          new_entry['patentID'] = id;
+          return instance.getRequestStatus.call(new_entry.patentID, currentAccount)
         }).then(status => {
           new_entry['status'] = status.toNumber();
-          return instance.getPatentHash.call(new_entry['patentName']);
-        }).then(hash => {
-          new_entry['hash'] = hash;
-          return instance.getPatentLocation.call(new_entry['patentName']);
-        }).then(loc => {
-          new_entry['ipfsLocation'] = loc;
-          return instance.getRequestedLicence.call(new_entry['patentName'], currentAccount);
-        }).then(requestedLicence => {
-          new_entry['requestedLicence'] = requestedLicence.toNumber();
-          return instance.getAcceptedLicence.call(new_entry['patentName'], currentAccount);
-        }).then(acceptedLicence => {
-          new_entry['acceptedLicence'] = acceptedLicence.toNumber();
-          return instance.getPrices.call(new_entry['patentName']);
-        }).then(prices => {
-          new_entry['patentPrices'] = prices.map(price => price.toNumber());
-          return Promise.all(prices.map(price => instance.getEthPrice(price)));
-        }).then(ethPrices => {
-          new_entry['patentEthPrices'] = ethPrices.map(ethPrice => ethPrice.toNumber());
-          return instance.getMaxLicence(new_entry['patentName']);
-        }).then(maxLicence => {
-          new_entry['patentMaxLicence'] = maxLicence.toNumber();
-          return instance.getOwnerEmail.call(new_entry['patentName']);
-        }).then(mail => {
-          new_entry['ownerEmail'] = mail;
-          new_entry['id'] = (this.state.numRequests + 1);
-          let requests = this.state.requests;
-          requests.push(new_entry);
-          this.setState({pendingRequests: requests, numRequests: this.state.numRequests + 1});
-        }).catch(e => {
-          if (e.message !== NOT_REQUESTED) { //Catch error if the patent is not authorized
-            contractError(e)
+          if (new_entry.status !== RequestStatus.NOT_REQUESTED) {
+            instance.getPatentName.call(new_entry.patentID).then(name => {
+              new_entry['patentName'] = name;
+              return instance.getPatentLocation.call(new_entry.patentID);
+            }).then(loc => {
+              new_entry['patentIpfsLocation'] = loc;
+              return instance.getRequestedLicence.call(new_entry.patentID, currentAccount);
+            }).then(requestedLicence => {
+              new_entry['requestedLicence'] = requestedLicence.toNumber();
+              return instance.getAcceptedLicence.call(new_entry.patentID, currentAccount);
+            }).then(acceptedLicence => {
+              new_entry['acceptedLicence'] = acceptedLicence.toNumber();
+              return instance.getPrices.call(new_entry.patentID);
+            }).then(prices => {
+              new_entry['patentPrices'] = prices.map(price => price.toNumber());
+              return Promise.all(prices.map(price => instance.getEthPrice(price)));
+            }).then(ethPrices => {
+              new_entry['patentEthPrices'] = ethPrices.map(ethPrice => ethPrice.toNumber());
+              return instance.getMaxLicence(new_entry.patentID);
+            }).then(maxLicence => {
+              new_entry['patentMaxLicence'] = maxLicence.toNumber();
+              return instance.getOwnerEmail.call(new_entry.patentID);
+            }).then(mail => {
+              new_entry['patentOwnerEmail'] = mail;
+              new_entry['id'] = (this.state.numRequests + 1);
+              let requests = this.state.requests;
+              requests.push(new_entry);
+              this.setState({ requests, numRequests: this.state.numRequests + 1});
+            }).catch(contractError)
           }
         })
       }
     }
   }
 
-
   /*To change between requests*/
   handleSelect(activeKey) {
-    this.setState({activeKey: activeKey})
+    this.setState({ activeKey })
   }
 
   /*Returns a full table with patents*/
   renderTable() {
     if (this.state.numRequests !== 0) {
-      let panels = this.state.requests.map(request => {
-        return <RequestPanel web3={this.state.web3} instance={this.state.contractInstance} bundle={this.bundle}
-                             request={request} key={request.id} gasPrice={this.state.gasPrice}/>
-      });
       return (
         <PanelGroup
           accordion activeKey={this.state.activeKey} onSelect={this.handleSelect} id="accordion-controlled"
           className="requests-container">
-          {panels}
+          {Object.values(RequestStatus).filter(s => s > 0).map(s => {
+            const statusRequests = this.state.requests.filter(r => r.status === s);
+            return statusRequests.length > 0 && (
+              <div key={s}>
+                <h3>{getStatusString(s)} requests</h3>
+                {statusRequests.sort((r1, r2) => r1.patentName < r2.patentName ? -1 : 1).map(request => (
+                  <RequestPanel web3={this.state.web3} instance={this.state.contractInstance} bundle={this.bundle}
+                                request={request} key={request.id} gasPrice={this.state.gasPrice}/>
+                ))}
+                <br/>
+              </div>
+          )})}
         </PanelGroup>)
     } else {
       return <div className='not-found'><h3>You do not have any requests on this network</h3></div>

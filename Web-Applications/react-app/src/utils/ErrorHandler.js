@@ -36,7 +36,6 @@ const contractError = function (error) {
     window.dialog.showAlert('Please check your MetaMask Client');
   } else {
     let tmp = message.split(' ');
-
     if (tmp.length > 0) {
       let status_code = tmp[tmp.length - 1][0];
       if (status_code === '0') {

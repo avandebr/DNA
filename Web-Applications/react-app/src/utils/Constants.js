@@ -23,30 +23,22 @@ const RequestStatus = {
   ACCEPTED: 4
 };
 
-const RequestStatus_String = {
-  NOT_REQUESTED: "Not requested",
-  PENDING: "Pending",
-  REJECTED: "Rejected",
-  CANCELLED: "Cancelled",
-  ACCEPTED: "Accepted"
-};
-
 /*Returns the string associated to the given status (Between 0 and 3)*/
 const getStatusString = (status) => {
   switch (status) {
     case RequestStatus.NOT_REQUESTED:
-      return RequestStatus_String.NOT_REQUESTED;
+      return "Not requested";
     case RequestStatus.PENDING:
-      return RequestStatus_String.PENDING;
+      return "Pending";
     case RequestStatus.REJECTED:
-      return RequestStatus_String.REJECTED;
+      return "Rejected";
     case RequestStatus.CANCELLED:
-      return RequestStatus_String.CANCELLED;
+      return "Cancelled";
     case RequestStatus.ACCEPTED:
-      return RequestStatus_String.ACCEPTED;
+      return "Accepted";
     default :
-      return ""
+      return "";
   }
-}
+};
 
-module.exports = {Constants, FileStates, RequestStatus_String, RequestStatus, getStatusString};
+module.exports = {Constants, FileStates, RequestStatus, getStatusString};

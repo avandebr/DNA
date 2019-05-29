@@ -1,8 +1,8 @@
 const licences = {
-  0: "This is licence 0",
-  1: "This is licence 1",
-  2: "This is licence 2",
-  3: "This is licence 3",
+  0: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. In pharetra eu urna sed pretium. Proin ligula elit, ullamcorper quis consectetur id, placerat eu nunc. Donec nec sagittis dolor. Phasellus aliquam felis sem, nec pretium orci scelerisque et. Vivamus euismod lobortis arcu. Proin vel pellentesque purus. Nullam gravida vel diam pretium tincidunt. Donec turpis augue, mollis eu mi sed, posuere lobortis nibh. Donec faucibus odio nisi. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Morbi porttitor arcu eu leo vehicula, eget molestie elit bibendum. Morbi faucibus nibh felis, id efficitur ipsum convallis ut.",
+  1: "Vivamus pulvinar erat vel consectetur gravida. Mauris rutrum nibh et varius gravida. Aenean vitae laoreet tellus. Proin gravida libero sit amet scelerisque suscipit. Aliquam vitae nibh ex. Nam ut orci risus. Fusce ut diam egestas urna fringilla lobortis. Quisque blandit tincidunt ultrices. Phasellus diam nulla, fringilla ut sem et, ullamcorper pharetra dui. Quisque porta, leo sed sollicitudin mollis, felis mauris faucibus metus, quis laoreet massa ligula eget ex. Phasellus tortor metus, pulvinar sed sapien aliquam, porttitor faucibus mi. Nullam semper sem nec finibus ultricies. Donec vitae augue ut tellus rutrum tincidunt id ac augue. Aenean luctus dolor non odio volutpat imperdiet. Cras condimentum tellus condimentum, venenatis elit in, rhoncus leo.",
+  2: "Sed ultrices pretium scelerisque. Sed egestas posuere justo non egestas. Aliquam erat volutpat. Nunc molestie, dui eu molestie vulputate, orci ipsum bibendum lacus, at sollicitudin tortor lectus vitae justo. Pellentesque auctor enim dui, ut varius ipsum consectetur id. Nullam massa urna, tempus in facilisis ut, porttitor non leo. In id sem suscipit, aliquam dui a, cursus odio.",
+  3: "Phasellus eu mollis ipsum, nec maximus risus. Integer lacinia pharetra nisi et consequat. Sed justo odio, pretium in sapien quis, fringilla luctus massa. Sed mollis magna erat, vel gravida mauris tempor id. Nulla suscipit orci et justo gravida vulputate. Etiam malesuada tempus urna, nec ultrices lacus hendrerit at. Integer ut urna et neque mattis tincidunt. Praesent in dui enim. In varius nec neque eget maximus. Mauris sit amet tristique erat. Aenean eu lorem lorem.",
 };
 
 export default licences;

@@ -8,10 +8,8 @@ import wrapWithMetamask from '../MetaMaskWrapper';
 
 import FileManager from './FileManager'
 
-import {contractError, NOT_OWNER} from '../utils/ErrorHandler'
+import {contractError} from '../utils/ErrorHandler'
 
-
-/*---------------------------------------------------------------------------------- DONE ----------------------------------------------------------------------------------*/
 
 /*Component to view User's deposited patents*/
 class MyFiles_class extends Component {
@@ -25,9 +23,9 @@ class MyFiles_class extends Component {
       numPatents: 0,
       patents: [],
       selectedPatent: null,
-      gasPrice : 0
+      gasPrice : 0,
+      currentAccountRegistered: false,
     };
-
     this.getMyPatents = this.getMyPatents.bind(this);
     this.nextPatent = this.nextPatent.bind(this);
     this.prevPatent = this.prevPatent.bind(this);
@@ -41,59 +39,62 @@ class MyFiles_class extends Component {
     patenting.setProvider(this.state.web3.currentProvider);
     patenting.deployed().then(instance => {
       this.setState({contractInstance: instance});
-      return instance.patentCount.call();
+      return instance.hasAccount.call(this.state.web3.eth.accounts[0]);
+    }).then(registered => {
+      this.setState({ currentAccountRegistered: registered });
+      return this.state.contractInstance.getNumPatents.call(this.state.web3.eth.accounts[0]);
     }).then(count => {
+      this.setState({ numPatents: count.toNumber() });
       this.getMyPatents(count.toNumber());
-    }).catch(error => this.setState({contractInstance: null}));
+    }).catch(() => this.setState({contractInstance: null}));
+    // to refresh displayed account
+    this.state.web3.currentProvider.on('accountsChanged', accounts => {
+      this.hideDetails();
+      this.state.contractInstance.hasAccount.call(accounts[0]).then(registered => {
+        this.setState({ currentAccountRegistered: registered });
+        return this.state.contractInstance.getNumPatents.call(accounts[0]);
+      }).then(count => {
+        this.setState({ numPatents: count.toNumber() });
+        this.getMyPatents(count.toNumber());
+      }).catch(() => this.setState({ contractInstance: null }));
+    });
   }
-
-  /*--------------------------------- HELPER METHODS AND VALIDATION ---------------------------------*/
-
 
   /*Function that gets all owned patent information form the contract and stores them in the state*/
   getMyPatents(numPatents) {
+    this.setState({patents: []});
     if (this.state.contractInstance !== null) {
       let instance = this.state.contractInstance;
       for (let i = 0; i < numPatents; i++) {
         let new_entry = {};
-        instance.patentNames.call(i).then(name => {
-          new_entry['name'] = name;
-          return instance.isOwner.call(new_entry['name'], this.state.web3.eth.accounts[0]);
-        }).then(isOwner => {
-          if (isOwner) {
-            return instance.getTimeStamp.call(new_entry['name'])
-          } else {
-            throw Error(NOT_OWNER)
-          }
+        instance.getOwnedPatentIDs.call(this.state.web3.eth.accounts[0], i).then(id => {
+          new_entry['id'] = id;
+          return instance.getTimeStamp.call(new_entry['id'])
         }).then(timestamp => {
           new_entry['timestamp'] = timestamp.toNumber();
-          return instance.isDeleted.call(new_entry['name']);
+          return instance.isDeleted.call(new_entry['id']);
         }).then(deleted => {
           new_entry['deleted'] = deleted;
-          return instance.getNumRequests.call(new_entry['name']);
+          return instance.getNumRequests.call(new_entry['id']);
         }).then(num => {
           new_entry['numRequests'] = num.toNumber();
-          return instance.getPatentHash.call(new_entry['name']);
-        }).then(hash => {
-          new_entry['hash'] = hash;
-          return instance.getPatentLocation.call(new_entry['name']);
+          return instance.getPatentName.call(new_entry['id']);
+        }).then(name => {
+          new_entry['name'] = name;
+          return instance.getPatentLocation.call(new_entry['id']);
         }).then(loc => {
           new_entry['ipfsLocation'] = loc;
-          return instance.getMaxLicence.call(new_entry['name']);
+          return instance.getMaxLicence.call(new_entry['id']);
         }).then(licence => {
           new_entry['maxLicence'] = licence.toNumber();
-          return instance.getPrices.call(new_entry['name']);
+          return instance.getPrices.call(new_entry['id']);
         }).then(prices => {
           new_entry['licencePrices'] = prices.map(price => price.toNumber());
-          new_entry['index'] = this.state.numPatents;
+          new_entry['index'] = i;
           let patents = this.state.patents;
           patents.push(new_entry);
-          this.setState({patents: patents, numPatents: this.state.numPatents + 1});
-        }).catch(e => {
-          if (e.message !== NOT_OWNER) { //Catch error if the patent is not authorized
-            contractError(e)
-          }
-        })
+          this.setState({patents: patents});
+        }).catch(contractError);
       }
     }
   }
@@ -153,8 +154,7 @@ class MyFiles_class extends Component {
         <div className="requests-container">
           {this.buttonToolbar()}
           <FileManager web3={this.state.web3} contractInstance={this.state.contractInstance}
-                       patent={this.state.selectedPatent} gasPrice={this.state.gasPrice}
-                       hideDetails={() => this.hideDetails()} />
+                       patent={this.state.selectedPatent} gasPrice={this.state.gasPrice} />
         </div>
     )
   }
@@ -189,7 +189,7 @@ class MyFiles_class extends Component {
         </tr>
       );
       const table = this.state.patents.map(patent => (
-        <tr key={patent.name} onClick={this.openDetails.bind(this, patent)}>
+        <tr key={patent.id} onClick={this.openDetails.bind(this, patent)}>
           <td>{patent.name}</td>
           <td>{stampToDate(patent.timestamp)}</td>
           <td>{patent.numRequests}</td>
@@ -216,6 +216,10 @@ class MyFiles_class extends Component {
             Contract at {this.state.contractInstance.address}
             <br/><br/>
             Current account {this.state.web3.eth.accounts[0]} (From Metamask)
+            <br/>
+            {!this.state.currentAccountRegistered && "Your current Metamask account is not registered. Please "}
+            <a href="/registerArtist">{!this.state.currentAccountRegistered && "register it here"}</a>
+            {!this.state.currentAccountRegistered && " to deposit patents"}
           </Row>
           <Row>
             {this.state.selectedPatent ? this.renderDetails() : this.renderTable()}

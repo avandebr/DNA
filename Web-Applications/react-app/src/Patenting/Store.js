@@ -11,13 +11,13 @@ import {stampToDate, successfullTx, validateEmail, validateEmails} from '../util
 import {getStatusString} from '../utils/Constants';
 import Patenting from '../../build/contracts/Patenting';
 import wrapWithMetamask from '../MetaMaskWrapper'
-
 import MuiDialog from '@material-ui/core/Dialog';
 import {generatePrivateKey, generatePublicKey} from '../utils/KeyGenerator'
 import {ALREADY_REQUESTED, NOT_REQUESTABLE, ALREADY_OWNER, KEY_GENERATION_ERROR, contractError} from '../utils/ErrorHandler'
 import Divider from "@material-ui/core/Divider";
 import Paper from "@material-ui/core/Paper";
 
+// TODO: put licence with status and allow to make new request even if accepted (and pending ?)
 /*Component for requesting access to a patent*/
 class Store_class extends Component {
 
@@ -52,7 +52,9 @@ class Store_class extends Component {
     }).then(count => {
       this.setState({numPatents: count.toNumber()});
       this.getPatents(count.toNumber());
-    }).catch(error => this.setState({contractInstance: null}));
+    }).catch(() => this.setState({contractInstance: null}));
+    // to refresh displayed account
+    this.state.web3.currentProvider.on('accountsChanged', () => this.setState({}));
   }
 
   validateEmail = () => validateEmail(this.state.email);
@@ -97,27 +99,30 @@ class Store_class extends Component {
       const instance = this.state.contractInstance;
       for (let i = 0; i < numPatents; i++) {
         let new_entry = {};
-        instance.patentNames.call(i).then(name => {
-          new_entry['name'] = name;
-          return instance.getPatentOwner.call(new_entry['name']);
+        instance.patentIDs.call(i).then(id => {
+          new_entry['id'] = id;
+          return instance.getPatentOwner.call(new_entry['id']);
         }).then(owner => {
-          new_entry['owner'] = owner;
-          return instance.getTimeStamp.call(new_entry['name'])
+          new_entry['ownerAddress'] = owner;
+          return instance.getTimeStamp.call(new_entry['id'])
         }).then(timestamp => {
           new_entry['timestamp'] = timestamp.toNumber();
-          return instance.getPatentHash.call(new_entry['name']);
-        }).then(hash => {
-          new_entry['hash'] = hash;
-          return instance.getRequestStatus.call(new_entry['name'], this.state.web3.eth.accounts[0]);
+          return instance.getPatentName.call(new_entry['id']);
+        }).then(name => {
+          new_entry['name'] = name;
+          return instance.getOwnerName.call(new_entry['id']);
+        }).then(name => {
+          new_entry['ownerName'] = name;
+          return instance.getRequestStatus.call(new_entry['id'], this.state.web3.eth.accounts[0]);
         }).then(status => {
           new_entry['status'] = status.toNumber();
-          return instance.getMaxLicence.call(new_entry['name'])
+          return instance.getMaxLicence.call(new_entry['id'])
         }).then(maxLicence => {
           new_entry['maxLicence'] = maxLicence.toNumber();
-          return instance.isDeleted.call(new_entry['name'])
+          return instance.isDeleted.call(new_entry['id'])
         }).then(isDeleted => {
           new_entry['deleted'] = isDeleted;
-          return instance.getPrices.call(new_entry['name'])
+          return instance.getPrices.call(new_entry['id'])
         }).then(prices => {
           new_entry['prices'] = prices.map(price => price.toNumber());
           return Promise.all(prices.map(price => instance.getEthPrice(price)));
@@ -126,7 +131,7 @@ class Store_class extends Component {
           let patents = this.state.patents;
           patents.push(new_entry);
           this.setState({ patents });
-        });
+        }).catch(contractError);
       }
     }
   }
@@ -135,9 +140,9 @@ class Store_class extends Component {
 
 
   promptInformartions(patent) {
-    if (patent.owner !== this.state.web3.eth.accounts[0]) {
+    if (patent.ownerAddress !== this.state.web3.eth.accounts[0]) {
       if (patent.maxLicence > 0) {
-        this.state.contractInstance.canRequest.call(patent.name, this.state.web3.eth.accounts[0]).then(canRequest => {
+        this.state.contractInstance.canRequest.call(patent.id, 1, this.state.web3.eth.accounts[0]).then(canRequest => {
           if (canRequest) {
             this.setState({showRequestForm: true, selectedPatent: patent})
           } else {
@@ -161,9 +166,9 @@ class Store_class extends Component {
       window.dialog.showAlert("Your email is needed to receive notifications");
     }
     else if (email.match(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/) !== null){
-      generatePrivateKey(this.state.web3, selectedPatent.hash).then(key => { //Generate privateKey = ECDSA(sha3(sha256(file))
+      generatePrivateKey(this.state.web3, selectedPatent.id).then(key => { //Generate privateKey = ECDSA(sha3(sha256(file))
         let publicKey = generatePublicKey(key); // Generate public key associated to this private key
-        return this.state.contractInstance.requestAccess(selectedPatent.name, requestedLicence, publicKey, email, {
+        return this.state.contractInstance.requestAccess(selectedPatent.id, requestedLicence, publicKey, email, {
           from: this.state.web3.eth.accounts[0],
           value: selectedPatent.ethPrices[requestedLicence-1],
           gas: process.env.REACT_APP_GAS_LIMIT,
@@ -229,11 +234,11 @@ class Store_class extends Component {
 
   /*Returns a table row for the given patent*/
   getRow(patent) {
-    const isOwner = (patent.owner === this.state.web3.eth.accounts[0]);
+    const isOwner = (patent.ownerAddress === this.state.web3.eth.accounts[0]);
     return (
       <tr key={patent.name} onClick={this.promptInformartions.bind(this, patent)}>
         <td>{patent.name}</td>
-        <td>{isOwner ? 'You' : patent.owner}</td>
+        <td>{isOwner ? 'You' : patent.ownerName + ' (' + patent.ownerAddress + ')'}</td>
         <td>{stampToDate(patent.timestamp)}</td>
         <td>{isOwner || patent.maxLicence === 0 ? '-' : getStatusString(patent.status)}</td>
       </tr>
@@ -242,13 +247,14 @@ class Store_class extends Component {
 
   /*Returns a full table with patents*/
   renderTable() {
+    // TODO: hide patents with only licence 0
     const patentsToDisplay = this.state.patents.filter(p => !p.deleted);
     if (patentsToDisplay.length > 0) {
       let table = patentsToDisplay.map(patent => this.getRow(patent));
       let header = (
         <tr>
           <th>File Name</th>
-          <th>Owner's address</th>
+          <th>Owner</th>
           <th>Submission Date</th>
           <th>Request Status</th>
         </tr>
