@@ -1,7 +1,5 @@
 # Decentralized Notary Application client Web App
 
-[![N|Solid](https://image.spreadshirtmedia.net/image-server/v1/mp/designs/138535075,width=178,height=178/ethereum-logo.png)](https://nodesource.com/products/nsolid)
-
 ##### This is an implementation of the client side of a decentralized notary application on the Ethereum blockchain
 
 
@@ -19,7 +17,7 @@ Install the dependencies and devDependencies and start the client server.
 ```sh
 $ apt-get install git
 $ apt-get install npm
-$ cd <project_url>
+$ cd <project_url>/Web-Applications/react-app
 $ npm install
 $ npm start
 ```
