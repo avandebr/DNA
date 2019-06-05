@@ -1,2 +1,2 @@
 # DNA
-Decentralized Notary Application on the Ethereum Blockchain
+Decentralized Notary Application using Ethereum Blockchain
