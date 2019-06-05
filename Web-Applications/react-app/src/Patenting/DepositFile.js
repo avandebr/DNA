@@ -56,8 +56,8 @@ class DepositFile_class extends Component {
     const contract = require('truffle-contract');
     const patenting = contract(Patenting);
     patenting.setProvider(this.state.web3.currentProvider);
-    // patenting.at('0x90Aa08D8542925bc95b1D7347bF21068A0659c70').then(instance => { // for ROPSTEN
-    patenting.deployed().then(instance => { // for LOCAL RPC
+    patenting.at(Constants.CONTRACT_ADDRESS).then(instance => { // for ROPSTEN
+    // patenting.deployed().then(instance => { // for LOCAL RPC
       this.setState({contractInstance: instance});
       return instance.hasAccount.call(this.state.web3.eth.accounts[0]);
     }).then(registered => {

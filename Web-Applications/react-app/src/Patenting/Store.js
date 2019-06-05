@@ -8,7 +8,7 @@ import {
   SubmitButton
 } from '../utils/FunctionalComponents';
 import {stampToDate, successfullTx, validateEmail, validateEmails} from '../utils/UtilityFunctions';
-import {getStatusString} from '../utils/Constants';
+import {Constants, RequestStatus, getStatusString} from '../utils/Constants';
 import Patenting from '../../build/contracts/Patenting';
 import wrapWithMetamask from '../MetaMaskWrapper'
 import MuiDialog from '@material-ui/core/Dialog';
@@ -35,6 +35,7 @@ class Store_class extends Component {
       email: '',
       repeat_email: '',
       requestedLicence: 1,
+      waitingTransaction: false,
     };
     this.getPatents = this.getPatents.bind(this);
     this.handleChange = this.handleChange.bind(this);
@@ -46,7 +47,8 @@ class Store_class extends Component {
     const contract = require('truffle-contract');
     const patenting = contract(Patenting);
     patenting.setProvider(this.state.web3.currentProvider);
-    patenting.deployed().then(instance => {
+    // patenting.deployed().then(instance => {
+    patenting.at(Constants.CONTRACT_ADDRESS).then(instance => { // for ROPSTEN
       this.setState({contractInstance: instance});
       return instance.patentCount.call()
     }).then(count => {
@@ -78,6 +80,7 @@ class Store_class extends Component {
       repeat_email: '',
       requestedLicence: 1,
       selectedPatent: null,
+      waitingTransaction: false,
     })
   }
 
@@ -143,7 +146,7 @@ class Store_class extends Component {
     if (patent.ownerAddress !== this.state.web3.eth.accounts[0]) {
       if (patent.maxLicence > 0) {
         this.state.contractInstance.canRequest.call(patent.id, 1, this.state.web3.eth.accounts[0]).then(canRequest => {
-          if (canRequest) {
+          if (canRequest && patent.status === RequestStatus.NOT_REQUESTED) {
             this.setState({showRequestForm: true, selectedPatent: patent})
           } else {
             window.dialog.showAlert(ALREADY_REQUESTED)
@@ -166,6 +169,7 @@ class Store_class extends Component {
       window.dialog.showAlert("Your email is needed to receive notifications");
     }
     else if (email.match(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/) !== null){
+      this.setState({ waitingTransaction: true });
       generatePrivateKey(this.state.web3, selectedPatent.id).then(key => { //Generate privateKey = ECDSA(sha3(sha256(file))
         let publicKey = generatePublicKey(key); // Generate public key associated to this private key
         return this.state.contractInstance.requestAccess(selectedPatent.id, requestedLicence, publicKey, email, {
@@ -226,7 +230,7 @@ class Store_class extends Component {
                       validation={this.validateEmails()}
                       onChange={this.handleChange}/>
           <Divider/><br/>
-          <SubmitButton disabled={!this.validateForm()}/>
+          <SubmitButton running={this.state.waitingTransaction} disabled={!this.validateForm()}/>
         </form>
       </Paper>
     );

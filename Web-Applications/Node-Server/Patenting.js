@@ -14,17 +14,19 @@ class Patenting {
      */
     constructor(provider_){
         patenting.setProvider(provider_);
-        patenting.deployed().then(instance => {
-            this.contractInstance = instance;
-            this.contractInstance.NewRequest().watch(function(err, res) {
-                if (err)
+        // patenting.deployed().then(instance => {
+        patenting.at('0x3C0e803797A7E585f110e65810b9C3a35A2B22c4').then(instance => {
+            instance.NewRequest().watch(function(err, res) {
+              console.log('EVENT DETECTED');
+              if (err)
                     console.log(err);
                 else {
                     let request = res.args;
                     mailer.sendRequest(request._ownerMail, request._patentName, request._rentee);
                 }
             })
-            this.contractInstance.RequestResponse().watch(function(err, res) {
+            instance.RequestResponse().watch(function(err, res) {
+              console.log('EVENT DETECTED');
                 if (err)
                     console.log(err);
                 else {

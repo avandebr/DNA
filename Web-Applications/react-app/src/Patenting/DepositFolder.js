@@ -53,9 +53,8 @@ class DepositFolder_class extends Component {
     const contract = require('truffle-contract');
     const patenting = contract(Patenting);
     patenting.setProvider(this.state.web3.currentProvider);
-    // patenting.at('0x90Aa08D8542925bc95b1D7347bF21068A0659c70').then(instance => { // for ROPSTEN
-    // patenting.at('0x4D6559470539B0B82c5ada2D0DC5db644367D74B').then(instance => { // for LOCAL RPC
-    patenting.deployed().then(instance => { // for LOCAL RPC
+    patenting.at(Constants.CONTRACT_ADDRESS).then(instance => { // for ROPSTEN
+    // patenting.deployed().then(instance => { // for LOCAL RPC
       this.setState({contractInstance: instance});
       return instance.patentPrice.call()
     }).then(price => {

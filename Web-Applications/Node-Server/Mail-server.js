@@ -17,41 +17,6 @@ module.exports = {
 
     /**
      *
-     * @param filename: The name of the file that has been stamped
-     * @param hash: The sha256 hash of the file
-     * @param signature: The signature sent to the user. It indicates the path of the document hash in the Merkle Tree
-     *                   whose root has been published on the Ethereum Blockchain
-     * @param user: The owner of the document that has been stamped
-     *
-     * Send by email the signature of the document with name filename to its owner (user)
-     */
-    sendStamp: function(filename, hash, signature, user) {
-        let complete_signature = signature;
-        complete_signature.push({'email' : user});
-        var mailOptions = {
-            from: '"DNA" <eth.notary@gmail.com>',
-            to: user,
-            subject: 'Signature',
-            text: "Dear user, \n\nplease find attached your signature for your timestamped document with name " + filename +
-                " and hash 0x" + hash.substr(0,64) + ". \nKeep it safe. \n\n" +
-                "This is an automatic email, please do not answer. \n\nThe DNA team \n\n",
-            attachments: [{
-                filename: 'signature.json',
-                content: JSON.stringify(complete_signature)
-            }]
-        };
-        transporter.sendMail(mailOptions, function (error, info) {
-            if (error) {
-                console.log(error);
-            }
-            else {
-                console.log('Email sent for TimeStamping: ' + info.response);
-            }
-        });
-    },
-
-    /**
-     *
      * @param ownerMail: The email address of the owner of the document with name patentName which has been requested
      * @param patentName: The name of the requested document
      * @param rentee: Email address of the requester

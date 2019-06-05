@@ -34,11 +34,12 @@ contract Patenting is AccessRestricted {
         uint[] licencePrices;
         bool deleted;
         address[] buyers;
+        // unit8[] rates; or bool[] ? ot both: rate for like and bool for corresponding file
         mapping(address => Request) requests;
     }
 
     string[] public patentIDs; // patent hashes
-    mapping(string => Patent) private patents; // patent ID (hash) to Patent
+    mapping(string => Patent) private patents; // patent ID (hash) to Patents
 
     /* Struct for user account */
     struct User {
@@ -65,13 +66,13 @@ contract Patenting is AccessRestricted {
         bool _accepted
     );
 
-    // FiatContract fiat;
+    FiatContract fiat;
 
     /* Constructor of the contract
     * {param} uint : The price for depositing a pattern in Wei
     */
     constructor(uint _depositPrice, address _fiatContract) public {
-        // fiat = FiatContract(_fiatContract);
+        fiat = FiatContract(_fiatContract);
         depositPrice = _depositPrice;
     }
 
@@ -81,8 +82,8 @@ contract Patenting is AccessRestricted {
     }
 
     function getEthPrice(uint _dollars) public view returns (uint) {
-        // return fiat.USD(0) * 100 * _dollars;
-        return _dollars / 130;
+        return fiat.USD(0) * 100 * _dollars;
+        // return _dollars / 130;
     }
 
     /* ========================================= USER MANAGEMENT FUNCTIONS ======================================== */

@@ -7,7 +7,7 @@ import wrapWithMetamask from '../MetaMaskWrapper'
 import {contractError} from "../utils/ErrorHandler";
 import Bundle from '../utils/ipfsBundle';
 import RequestPanel from './RequestPanel';
-import {RequestStatus, getStatusString} from '../utils/Constants'
+import {RequestStatus, getStatusString, Constants} from '../utils/Constants'
 
 /*Component for browsing submitted requests*/
 class MyRequests_class extends Component {
@@ -32,7 +32,8 @@ class MyRequests_class extends Component {
     const contract = require('truffle-contract');
     const patenting = contract(Patenting);
     patenting.setProvider(this.state.web3.currentProvider);
-    patenting.deployed().then(instance => {
+    // patenting.deployed().then(instance => {
+    patenting.at(Constants.CONTRACT_ADDRESS).then(instance => { // for ROPSTEN
       this.setState({contractInstance: instance});
       return instance.patentCount.call()
     }).then(count => {
@@ -73,7 +74,7 @@ class MyRequests_class extends Component {
               return instance.getPrices.call(new_entry.patentID);
             }).then(prices => {
               new_entry['patentPrices'] = prices.map(price => price.toNumber());
-              return Promise.all(prices.map(price => instance.getEthPrice(price)));
+              return Promise.all(prices.map(price => instance.getEthPrice.call(price)));
             }).then(ethPrices => {
               new_entry['patentEthPrices'] = ethPrices.map(ethPrice => ethPrice.toNumber());
               return instance.getMaxLicence(new_entry.patentID);

@@ -24,7 +24,8 @@ class RequestPanel extends Component {
       request: props.request,
       displayForm: false,
       requestedLicence: props.request.acceptedLicence + 1,
-      gasPrice : props.gasPrice
+      gasPrice : props.gasPrice,
+      waitingTransaction: false,
     };
     this.downloadCopy = this.downloadCopy.bind(this);
     this.cancelRequest = this.cancelRequest.bind(this);
@@ -37,7 +38,7 @@ class RequestPanel extends Component {
   }
 
   closeForm() {
-    this.setState({ displayForm: false, requestedLicence: this.state.request.acceptedLicence + 1 });
+    this.setState({ waitingTransaction: false, displayForm: false, requestedLicence: this.state.request.acceptedLicence + 1 });
   }
 
   /*To download a copy of the file if it is authorized*/
@@ -81,13 +82,13 @@ class RequestPanel extends Component {
   /*Cancels a request*/
   cancelRequest() {
     let request = this.state.request;
+    this.setState({ waitingTransaction: true });
     this.state.contractInstance.cancelRequest(request.patentID, {
       from: this.state.web3.eth.accounts[0],
       gas: process.env.REACT_APP_GAS_LIMIT,
       gasPrice : this.state.gasPrice
     }).then(tx => {
       successfullTx(tx);
-      console.log(request.acceptedLicence);
       if (request.acceptedLicence > 0) {
         request.status = RequestStatus.ACCEPTED;
       } else {
@@ -101,10 +102,15 @@ class RequestPanel extends Component {
   resendRequest(e) {
     e.preventDefault();
     let { request, requestedLicence } = this.state;
+    let price = request.patentEthPrices[requestedLicence-1];
+    if (request.acceptedLicence > 0) {
+      price -= request.patentEthPrices[request.acceptedLicence-1];
+    }
     if (requestedLicence > request.acceptedLicence) {
+      this.setState({ waitingTransaction: true });
       this.state.contractInstance.resendRequest(request.patentID, requestedLicence, {
         from: this.state.web3.eth.accounts[0],
-        value: request.patentEthPrices[requestedLicence-1] - request.patentEthPrices[request.acceptedLicence-1],
+        value: price,
         gas: process.env.REACT_APP_GAS_LIMIT,
         gasPrice : this.state.gasPrice
       }).then(tx => {
@@ -125,7 +131,7 @@ class RequestPanel extends Component {
         <form onSubmit={e => this.resendRequest(e)}>
           <LicenceSelector prices={this.state.request.patentPrices} actualLicence={this.state.request.acceptedLicence}
                            onLicenceChange={e => this.handleChange(e)} />
-          <SubmitButton/>
+          <SubmitButton running={this.state.waitingTransaction} />
         </form>
       </Paper>
     );

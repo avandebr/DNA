@@ -9,6 +9,7 @@ import wrapWithMetamask from '../MetaMaskWrapper';
 import FileManager from './FileManager'
 
 import {contractError} from '../utils/ErrorHandler'
+import {Constants} from "../utils/Constants";
 
 
 /*Component to view User's deposited patents*/
@@ -37,7 +38,8 @@ class MyFiles_class extends Component {
     const contract = require('truffle-contract');
     const patenting = contract(Patenting);
     patenting.setProvider(this.state.web3.currentProvider);
-    patenting.deployed().then(instance => {
+    // patenting.deployed().then(instance => {
+    patenting.at(Constants.CONTRACT_ADDRESS).then(instance => {
       this.setState({contractInstance: instance});
       return instance.hasAccount.call(this.state.web3.eth.accounts[0]);
     }).then(registered => {

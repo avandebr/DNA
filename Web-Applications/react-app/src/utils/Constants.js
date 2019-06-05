@@ -6,7 +6,8 @@ const Constants = {
   POST: 'post',
   FILE: 'file',
   SIGNATURE: 'signature',
-  MAX_FILE_SIZE: 20000000 //Max file size of 20 MB, to avoid crashing the app
+  MAX_FILE_SIZE: 20000000, //Max file size of 20 MB, to avoid crashing the app
+  CONTRACT_ADDRESS: '0x3C0e803797A7E585f110e65810b9C3a35A2B22c4',
 };
 
 const FileStates = {

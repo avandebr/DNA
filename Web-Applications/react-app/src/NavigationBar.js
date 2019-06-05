@@ -25,7 +25,7 @@ export default class NavigationBar extends Component {
       <Navbar inverse collapseOnSelect fixedTop fluid className="navbar">
         <Navbar.Header>
           <Navbar.Brand>
-            <LinkContainer to="/"><a> DNAM </a></LinkContainer>
+            <LinkContainer to="/"><a> DNA </a></LinkContainer>
           </Navbar.Brand>
           <Navbar.Toggle/>
         </Navbar.Header>
@@ -35,7 +35,7 @@ export default class NavigationBar extends Component {
               <LinkContainer to="/RegisterArtist"><MenuItem>Artist Registration</MenuItem></LinkContainer>
               <MenuItem divider/>
               <LinkContainer to="/RegisterSong"><MenuItem>Song Registration</MenuItem></LinkContainer>
-              <LinkContainer to="/RegisterAlbum"><MenuItem>Album Registration</MenuItem></LinkContainer>
+              {/*<LinkContainer to="/RegisterAlbum"><MenuItem>Album Registration</MenuItem></LinkContainer>*/}
             </NavDropdown>
             <LinkContainer to="/Store"><MenuItem>Store</MenuItem></LinkContainer>
             <LinkContainer to="/MyFiles"><MenuItem>My Files</MenuItem></LinkContainer>
