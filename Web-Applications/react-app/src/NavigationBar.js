@@ -46,7 +46,7 @@ export default class NavigationBar extends Component {
             <LinkContainer to="/Licences"><NavItem>Our Licences</NavItem></LinkContainer>
             <LinkContainer to="/About"><NavItem>About DNA</NavItem></LinkContainer>
             <Navbar.Brand>
-              <NavItem href="https://github.com/avandebr/DNAM"><GitHubIcn/></NavItem>
+              <NavItem href="https://github.com/avandebr/DNA"><GitHubIcn/></NavItem>
             </Navbar.Brand>
           </Nav>
 
