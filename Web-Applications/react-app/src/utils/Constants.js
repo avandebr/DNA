@@ -7,7 +7,7 @@ const Constants = {
   FILE: 'file',
   SIGNATURE: 'signature',
   MAX_FILE_SIZE: 20000000, //Max file size of 20 MB, to avoid crashing the app
-  CONTRACT_ADDRESS: '0x3C0e803797A7E585f110e65810b9C3a35A2B22c4', // '0xf32235620Ce7aE274c377A27cD1a2F087c23a104'
+  CONTRACT_ADDRESS: '0xA6680B66DF9926FAAaAf5829becB7d4290954CD6', // '0xf32235620Ce7aE274c377A27cD1a2F087c23a104'
 };
 
 const FileStates = {
@@ -19,9 +19,9 @@ const FileStates = {
 const RequestStatus = {
   NOT_REQUESTED: 0,
   PENDING: 1,
-  REJECTED: 2,
-  CANCELLED: 3,
-  ACCEPTED: 4
+  ACCEPTED: 2,
+  REJECTED: 3,
+  CANCELLED: 4,
 };
 
 /*Returns the string associated to the given status (Between 0 and 3)*/
@@ -31,12 +31,12 @@ const getStatusString = (status) => {
       return "Not requested";
     case RequestStatus.PENDING:
       return "Pending";
+    case RequestStatus.ACCEPTED:
+      return "Accepted";
     case RequestStatus.REJECTED:
       return "Rejected";
     case RequestStatus.CANCELLED:
       return "Cancelled";
-    case RequestStatus.ACCEPTED:
-      return "Accepted";
     default :
       return "";
   }

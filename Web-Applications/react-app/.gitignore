@@ -2,4 +2,3 @@ package-lock.json
 node_modules/
 .env
 truffle.js
-.DS_Store

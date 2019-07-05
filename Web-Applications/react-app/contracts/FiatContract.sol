@@ -7,5 +7,4 @@ contract FiatContract {
     function EUR(uint _id) view public returns (uint256);
     function GBP(uint _id) view public returns (uint256);
     function updatedAt(uint _id) public view returns (uint);
-
 }

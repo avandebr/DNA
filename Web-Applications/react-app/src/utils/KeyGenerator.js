@@ -1,18 +1,25 @@
 import {getPublic} from 'eccrypto'
 import {KEY_GENERATION_ERROR} from './ErrorHandler'
+import sha256 from 'sha256';
 
 /*Generates a cryptographic key to encrypt the files on IPFS
 *
 * Key = Elliptic Curve Digital Signature Algo(sha3(sha256(file)) => depends on user + file and is not reproducible by anyone else
 * */
-const generatePrivateKey = function (web3, fileHash) {
-  let toSign = web3.sha3(fileHash); // Hash the address
+const generatePrivateKey = function (web3, fileHash, folderHash='') {
+  const fromFolder = folderHash.length > 0;
+  let toSign = '0x' + (fromFolder ? folderHash : fileHash);
   return new Promise((resolve, reject) => {
     web3.eth.sign(web3.eth.accounts[0], toSign, (err, res) => {
       if (!err) {
-        resolve(res.substr(2, 64)); // 66 ?
+        if (fromFolder) {
+          resolve(sha256(res.substr(2, 64) + fileHash));
+        }
+        else {
+          resolve(res.substr(2, 64)); // remove 0x and take 256 bits sized key
+        }
       } else {
-        reject(KEY_GENERATION_ERROR)
+        reject(KEY_GENERATION_ERROR);
       }
     })
   })

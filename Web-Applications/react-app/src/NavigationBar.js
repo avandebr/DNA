@@ -32,10 +32,10 @@ export default class NavigationBar extends Component {
         <Navbar.Collapse>
           <Nav>
             <NavDropdown title="Register" id="basic-nav-dropdown">
-              <LinkContainer to="/RegisterArtist"><MenuItem>Artist Registration</MenuItem></LinkContainer>
+              <LinkContainer to="/RegisterAccount"><MenuItem>User Registration</MenuItem></LinkContainer>
               <MenuItem divider/>
-              <LinkContainer to="/RegisterSong"><MenuItem>Song Registration</MenuItem></LinkContainer>
-              {/*<LinkContainer to="/RegisterAlbum"><MenuItem>Album Registration</MenuItem></LinkContainer>*/}
+              <LinkContainer to="/RegisterFile"><MenuItem>File Registration</MenuItem></LinkContainer>
+              <LinkContainer to="/RegisterFolder"><MenuItem>Folder Registration</MenuItem></LinkContainer>
             </NavDropdown>
             <LinkContainer to="/Store"><MenuItem>Store</MenuItem></LinkContainer>
             <LinkContainer to="/MyFiles"><MenuItem>My Files</MenuItem></LinkContainer>

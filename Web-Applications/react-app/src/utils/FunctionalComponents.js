@@ -87,7 +87,24 @@ const LicenceSelector = (props) => {
       </FormControl>
     </FormGroup>
   );
-}
+};
+
+
+/*
+* Component for Licence selection and corresponding price
+*/
+const LicenceSelect = (props) => {
+  return (
+    <Form inline>
+      <Checkbox checked={props.checked} onChange={() => props.onLicenceChange(props.licence)}>
+        {" Licence " + props.licence}
+      </Checkbox>
+      <FieldGroup name="price" id="formsControlsName" type="text" style={{ marginLeft: 20 }} value={props.licencePrice}
+                  disabled={props.disabled || !props.checked} onChange={e => props.onPricesChange(props.licence, e.target.value)}
+                  validation={props.validatePrice(props.licencePrice)}/>
+    </Form>
+  );
+};
 
 
 /*
@@ -97,6 +114,8 @@ const LicencesMenu = (props) => {
   const licenceNumbers = Object.keys(licences);
   return (
     <div>
+      <ControlLabel>{props.label}</ControlLabel>
+      <br/><br/>
       {licenceNumbers.map(licence => (
         <div key={`licence ${licence} selector`}>
           <LicenceSelect licence={licence} disabled={licence==='0'} checked={licence <= props.licence}
@@ -111,18 +130,21 @@ const LicencesMenu = (props) => {
 
 
 /*
-* Component for Licence selection and corresponding price
+* Menu for licences selection while requesting
 */
-const LicenceSelect = (props) => {
+const RateSelector = (props) => {
   return (
-    <Form inline>
-      <Checkbox checked={props.checked} onChange={() => props.onLicenceChange(props.licence)}>
-        {" Licence " + props.licence}
-      </Checkbox>
-      <FieldGroup name="price" id="formsControlsName" type="text" style={{ marginLeft: 20 }} value={props.licencePrice}
-                disabled={props.disabled || !props.checked} onChange={e => props.onPricesChange(props.licence, e.target.value)}
-                validation={props.validatePrice(props.licencePrice)}/>
-    </Form>
+    <FormGroup controlId="exampleForm.ControlSelect1">
+      <ControlLabel>Please select a rate</ControlLabel>
+      <div>
+        {[...Array(5).keys()].map(i => (
+            <Checkbox inline key={i} name={'checked'}
+                   checked={i < props.rate} onChange={() => props.onRateChange(i+1)} />
+          )
+        )}
+      </div>
+      <br/>
+    </FormGroup>
   );
 };
 
@@ -150,4 +172,4 @@ const StampContainer = (props) => {
 };
 
 
-module.exports = { EncryptFileButton, SubmitButton, FieldGroup, ContractNotFound, StampContainer, LicencesMenu, LicenceSelector };
+module.exports = { EncryptFileButton, SubmitButton, FieldGroup, ContractNotFound, StampContainer, LicencesMenu, LicenceSelector, RateSelector };

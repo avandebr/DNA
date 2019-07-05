@@ -2,12 +2,13 @@ import '../css/Pages.css'
 import React, {Component} from 'react';
 import {Grid, Row, PanelGroup} from 'react-bootstrap';
 import {ContractNotFound} from '../utils/FunctionalComponents';
-import Patenting from '../../build/contracts/Patenting';
+import Patents from '../../build/contracts/Patents';
+import Requests from '../../build/contracts/Requests';
 import wrapWithMetamask from '../MetaMaskWrapper'
 import {contractError} from "../utils/ErrorHandler";
 import Bundle from '../utils/ipfsBundle';
 import RequestPanel from './RequestPanel';
-import {RequestStatus, getStatusString, Constants} from '../utils/Constants'
+import {RequestStatus, getStatusString, /*Constants*/} from '../utils/Constants'
 
 /*Component for browsing submitted requests*/
 class MyRequests_class extends Component {
@@ -18,7 +19,8 @@ class MyRequests_class extends Component {
     this.bundle = new Bundle();
     this.state = {
       web3: props.web3,
-      contractInstance: null,
+      patentsInstance: null,
+      requestsInstance: null,
       numRequests: 0,
       activeKey: 1,
       requests: [],
@@ -30,66 +32,114 @@ class MyRequests_class extends Component {
   componentDidMount() {
     this.state.web3.eth.getGasPrice((err, res) => this.setState({gasPrice : res.toNumber()}));
     const contract = require('truffle-contract');
-    const patenting = contract(Patenting);
-    patenting.setProvider(this.state.web3.currentProvider);
-    // patenting.deployed().then(instance => {
-    patenting.at(Constants.CONTRACT_ADDRESS).then(instance => { // for ROPSTEN
-      this.setState({contractInstance: instance});
-      return instance.patentCount.call()
-    }).then(count => {
-      this.getMyRequests(count.toNumber());
-    }).catch(console.log);
+
+    const requests = contract(Requests);
+    requests.setProvider(this.state.web3.currentProvider);
+    requests.deployed().then(instance => {
+      this.setState({ requestsInstance: instance });
+    }).catch(contractError);
+
+    const patents = contract(Patents);
+    patents.setProvider(this.state.web3.currentProvider);
+    patents.deployed().then(instance => {
+    // patenting.at(Constants.CONTRACT_ADDRESS).then(instance => { // for ROPSTEN
+      this.setState({ patentsInstance: instance });
+      return instance.patentCount.call();
+    }).then(numPatents => {
+      this.state.patentsInstance.folderCount.call().then(numFolders => {
+        this.getMyRequests(numPatents.toNumber(), numFolders.toNumber());
+      });
+    }).catch(contractError);
+
     this.state.web3.currentProvider.on('accountsChanged', () => {
-      this.state.contractInstance.patentCount.call().then(count => {
-        this.getMyRequests(count.toNumber());
+      this.state.patentsInstance.patentCount.call().then(numPatents => {
+        this.state.patentsInstance.folderCount.call().then(numFolders => {
+          this.getMyRequests(numPatents.toNumber(), numFolders.toNumber());
+        });
       }).catch(contractError);
     });
   }
 
-  /*Fetches the requests from the smart contract*/
-  getMyRequests(numPatents) {
-    this.setState({requests: [], numRequests: 0});
-    if (this.state.contractInstance !== null) {
-      const instance = this.state.contractInstance;
-      const currentAccount = this.state.web3.eth.accounts[0];
+  /*Fetches one given request from the smart contract*/
+  loadRequest(patentID, userID) {
+    const patents = this.state.patentsInstance;
+    const requests = this.state.requestsInstance;
+    const numRequests = this.state.numRequests;
+    return new Promise(function(resolve, reject) {
+      let request = { patentID };
+      requests.getRequestStatus.call(patentID, userID).then(status => {
+        request['status'] = status.toNumber();
+        if (request.status !== RequestStatus.NOT_REQUESTED) {
+          patents.getPatentName.call(request.patentID).then(name => {
+            request['patentName'] = name;
+            return patents.getNumVersions.call(patentID);
+          }).then(numVersions => {
+            request['patentNumVersions'] = numVersions.toNumber();
+            request['patentLocations'] = [];
+            for(let j = 0; j < request.patentNumVersions; j++) {
+              patents.getPatentLocation.call(patentID, j).then(loc => {
+                request['patentLocations'].push(loc);
+              });
+            }
+            return requests.getRequestedLicence.call(patentID, userID);
+          }).then(requestedLicence => {
+            request['requestedLicence'] = requestedLicence.toNumber();
+            return requests.getAcceptedLicence.call(patentID, userID);
+          }).then(acceptedLicence => {
+            request['acceptedLicence'] = acceptedLicence.toNumber();
+            return patents.getRate.call(patentID, userID);
+          }).then(rate => {
+            request['rate'] = rate.toNumber();
+            return patents.getPrices.call(patentID);
+          }).then(prices => {
+            request['patentPrices'] = prices.map(price => price.toNumber());
+            return Promise.all(prices.map(price => patents.getEthPrice.call(price)));
+          }).then(ethPrices => {
+            request['patentEthPrices'] = ethPrices.map(ethPrice => ethPrice.toNumber());
+            return patents.getMaxLicence(patentID);
+          }).then(maxLicence => {
+            request['patentMaxLicence'] = maxLicence.toNumber();
+            return patents.getOwnerEmail.call(patentID);
+          }).then(mail => {
+            request['patentOwnerEmail'] = mail;
+            request['id'] = (numRequests + 1);
+            resolve(request);
+          });
+        }
+      }).catch(reject);
+    });
+  }
+
+  /*Fetches the requests*/
+  getMyRequests(numPatents, numFolders) {
+    this.setState({ requests: [], numRequests: 0 });
+    const patents = this.state.patentsInstance;
+    const requests = this.state.requestsInstance;
+    if (patents !== null && requests !== null) {
       for (let i = 0; i < numPatents; i++) {
-        let new_entry = {};
-        instance.patentIDs.call(i).then(id => {
-          new_entry['patentID'] = id;
-          return instance.getRequestStatus.call(new_entry.patentID, currentAccount)
-        }).then(status => {
-          new_entry['status'] = status.toNumber();
-          if (new_entry.status !== RequestStatus.NOT_REQUESTED) {
-            instance.getPatentName.call(new_entry.patentID).then(name => {
-              new_entry['patentName'] = name;
-              return instance.getPatentLocation.call(new_entry.patentID);
-            }).then(loc => {
-              new_entry['patentIpfsLocation'] = loc;
-              return instance.getRequestedLicence.call(new_entry.patentID, currentAccount);
-            }).then(requestedLicence => {
-              new_entry['requestedLicence'] = requestedLicence.toNumber();
-              return instance.getAcceptedLicence.call(new_entry.patentID, currentAccount);
-            }).then(acceptedLicence => {
-              new_entry['acceptedLicence'] = acceptedLicence.toNumber();
-              return instance.getPrices.call(new_entry.patentID);
-            }).then(prices => {
-              new_entry['patentPrices'] = prices.map(price => price.toNumber());
-              return Promise.all(prices.map(price => instance.getEthPrice.call(price)));
-            }).then(ethPrices => {
-              new_entry['patentEthPrices'] = ethPrices.map(ethPrice => ethPrice.toNumber());
-              return instance.getMaxLicence(new_entry.patentID);
-            }).then(maxLicence => {
-              new_entry['patentMaxLicence'] = maxLicence.toNumber();
-              return instance.getOwnerEmail.call(new_entry.patentID);
-            }).then(mail => {
-              new_entry['patentOwnerEmail'] = mail;
-              new_entry['id'] = (this.state.numRequests + 1);
-              let requests = this.state.requests;
-              requests.push(new_entry);
-              this.setState({ requests, numRequests: this.state.numRequests + 1});
-            }).catch(contractError)
+        patents.patentIDs.call(i).then(id => {
+          return this.loadRequest(id, this.state.web3.eth.accounts[0]);
+        }).then(request => {
+          if (request.status !== RequestStatus.NOT_REQUESTED) {
+            request['isFromFolder'] = false;
+            let requests = this.state.requests;
+            requests.push(request);
+            this.setState({requests, numRequests: this.state.numRequests + 1});
           }
-        })
+        }).catch(console.log);
+      }
+      for (let i = 0; i < numFolders; i++) {
+        patents.folderIDs.call(i).then(id => {
+          return this.loadRequest(id, this.state.web3.eth.accounts[0]);
+        }).then(request => {
+          if (request.status !== RequestStatus.NOT_REQUESTED) {
+            request['isFromFolder'] = true;
+            let requests = this.state.requests;
+            requests.push(request);
+            console.log(request);
+            this.setState({requests, numRequests: this.state.numRequests + 1});
+          }
+        }).catch(console.log);
       }
     }
   }
@@ -112,8 +162,9 @@ class MyRequests_class extends Component {
               <div key={s}>
                 <h3>{getStatusString(s)} requests</h3>
                 {statusRequests.sort((r1, r2) => r1.patentName < r2.patentName ? -1 : 1).map(request => (
-                  <RequestPanel web3={this.state.web3} instance={this.state.contractInstance} bundle={this.bundle}
-                                request={request} key={request.id} gasPrice={this.state.gasPrice}/>
+                  <RequestPanel web3={this.state.web3} bundle={this.bundle} request={request} key={request.id}
+                                requestsInstance={this.state.requestsInstance} patentsInstance={this.state.patentsInstance}
+                                gasPrice={this.state.gasPrice}/>
                 ))}
                 <br/>
               </div>
@@ -144,13 +195,14 @@ class MyRequests_class extends Component {
 
   /*Rendering function of the component*/
   render() {
-    if (this.state.contractInstance === null) {
+    if (this.state.patentsInstance === null || this.state.requestsInstance === null) {
       return <ContractNotFound/>;
     } else {
       return (
         <Grid>
           <Row bsClass='contract-address'>
-            Contract at {this.state.contractInstance.address} <br/>
+            Patents contract at {this.state.patentsInstance.address} <br/>
+            Requests contract at {this.state.requestsInstance.address} <br/>
             <br/> Current account {this.state.web3.eth.accounts[0]} (From Metamask)
           </Row>
           <Row>{this.renderTable()}</Row>

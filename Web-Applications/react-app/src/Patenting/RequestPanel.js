@@ -5,11 +5,11 @@ import {getStatusString, RequestStatus} from '../utils/Constants';
 import {saveByteArray, successfullTx} from '../utils/UtilityFunctions';
 import {privateKeyDecrypt} from '../utils/CryptoUtils'
 import {contractError, KEY_GENERATION_ERROR, IPFS_ERROR, KEY_ERROR, ENCRYPTION_ERROR} from "../utils/ErrorHandler";
-
+import sha256 from 'sha256';
 import {generatePrivateKey} from '../utils/KeyGenerator';
 import MuiDialog from "@material-ui/core/Dialog";
 import Paper from "@material-ui/core/Paper";
-import {LicenceSelector, SubmitButton} from "../utils/FunctionalComponents";
+import {LicenceSelector, RateSelector, SubmitButton} from "../utils/FunctionalComponents";
 
 /*Component that represents a single request and implements the actions based on the state*/
 
@@ -20,16 +20,20 @@ class RequestPanel extends Component {
     this.bundle = props.bundle;
     this.state = {
       web3: props.web3,
-      contractInstance: props.instance,
+      requestsInstance: props.requestsInstance,
+      patentsInstance: props.patentsInstance,
       request: props.request,
-      displayForm: false,
+      displayLicencesForm: false,
+      displayRatesForm: false,
       requestedLicence: props.request.acceptedLicence + 1,
+      rate: props.request.rate,
       gasPrice : props.gasPrice,
       waitingTransaction: false,
     };
     this.downloadCopy = this.downloadCopy.bind(this);
     this.cancelRequest = this.cancelRequest.bind(this);
     this.selectLicence = this.selectLicence.bind(this);
+    this.selectRate = this.selectRate.bind(this);
   }
 
   handleChange(e) {
@@ -38,31 +42,64 @@ class RequestPanel extends Component {
   }
 
   closeForm() {
-    this.setState({ waitingTransaction: false, displayForm: false, requestedLicence: this.state.request.acceptedLicence + 1 });
+    this.setState({
+      waitingTransaction: false,
+      displayLicencesForm: false,
+      requestedLicence: this.state.request.acceptedLicence + 1,
+      displayRatesForm: false,
+      rate: this.state.request.rate,
+    });
+  }
+
+  downloadFolder(aesKey) {
+    const patents = this.state.patentsInstance;
+    const folderID = this.state.request.patentID;
+    patents.getFolderSize.call(folderID).then(numPatents => {
+      for (let i = 0; i < numPatents.toNumber(); i++) {
+        let patent = {};
+        patents.getPatentID.call(folderID, i).then(id => {
+          patent['id'] = id;
+          return patents.getPatentName.call(patent.id);
+        }).then(name => {
+          patent['name'] = name;
+          return patents.getNumVersions.call(patent.id);
+        }).then(numVersions => {
+          const lastVersion = numVersions.toNumber() - 1;
+          return patents.getPatentLocation.call(patent.id, lastVersion);
+        }).then(patentLocation => {
+          const fileKey = sha256(aesKey + patent.id);
+          return this.bundle.getDecryptedFile(patent.id, patentLocation, fileKey);
+        }).then(buffer => saveByteArray(patent.name, buffer, window, document));
+      }
+    });
   }
 
   /*To download a copy of the file if it is authorized*/
-  downloadCopy() {
-    let privateKey;
-    let request = this.state.request;
-    generatePrivateKey(this.state.web3, request.patentID).then(pk => {
-      privateKey = pk;
-      return this.state.contractInstance.getEncryptedIpfsKey.call(request.patentID, {
+  downloadCopy(version) {
+    const request = this.state.request;
+    generatePrivateKey(this.state.web3, request.patentID).then(privateKey => {
+      this.state.requestsInstance.getEncryptedIpfsKey.call(request.patentID, {
         from: this.state.web3.eth.accounts[0]
-      })
-    }).then(encryptedKey => {
-      return privateKeyDecrypt(encryptedKey, privateKey);
-    }).then(aes_key => {
-      window.dialog.showAlert("Download will start shortly");
-      return this.bundle.getDecryptedFile(request.patentID, request.patentIpfsLocation, aes_key);
-    }).then(buffer => saveByteArray(request.patentName, buffer, window, document))
-      .catch(e => {
-        if (e === KEY_GENERATION_ERROR || e === KEY_ERROR || e === IPFS_ERROR || e === ENCRYPTION_ERROR) {
-          window.dialog.showAlert(e)
+      }).then(encryptedKey => {
+        return privateKeyDecrypt(encryptedKey, privateKey);
+      }).then(aesKey => {
+        window.dialog.showAlert("Download will start shortly");
+        if (request.isFromFolder) {
+          this.downloadFolder(aesKey);
         } else {
-          contractError(e)
+          const ipfsLoc = request.patentLocations[version];
+          this.bundle.getDecryptedFile(request.patentID, ipfsLoc, aesKey).then(buffer => {
+            saveByteArray(request.patentName, buffer, window, document)
+          });
         }
       })
+    }).catch(e => {
+      if (e === KEY_GENERATION_ERROR || e === KEY_ERROR || e === IPFS_ERROR || e === ENCRYPTION_ERROR) {
+        window.dialog.showAlert(e)
+      } else {
+        contractError(e)
+      }
+    })
   }
 
   /* Show the form to upgrade the licence for a previously accepted request */
@@ -72,10 +109,18 @@ class RequestPanel extends Component {
       if (request.acceptedLicence === request.patentMaxLicence) {
         window.dialog.showAlert('You already have access to the best licence for this file');
       } else {
-        this.setState({displayForm: true});
+        this.setState({displayLicencesForm: true});
       }
     } else if (request.status === RequestStatus.REJECTED || request.status === RequestStatus.CANCELLED) {
-      this.setState({displayForm: true});
+      this.setState({displayLicencesForm: true});
+    }
+  }
+
+  /* Show the form to upgrade the licence for a previously accepted request */
+  selectRate() {
+    const request = this.state.request;
+    if (request.acceptedLicence > 0) {
+      this.setState({ displayRatesForm: true });
     }
   }
 
@@ -83,7 +128,7 @@ class RequestPanel extends Component {
   cancelRequest() {
     let request = this.state.request;
     this.setState({ waitingTransaction: true });
-    this.state.contractInstance.cancelRequest(request.patentID, {
+    this.state.requestsInstance.cancelRequest(request.patentID, {
       from: this.state.web3.eth.accounts[0],
       gas: process.env.REACT_APP_GAS_LIMIT,
       gasPrice : this.state.gasPrice
@@ -108,7 +153,7 @@ class RequestPanel extends Component {
     }
     if (requestedLicence > request.acceptedLicence) {
       this.setState({ waitingTransaction: true });
-      this.state.contractInstance.resendRequest(request.patentID, requestedLicence, {
+      this.state.requestsInstance.resendRequest(request.patentID, requestedLicence, {
         from: this.state.web3.eth.accounts[0],
         value: price,
         gas: process.env.REACT_APP_GAS_LIMIT,
@@ -121,11 +166,29 @@ class RequestPanel extends Component {
         this.setState({ request });
       }).catch(contractError);
     } else {
-      window.dialog.showAlert('Invalid selected licence')
+      window.dialog.showAlert('Invalid selected licence');
     }
   }
 
-  renderForm() {
+  ratePatent(e) {
+    e.preventDefault();
+    let { request, rate } = this.state;
+    if (request.acceptedLicence > 0) {
+      this.setState({ waitingTransaction: true });
+      this.state.patentsInstance.ratePatent(request.patentID, rate, {
+        from: this.state.web3.eth.accounts[0],
+        gas: process.env.REACT_APP_GAS_LIMIT,
+        gasPrice : this.state.gasPrice
+      }).then(tx => {
+        this.closeForm();
+        successfullTx(tx);
+      }).catch(contractError);
+    }
+  }
+
+  /*--------------------------------- USER INTERFACE COMPONENTS ---------------------------------*/
+
+  renderLicencesForm() {
     return (
       <Paper style={{ padding: 20 }}>
         <form onSubmit={e => this.resendRequest(e)}>
@@ -137,32 +200,46 @@ class RequestPanel extends Component {
     );
   }
 
+  renderRatesForm() {
+    return (
+      <Paper style={{ padding: 20 }}>
+        <form onSubmit={e => this.ratePatent(e)}>
+          <RateSelector rate={this.state.rate} onRateChange={i => this.setState({ rate: i })} />
+          <SubmitButton running={this.state.waitingTransaction} />
+        </form>
+      </Paper>
+    );
+  }
+
   /*Buttons depending on the state of the request*/
   getButtons() {
     const request = this.state.request;
-    let button = "";
+    const hasBeenAccepted = (request.acceptedLicence > 0);
+    const lastVersion = request.patentNumVersions-1;
+    let requestButton = "";
     switch (request.status) {
       case RequestStatus.PENDING:
-        button = <Button onClick={this.cancelRequest}>Cancel and Refund</Button>;
+        requestButton = <Button onClick={this.cancelRequest}>Cancel and Refund</Button>;
         break;
       case RequestStatus.CANCELLED:
       case RequestStatus.REJECTED:
-        button = <Button onClick={this.selectLicence}>Resend a Request</Button>;
+        requestButton = <Button onClick={this.selectLicence}>Resend a Request</Button>;
         break;
       case RequestStatus.ACCEPTED:
-        button = <Button onClick={this.downloadCopy}>Download Copy</Button>;
+        requestButton = <Button onClick={this.selectLicence}>Upgrade Licence</Button>;
         break;
       default:
         break
     }
+    const dlButton = <Button onClick={() => this.downloadCopy(lastVersion)}>Download Copy</Button>;
     const contactButton = <Button onClick={() => open('mailto:'+request.patentOwnerEmail)}>Contact Owner</Button>;
-    const upgradeLicenceButton = <Button onClick={this.selectLicence}>Request Licence Upgrade </Button>;
-    const isAccepted = (request.status === RequestStatus.ACCEPTED);
+    const rateButton = <Button onClick={this.selectRate}>Rate Patent</Button>;
     return (
       <ButtonGroup justified>
-        <ButtonGroup>{button}</ButtonGroup>
+        {hasBeenAccepted && <ButtonGroup>{dlButton}</ButtonGroup>}
+        <ButtonGroup>{requestButton}</ButtonGroup>
         <ButtonGroup>{contactButton}</ButtonGroup>
-        {isAccepted && <ButtonGroup>{upgradeLicenceButton}</ButtonGroup>}
+        {hasBeenAccepted && <ButtonGroup>{rateButton}</ButtonGroup>}
       </ButtonGroup>
     );
   }
@@ -196,20 +273,47 @@ class RequestPanel extends Component {
       : this.state.request.requestedLicence;
   }
 
-  render() {
+  renderVersions() {
+    const request = this.state.request;
     return (
       <div>
-        <Panel eventKey={this.state.request.id} key={this.state.request.patentID}>
+        <h4>Patent Versions</h4>
+        <ButtonGroup justified>
+          {[...Array(request.patentNumVersions).keys()].map(i => {
+            const v = i+1;
+            return (
+              <ButtonGroup key={i}>
+                <Button onClick={() => this.downloadCopy(i)}>{request.patentNumVersions < 5 ? 'Version ' : 'v' + v}</Button>
+              </ButtonGroup>
+            )})}
+        </ButtonGroup>
+      </div>
+    );
+  }
+
+  render() {
+    const request = this.state.request;
+    return (
+      <div>
+        <Panel eventKey={request.id} key={request.patentID}>
           <Panel.Heading>
             <Panel.Title toggle>
-              {this.state.request.patentName} - Licence {this.getDisplayedLicence()}
+              {request.patentName} - Licence {this.getDisplayedLicence()}
               {this.getLabel()}
             </Panel.Title>
           </Panel.Heading>
-          <Panel.Body collapsible>{this.getButtons()}</Panel.Body>
+          <Panel.Body collapsible>
+            <div>
+              {this.getButtons()}
+              {request.patentNumVersions > 1 && request.acceptedLicence > 0 && this.renderVersions()}
+            </div>
+          </Panel.Body>
         </Panel>
-        <MuiDialog disableEnforceFocus open={this.state.displayForm} onClose={() => this.closeForm()}>
-          {this.state.displayForm && this.renderForm()}
+        <MuiDialog disableEnforceFocus open={this.state.displayLicencesForm} onClose={() => this.closeForm()}>
+          {this.state.displayLicencesForm && this.renderLicencesForm()}
+        </MuiDialog>
+        <MuiDialog disableEnforceFocus open={this.state.displayRatesForm} onClose={() => this.closeForm()}>
+          {this.state.displayRatesForm && this.renderRatesForm()}
         </MuiDialog>
       </div>
     );

@@ -10,13 +10,13 @@ import {
 } from '../utils/UtilityFunctions';
 
 import wrapWithMetamask from '../MetaMaskWrapper'
-import Patenting from '../../build/contracts/Patenting';
+import Users from '../../build/contracts/Users';
 
 import {contractError} from '../utils/ErrorHandler'
 import Dialog from 'react-bootstrap-dialog';
 import Paper from "@material-ui/core/Paper";
 import Divider from "@material-ui/core/Divider";
-import {Constants} from "../utils/Constants";
+// import {Constants} from "../utils/Constants";
 
 /*----------------------------------------------------- DONE -----------------------------------------------------*/
 
@@ -24,7 +24,7 @@ import {Constants} from "../utils/Constants";
 // TODO: mail verification ??
 
 /*Component for Patent Deposit*/
-class SignUp_class extends Component {
+class Accounts_class extends Component {
 
   /*Component Constructor*/
   constructor(props) {
@@ -48,22 +48,21 @@ class SignUp_class extends Component {
   componentDidMount() {
     this.state.web3.eth.getGasPrice((err, res) => this.setState({ gasPrice : res.toNumber() }));
     const contract = require('truffle-contract');
-    const patenting = contract(Patenting);
-    patenting.setProvider(this.state.web3.currentProvider);
-    // patenting.deployed().then(instance => { // for LOCAL RPC
-    patenting.at(Constants.CONTRACT_ADDRESS).then(instance => { // for ROPSTEN
+    const users = contract(Users);
+    users.setProvider(this.state.web3.currentProvider);
+    // users.at(Constants.CONTRACT_ADDRESS).then(instance => { // for ROPSTEN
+    users.deployed().then(instance => { // for LOCAL RPC
       this.setState({contractInstance: instance});
-      return instance.hasAccount.call(this.state.web3.eth.accounts[0]);
+      return instance.isRegistered.call(this.state.web3.eth.accounts[0]);
     }).then(registered => {
       this.setState({ registered });
     }).catch(error => console.log(error));
     this.state.web3.currentProvider.on('accountsChanged', accounts => {
-      this.state.contractInstance.hasAccount.call(accounts[0]).then(registered => {
+      this.state.contractInstance.isRegistered.call(accounts[0]).then(registered => {
         this.setState({registered});
       })
     });
   }
-
 
   /*--------------------------------- HELPER METHODS AND VALIDATION ---------------------------------*/
 
@@ -116,7 +115,7 @@ class SignUp_class extends Component {
         gas: process.env.REACT_APP_GAS_LIMIT,
         gasPrice : this.state.gasPrice
       }).then(tx => {
-        this.setState({ registered: true })
+        this.setState({ registered: true });
         this.resetForm();
         window.dialog.show({
           title: "Successful Transaction",
@@ -184,7 +183,7 @@ class SignUp_class extends Component {
       return (
         <Grid>
           <Row bsClass="contract-address">
-            <Col xsHidden>Contract at {this.state.contractInstance.address}</Col>
+            <Col xsHidden>Users contract at {this.state.contractInstance.address}</Col>
             <br/>
             <Col xsHidden>
               Current account {this.state.web3.eth.accounts[0]} (From Metamask)
@@ -203,5 +202,5 @@ class SignUp_class extends Component {
   }
 }
 
-const DepositFile = wrapWithMetamask(SignUp_class, SignUp_class.header());
-export default DepositFile;
+const Accounts = wrapWithMetamask(Accounts_class, Accounts_class.header());
+export default Accounts;

@@ -101,7 +101,7 @@
   "deployedBytecode": "0x",
   "sourceMap": "",
   "deployedSourceMap": "",
-  "source": "pragma solidity ^0.5.0;\n\ncontract FiatContract {\n\n    function ETH(uint _id) view public returns (uint256);\n    function USD(uint _id) view public returns (uint256);\n    function EUR(uint _id) view public returns (uint256);\n    function GBP(uint _id) view public returns (uint256);\n    function updatedAt(uint _id) public view returns (uint);\n\n}\n",
+  "source": "pragma solidity ^0.5.0;\n\ncontract FiatContract {\n\n    function ETH(uint _id) view public returns (uint256);\n    function USD(uint _id) view public returns (uint256);\n    function EUR(uint _id) view public returns (uint256);\n    function GBP(uint _id) view public returns (uint256);\n    function updatedAt(uint _id) public view returns (uint);\n}\n",
   "sourcePath": "/Users/axel/Developer/DNAM/Web-Applications/react-app/contracts/FiatContract.sol",
   "ast": {
     "absolutePath": "/Users/axel/Developer/DNAM/Web-Applications/react-app/contracts/FiatContract.sol",
@@ -544,10 +544,10 @@
           }
         ],
         "scope": 98,
-        "src": "25:320:1"
+        "src": "25:319:1"
       }
     ],
-    "src": "0:346:1"
+    "src": "0:345:1"
   },
   "legacyAST": {
     "absolutePath": "/Users/axel/Developer/DNAM/Web-Applications/react-app/contracts/FiatContract.sol",
@@ -990,10 +990,10 @@
           }
         ],
         "scope": 98,
-        "src": "25:320:1"
+        "src": "25:319:1"
       }
     ],
-    "src": "0:346:1"
+    "src": "0:345:1"
   },
   "compiler": {
     "name": "solc",
@@ -1001,7 +1001,7 @@
   },
   "networks": {},
   "schemaVersion": "3.0.2",
-  "updatedAt": "2019-03-12T15:02:19.029Z",
+  "updatedAt": "2019-06-23T13:52:20.459Z",
   "devdoc": {
     "methods": {}
   },

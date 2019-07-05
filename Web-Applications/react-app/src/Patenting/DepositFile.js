@@ -6,7 +6,7 @@ import { EncryptFileButton, FieldGroup, SubmitButton, ContractNotFound, Licences
 import { validateName, validatePrice, validateFile } from '../utils/UtilityFunctions';
 import {getFileHash} from '../utils/CryptoUtils'
 import wrapWithMetamask from '../MetaMaskWrapper'
-import Patenting from '../../build/contracts/Patenting';
+import Patents from '../../build/contracts/Patents';
 import Bundle from '../utils/ipfsBundle';
 
 import {Constants, FileStates} from '../utils/Constants';
@@ -54,10 +54,10 @@ class DepositFile_class extends Component {
   componentDidMount() {
     this.state.web3.eth.getGasPrice((err, res) => this.setState({ gasPrice : res.toNumber() }));
     const contract = require('truffle-contract');
-    const patenting = contract(Patenting);
-    patenting.setProvider(this.state.web3.currentProvider);
-    patenting.at(Constants.CONTRACT_ADDRESS).then(instance => { // for ROPSTEN
-    // patenting.deployed().then(instance => { // for LOCAL RPC
+    const patents = contract(Patents);
+    patents.setProvider(this.state.web3.currentProvider);
+    // patents.at(Constants.CONTRACT_ADDRESS).then(instance => { // for ROPSTEN
+    patents.deployed().then(instance => { // for LOCAL RPC
       this.setState({contractInstance: instance});
       return instance.hasAccount.call(this.state.web3.eth.accounts[0]);
     }).then(registered => {
@@ -68,7 +68,7 @@ class DepositFile_class extends Component {
       return this.state.contractInstance.getEthPrice.call(price.toNumber());
     }).then(ethPrice => {
       this.setState({ etherPrice: ethPrice })
-    }).catch(error => console.log(error));
+    }).catch(() => this.setState({ contractInstance: null }));
     this.state.web3.currentProvider.on('accountsChanged', accounts => {
       this.state.contractInstance.hasAccount.call(accounts[0]).then(registered => {
         this.setState({currentAccountRegistered: registered});
@@ -171,17 +171,18 @@ class DepositFile_class extends Component {
 
   /*Function that triggers the contract call to Deposit a patent*/
   // TODO: tell the user if the file he wants to submit has already been (by him or by someone else)
+  // TODO: push d'abord le file sur IPFS puis deposit le patent comme ca recuperer le hash IPFS a ce moment
   submitFile(e) {
     e.preventDefault();
     if (this.validateForm()) {
       this.setState({waitingTransaction: true});
       const { patentName, fileExt, hash, licence, licencePrices, ipfsLocation } = this.state;
-      const prices = licencePrices.slice(1, this.state.licence+1).map(parseFloat);
+      const prices = licencePrices.slice(1, licence+1).map(parseFloat);
       const completeName = patentName + '.' + fileExt;
-      this.state.contractInstance.depositPatent(completeName, hash, licence, prices, ipfsLocation, {
+      this.state.contractInstance.depositPatent(completeName, hash, '', ipfsLocation, prices, {
         from: this.state.web3.eth.accounts[0],
         value: this.state.etherPrice,
-        gas: process.env.REACT_APP_GAS_LIMIT,
+        gas: 2*process.env.REACT_APP_GAS_LIMIT,
         gasPrice : this.state.gasPrice
       }).then(() => {
         return this.bundle.addFile() // Add the encrypted file to IPFS
@@ -256,7 +257,8 @@ class DepositFile_class extends Component {
 
           <LicencesMenu licence={this.state.licence} onLicenceChange={i => this.handleLicenceChange(i)}
                         validatePrice={validatePrice} prices={this.state.licencePrices}
-                        onPricesChange={(l, p) => this.handlePricesChange(l, p)}/>
+                        onPricesChange={(l, p) => this.handlePricesChange(l, p)}
+                        label="Licence Selection and Prices"/>
           <br/><Divider/><br/>
 
           <SubmitButton running={this.state.waitingTransaction} disabled={!this.validateForm()}/>
@@ -272,14 +274,14 @@ class DepositFile_class extends Component {
       return (
         <Grid>
           <Row bsClass="contract-address">
-            <Col xsHidden>Contract at {this.state.contractInstance.address}</Col>
+            <Col xsHidden>Patents contract at {this.state.contractInstance.address}</Col>
             <Row>Deposit price at {this.state.depositPrice} USD </Row> {/* price to pay to deposit a patent */}
             <br/>
             <Col xsHidden>
               Current account {this.state.web3.eth.accounts[0]} (From Metamask)
               <br/>
               {!this.state.currentAccountRegistered && "Your current Metamask account is not registered. Please "}
-              <a href="/registerArtist">{!this.state.currentAccountRegistered && "register it here"}</a>
+              <a href="/RegisterAccount">{!this.state.currentAccountRegistered && "register it here"}</a>
               {!this.state.currentAccountRegistered && " to deposit a patent"}
             </Col>
           </Row>

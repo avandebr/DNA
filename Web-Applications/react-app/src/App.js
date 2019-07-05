@@ -9,7 +9,7 @@ import { hot } from 'react-hot-loader';
 
 import NavigationBar from './NavigationBar'
 import Home from './Home';
-import SignUp from './Patenting/SignUp';
+import Accounts from './Patenting/Accounts';
 import DepositFile from './Patenting/DepositFile';
 import DepositFolder from './Patenting/DepositFolder';
 import Store from './Patenting/Store';
@@ -30,9 +30,9 @@ const App = () => (
       <Dialog ref={(el) => { window.dialog = el }} />
       <Switch>
         <Route exact path='/' component={Home}/>
-        <Route exact path='/RegisterArtist' component={SignUp}/>
-        <Route exact path='/RegisterSong' component={DepositFile}/>
-        <Route exact path='/RegisterAlbum' component={DepositFolder}/>
+        <Route exact path='/RegisterAccount' component={Accounts}/>
+        <Route exact path='/RegisterFile' component={DepositFile}/>
+        <Route exact path='/RegisterFolder' component={DepositFolder}/>
         <Route exact path='/Store' component={Store}/>
         <Route exact path='/MyFiles' component={MyFiles}/>
         <Route exact path='/MyRequests' component={MyRequests}/>

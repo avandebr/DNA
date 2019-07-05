@@ -1,5 +1,5 @@
 import {getEncryptedFileBuffer, getDecryptedFileBuffer} from './CryptoUtils'
-import { KEY_ERROR, IPFS_ERROR } from '../utils/ErrorHandler'
+import { /*KEY_ERROR,*/ IPFS_ERROR } from '../utils/ErrorHandler'
 // import ipfsClient from 'ipfs-http-client';
 import sha256 from 'sha256'
 
@@ -8,40 +8,30 @@ class Bundle {
   constructor() {
     this.node = window.IpfsHttpClient(process.env.REACT_APP_IPFS, 5001, {protocol: 'https'});
     this.encryptedFile = null;
-    this.encryptedAlbum = [];
-    this.albumName = '';
+    this.encryptedFolder = [];
   }
 
   reset() {
     this.encryptedFile = null;
-    this.encryptedAlbum = [];
-    this.albumName = ''
+    this.encryptedFolder = [];
   }
 
   /*Function that encrypts the file and stores it*/
   encryptFile(file, key) {
     return getEncryptedFileBuffer(file, window, key).then(res => {
-      this.encryptedAlbum.push(res);
       this.encryptedFile = res;
-      return this.getHash() //new Promise((resolve, reject) => resolve("file encrypted"))
+      this.encryptedFolder.push(res);
+      return this.getHash();
     })
   }
 
-  /*Function that encrypts a full album and stores it*/
-  /* encryptAlbum(name, files, masterKey) {
-    this.albumName = name;
-    // modify this using Promise.All()
-    const hashes = files.map((file, i) => {
-      // derive file key from master key by sha256(masterKey + file hash)
+  /*Function that encrypts a full folder and stores it*/
+  encryptFolder(files, masterKey) {
+    return Promise.all(files.map(file => {
       const fileKey = sha256(masterKey + file.hash);
-      return getEncryptedFileBuffer(file.data, window, fileKey).then(res => {
-        const completeFileName = file.name + '.' + file.ext;
-        this.encryptedAlbum[completeFileName] = res;
-        return (i === files.length - 1) ? this.getHashes() : null;
-      });
-    });
-    return hashes[hashes.length - 1];
-  } */
+      return this.encryptFile(file.data, fileKey);
+    }));
+  }
 
   /*Gets the IPFS hash of the stored encrypted file*/
   getHash = () => this.addFile(true);
@@ -52,26 +42,11 @@ class Bundle {
     }
   }
 
-  /*Gets the IPFS hash of the stored encrypted file*/
-  getHashes = () => this.addAlbum(true);
-
   addFiles(onlyHash = false) {
-    if(this.encryptedAlbum.length > 1 ){
-      return this.encryptedAlbum.map(encryptedFile => this.node.add(encryptedFile, { onlyHash }));
-    }
-  }
-
-  addAlbum(onlyHash = false) {
-    const albumName = this.albumName;
-    const fileNames = Object.keys(this.encryptedAlbum);
-    if (fileNames.length > 0 && albumName !== '') {
-      const toAdd = fileNames.map(fileName => {
-        return {
-          path: '/' + albumName + '/' + fileName,
-          content: this.encryptedAlbum[fileName],
-        };
-      });
-      return this.node.add(toAdd, { onlyHash });
+    if (this.encryptedFolder.length > 0) {
+      return Promise.all(this.encryptedFolder.map(encryptedFile => {
+        return this.node.add(encryptedFile, { onlyHash })
+      }));
     }
   }
 
@@ -83,11 +58,12 @@ class Bundle {
           if (!err) {
             let byteContent = files[0].content;
             let decrypted = getDecryptedFileBuffer(byteContent, key);
-            if (sha256(decrypted) === fileHash) {
-              resolve(decrypted)
-            } else {
-              reject(KEY_ERROR)
-            }
+            // TODO: reverify with good filehash
+            // if (sha256(decrypted) === fileHash) {
+            resolve(decrypted)
+            // } else {
+            //   reject(KEY_ERROR)
+            // }
           } else {
             reject(IPFS_ERROR)
           }
