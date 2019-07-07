@@ -258,7 +258,7 @@ contract Patents is AccessRestricted {
     }
 
     function getEthPrice(uint _dollars) public view returns (uint) {
-        // return fiat.USD(0) * 100 * _dollars;
-        return _dollars / 200;
+        return fiat.USD(0) * 100 * _dollars;
+        // return _dollars / 200;
     }
 }

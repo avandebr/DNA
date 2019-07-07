@@ -1,7 +1,6 @@
 import '../css/Pages.css'
 import React, {Component} from 'react';
 import {ListGroupItem, Button, ButtonGroup, Panel, Row, Col} from 'react-bootstrap';
-
 import MuiDialog from '@material-ui/core/Dialog';
 import Dialog from 'react-bootstrap-dialog';
 

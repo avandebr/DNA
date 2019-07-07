@@ -64,8 +64,8 @@ class DepositFolder_class extends Component {
     const contract = require('truffle-contract');
     const patents = contract(Patents);
     patents.setProvider(this.state.web3.currentProvider);
-    // patents.at(Constants.CONTRACT_ADDRESS).then(instance => { // for ROPSTEN
-    patents.deployed().then(instance => { // for LOCAL RPC
+    patents.at(Constants.CONTRACT_ADDRESS.patents).then(instance => { // for ROPSTEN
+    // patents.deployed().then(instance => { // for LOCAL RPC
       this.setState({ contractInstance: instance });
       return instance.hasAccount.call(this.state.web3.eth.accounts[0]);
     }).then(registered => {
@@ -250,7 +250,7 @@ class DepositFolder_class extends Component {
     return (
       <Grid>
         <br/>
-        <Row bsClass='title'>Album Registration</Row>
+        <Row bsClass='title'>Folder Registration</Row>
         <hr/>
         <Row bsClass='paragraph'>
           <p>This page allows users that have an Ethereum account and are using it on the Metamask

@@ -8,7 +8,7 @@ import {
   SubmitButton
 } from '../utils/FunctionalComponents';
 import {stampToDate, successfullTx, validateEmail, validateEmails} from '../utils/UtilityFunctions';
-import { /*Constants,*/ RequestStatus} from '../utils/Constants';
+import { Constants, RequestStatus} from '../utils/Constants';
 import Patents from '../../build/contracts/Patents';
 import Requests from '../../build/contracts/Requests';
 import wrapWithMetamask from '../MetaMaskWrapper'
@@ -52,14 +52,15 @@ class Store_class extends Component {
 
     const requests = contract(Requests);
     requests.setProvider(this.state.web3.currentProvider);
-    requests.deployed().then(instance => {
+    requests.at(Constants.CONTRACT_ADDRESS.requests).then(instance => { // for ROPSTEN
+    // requests.deployed().then(instance => {
       this.setState({ requestsInstance: instance });
     }).catch(() => this.setState({ requestsInstance: null }));
 
     const patents = contract(Patents);
     patents.setProvider(this.state.web3.currentProvider);
-    // patents.at(Constants.CONTRACT_ADDRESS).then(instance => { // for ROPSTEN
-    patents.deployed().then(instance => {
+    patents.at(Constants.CONTRACT_ADDRESS.patents).then(instance => { // for ROPSTEN
+    // patents.deployed().then(instance => {
       this.setState({ patentsInstance: instance });
       return instance.patentCount.call();
     }).then(count => {

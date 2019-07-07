@@ -8,6 +8,7 @@ import Patents from '../../build/contracts/Patents';
 import Requests from '../../build/contracts/Requests';
 import Users from '../../build/contracts/Users';
 import FileManager from './FileManager'
+import {Constants} from "../utils/Constants";
 import wrapWithMetamask from '../MetaMaskWrapper';
 
 /*Component to view User's deposited patents*/
@@ -40,14 +41,15 @@ class MyFiles_class extends Component {
 
     const requests = contract(Requests);
     requests.setProvider(this.state.web3.currentProvider);
-    requests.deployed().then(instance => {
+    requests.at(Constants.CONTRACT_ADDRESS.requests).then(instance => {
+    // requests.deployed().then(instance => {
       this.setState({ requestsInstance: instance });
     }).catch(console.log);
 
     const patents = contract(Patents);
     patents.setProvider(this.state.web3.currentProvider);
-    // patents.at(Constants.CONTRACT_ADDRESS).then(instance => {
-    patents.deployed().then(instance => {
+    patents.at(Constants.CONTRACT_ADDRESS.patents).then(instance => {
+    // patents.deployed().then(instance => {
       this.setState({ patentsInstance: instance });
       return instance.hasAccount.call(this.state.web3.eth.accounts[0]);
     }).then(registered => {
@@ -56,7 +58,8 @@ class MyFiles_class extends Component {
 
     const users = contract(Users);
     users.setProvider(this.state.web3.currentProvider);
-    users.deployed().then(instance => {
+    users.at(Constants.CONTRACT_ADDRESS.users).then(instance => {
+    // users.deployed().then(instance => {
       this.setState({ usersInstance: instance });
       return instance.getNumPatents.call(this.state.web3.eth.accounts[0]);
     }).then(count => {

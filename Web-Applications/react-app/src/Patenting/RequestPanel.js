@@ -69,7 +69,7 @@ class RequestPanel extends Component {
         }).then(patentLocation => {
           const fileKey = sha256(aesKey + patent.id);
           return this.bundle.getDecryptedFile(patent.id, patentLocation, fileKey);
-        }).then(buffer => saveByteArray(patent.name, buffer, window, document));
+        }).then(console.log); // buffer => saveByteArray(patent.name, buffer, window, document)
       }
     });
   }

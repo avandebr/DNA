@@ -16,7 +16,7 @@ import {contractError} from '../utils/ErrorHandler'
 import Dialog from 'react-bootstrap-dialog';
 import Paper from "@material-ui/core/Paper";
 import Divider from "@material-ui/core/Divider";
-// import {Constants} from "../utils/Constants";
+import {Constants} from "../utils/Constants";
 
 /*----------------------------------------------------- DONE -----------------------------------------------------*/
 
@@ -50,8 +50,8 @@ class Accounts_class extends Component {
     const contract = require('truffle-contract');
     const users = contract(Users);
     users.setProvider(this.state.web3.currentProvider);
-    // users.at(Constants.CONTRACT_ADDRESS).then(instance => { // for ROPSTEN
-    users.deployed().then(instance => { // for LOCAL RPC
+    users.at(Constants.CONTRACT_ADDRESS.users).then(instance => { // for ROPSTEN
+    // users.deployed().then(instance => { // for LOCAL RPC
       this.setState({contractInstance: instance});
       return instance.isRegistered.call(this.state.web3.eth.accounts[0]);
     }).then(registered => {

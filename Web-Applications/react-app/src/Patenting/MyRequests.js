@@ -8,7 +8,7 @@ import wrapWithMetamask from '../MetaMaskWrapper'
 import {contractError} from "../utils/ErrorHandler";
 import Bundle from '../utils/ipfsBundle';
 import RequestPanel from './RequestPanel';
-import {RequestStatus, getStatusString, /*Constants*/} from '../utils/Constants'
+import {RequestStatus, getStatusString, Constants} from '../utils/Constants'
 
 /*Component for browsing submitted requests*/
 class MyRequests_class extends Component {
@@ -35,14 +35,15 @@ class MyRequests_class extends Component {
 
     const requests = contract(Requests);
     requests.setProvider(this.state.web3.currentProvider);
-    requests.deployed().then(instance => {
+    requests.at(Constants.CONTRACT_ADDRESS.requests).then(instance => { // for ROPSTEN
+    // requests.deployed().then(instance => {
       this.setState({ requestsInstance: instance });
     }).catch(contractError);
 
     const patents = contract(Patents);
     patents.setProvider(this.state.web3.currentProvider);
-    patents.deployed().then(instance => {
-    // patenting.at(Constants.CONTRACT_ADDRESS).then(instance => { // for ROPSTEN
+    patents.at(Constants.CONTRACT_ADDRESS.patents).then(instance => { // for ROPSTEN
+    //patents.deployed().then(instance => {
       this.setState({ patentsInstance: instance });
       return instance.patentCount.call();
     }).then(numPatents => {
@@ -136,7 +137,6 @@ class MyRequests_class extends Component {
             request['isFromFolder'] = true;
             let requests = this.state.requests;
             requests.push(request);
-            console.log(request);
             this.setState({requests, numRequests: this.state.numRequests + 1});
           }
         }).catch(console.log);
@@ -158,6 +158,7 @@ class MyRequests_class extends Component {
           className="requests-container">
           {Object.values(RequestStatus).filter(s => s > 0).map(s => {
             const statusRequests = this.state.requests.filter(r => r.status === s);
+            console.log(s);
             return statusRequests.length > 0 && (
               <div key={s}>
                 <h3>{getStatusString(s)} requests</h3>

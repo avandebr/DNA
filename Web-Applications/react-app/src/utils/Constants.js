@@ -7,7 +7,11 @@ const Constants = {
   FILE: 'file',
   SIGNATURE: 'signature',
   MAX_FILE_SIZE: 20000000, //Max file size of 20 MB, to avoid crashing the app
-  CONTRACT_ADDRESS: '0xA6680B66DF9926FAAaAf5829becB7d4290954CD6', // '0xf32235620Ce7aE274c377A27cD1a2F087c23a104'
+  CONTRACT_ADDRESS: {
+    patents: '0xe690C3cDC155503Cb096EBC06099118f599952C6',
+    requests: '0xc2862de5B2EA31849e2B18ea4Da39615d292d5fE',
+    users: '0x014Df5b617A03e0a19DCB5a235ce9C0dFc73A818',
+  }
 };
 
 const FileStates = {
