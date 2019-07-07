@@ -17,15 +17,14 @@ module.exports = {
 
     /**
      *
-     * @param ownerMail: The email address of the owner o
-     * f the document with name patentName which has been requested
+     * @param ownerMail: The email address of the owner of the document with name patentName which has been requested
      * @param patentName: The name of the requested document
      * @param rentee: Email address of the requester
      *
      * Send an email to the owner of the deposited document with name patentname
      */
-    sendRequest: function(ownerMail, patentName, rentee) {
-        const mailOptions = {
+    sendRequest: function(ownerMail, patentName, rentee){
+        var mailOptions = {
             from: '"DNA" <eth.notary@gmail.com>',
             to: ownerMail,
             subject: 'New Request for your document ' + patentName,
@@ -53,8 +52,8 @@ module.exports = {
      * Send an email to the requester of the document with name patentName to indicate him if the request has been
      * accepted or rejected
      */
-    sendRequestResponse: function(requesterMail, patentName, accepted) {
-      const mailOptions = {
+    sendRequestResponse: function(requesterMail, patentName, accepted){
+        var mailOptions = {
             from: '"DNA" <eth.notary@gmail.com>',
             to: requesterMail,
             subject: 'Request update',
@@ -68,7 +67,7 @@ module.exports = {
                 console.log(error);
             }
             else {
-                console.log('Email sent for document request response ' + info.response);
+                console.log('Email sent for document request response' + info.response);
             }
         });
     }
